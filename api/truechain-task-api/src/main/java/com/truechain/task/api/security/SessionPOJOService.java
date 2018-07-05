@@ -1,9 +1,9 @@
 package com.truechain.task.api.security;
 
 import com.truechain.task.api.model.dto.SessionPOJO;
-import com.truechain.task.api.model.entity.SysUser;
 import com.truechain.task.api.repository.RedisRepository;
-import com.truechain.task.api.util.CommonUtil;
+import com.truechain.task.model.entity.SysUser;
+import com.truechain.task.util.CommonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

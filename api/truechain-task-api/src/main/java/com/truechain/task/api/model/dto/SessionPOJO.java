@@ -1,6 +1,7 @@
 package com.truechain.task.api.model.dto;
 
-import com.truechain.task.admin.model.entity.AuthRole;
+
+import com.truechain.task.model.entity.AuthRole;
 
 import java.io.Serializable;
 import java.util.List;

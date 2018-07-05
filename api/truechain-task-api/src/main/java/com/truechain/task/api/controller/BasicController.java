@@ -3,7 +3,7 @@ package com.truechain.task.api.controller;
 import com.truechain.task.api.config.AppProperties;
 import com.truechain.task.api.model.dto.SessionPOJO;
 import com.truechain.task.api.security.SessionPOJOService;
-import com.truechain.task.api.util.JwtUtil;
+import com.truechain.task.util.JwtUtil;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

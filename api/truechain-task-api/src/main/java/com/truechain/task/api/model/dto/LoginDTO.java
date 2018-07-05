@@ -9,17 +9,17 @@ public class LoginDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Integer userUid;
+    private Long userUid;
 
     private String token;
 
     private String agent;
 
-    public Integer getUserUid() {
+    public Long getUserUid() {
         return userUid;
     }
 
-    public void setUserUid(Integer userUid) {
+    public void setUserUid(Long userUid) {
         this.userUid = userUid;
     }
 

@@ -1,8 +1,7 @@
 package com.truechain.task.api.security;
 
 import com.truechain.task.api.config.AppProperties;
-import com.truechain.task.api.model.dto.SessionPOJO;
-import com.truechain.task.api.util.JwtUtil;
+import com.truechain.task.util.JwtUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
