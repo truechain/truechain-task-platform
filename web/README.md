@@ -1,12 +1,21 @@
-# truechain_task_platform
-## truechain任务后台管理系统 目录说明
- 
-* admin
-    * 后台系统
-* api
-    * web接口
-* web
-    * web前端界面H5
-* doc
-    * 管理系统产品、设计等的文档
+# truechaintask
 
+> A Vue.js project
+
+## Build Setup
+
+``` bash
+# install dependencies
+npm install
+
+# serve with hot reload at localhost:8080
+npm run dev
+
+# build for production with minification
+npm run build
+
+# build for production and view the bundle analyzer report
+npm run build --report
+```
+
+For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
