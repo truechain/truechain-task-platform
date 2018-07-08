@@ -94,6 +94,11 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.truechain</groupId>
+            <artifactId>truechain-task-core</artifactId>
+            <version>0.0.1</version>
+        </dependency>
         <!-- swagger dependency end-->
 
     </dependencies>

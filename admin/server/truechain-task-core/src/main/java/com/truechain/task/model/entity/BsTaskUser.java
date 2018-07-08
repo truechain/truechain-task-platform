@@ -20,6 +20,10 @@ public class BsTaskUser extends BaseEntity {
      */
     private int status;
     /**
+     * 审核状态
+     */
+    private int auditStatus;
+    /**
      * 提交地址
      */
     private String pushAddress;
@@ -27,6 +31,11 @@ public class BsTaskUser extends BaseEntity {
      * 备注
      */
     private String remark;
+    /**
+     * 个人奖励
+     */
+    private String reward;
+
     /**
      * 任务
      */

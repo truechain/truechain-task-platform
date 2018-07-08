@@ -2,7 +2,7 @@ package com.truechain.task.model.enums;
 
 public enum TaskStatusEnum {
 
-    ENABLE(1), DISABLE(0);
+    ENABLE(1), DISABLE(0), CLOSE(2);
 
     private int code;
 
