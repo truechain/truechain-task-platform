@@ -14,6 +14,7 @@ import com.truechain.task.model.entity.SysDeclare;
 import com.truechain.task.model.entity.SysUser;
 import com.truechain.task.util.CommonUtil;
 import com.truechain.task.util.JwtUtil;
+import com.truechain.task.util.MD5Util;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -67,8 +68,12 @@ public class AccountController extends BasicController {
      * 登录
      */
     @PostMapping("/login")
-    public Wrapper login(@RequestParam String openId) {
-        SysUser user = userService.getUserByOpenId(openId);
+    public Wrapper login(@RequestParam String userName, @RequestParam String password) {
+        SysUser user = userService.getUserByUserName(userName);
+        String realPass = user.getPassword();
+        if (!MD5Util.verify(password, realPass)) {
+            throw new BusinessException("密码不正确");
+        }
         SessionPOJO sessionPOJO = sessionPOJOService.initSession(user);
         String salt = CommonUtil.getRandomString(6);
         String token = JwtUtil.createToken(salt, sessionPOJO.getId(), 10000L);
@@ -85,6 +90,14 @@ public class AccountController extends BasicController {
     @GetMapping("/verifyCode/{mobile}")
     public Wrapper getVerifyCode() {
 
+        return WrapMapper.ok();
+    }
+
+    /**
+     * 校验验证码
+     */
+    @PostMapping("/verifyCode")
+    public Wrapper verifyCode(@RequestParam String mobile, @RequestParam String verifyCode) {
         return WrapMapper.ok();
     }
 

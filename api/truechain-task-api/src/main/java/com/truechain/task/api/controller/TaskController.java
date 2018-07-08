@@ -1,5 +1,8 @@
 package com.truechain.task.api.controller;
 
+import com.truechain.task.api.model.dto.SessionPOJO;
+import com.truechain.task.api.model.dto.TaskDTO;
+import com.truechain.task.api.model.dto.UserTaskInfoDTO;
 import com.truechain.task.api.service.TaskService;
 import com.truechain.task.core.WrapMapper;
 import com.truechain.task.core.Wrapper;
@@ -49,7 +52,40 @@ public class TaskController extends BasicController {
      * 抢任务
      */
     @PostMapping("/holdTask")
-    public Wrapper holdTask() {
+    public Wrapper holdTask(@RequestParam Long taskId) {
+        return WrapMapper.ok();
+    }
+
+    /**
+     * 获取我的任务列表
+     */
+    @PostMapping("/getUserTaskList")
+    public Wrapper getUserTaskList() {
+        SessionPOJO sessionPOJO = getSessionPoJO();
+        Long userId = sessionPOJO.getUserId();
+        TaskDTO taskDTO = taskService.getUserTaskList(userId);
+        return WrapMapper.ok(taskDTO);
+    }
+
+    /**
+     * 获取我的任务详情
+     */
+    @PostMapping("/getUserTaskInfo")
+    public Wrapper getUserTaskInfo(@RequestParam Long taskId) {
+        SessionPOJO sessionPOJO = getSessionPoJO();
+        Long userId = sessionPOJO.getUserId();
+        UserTaskInfoDTO userTaskInfoDTO = taskService.getUserTaskInfo(userId, taskId);
+        return WrapMapper.ok(userTaskInfoDTO);
+    }
+
+    /**
+     * 提交任务
+     */
+    @PostMapping("/commitUserTask")
+    public Wrapper commitUserTask(@RequestParam Long taskId, @RequestParam(required = false) String commitAddress, @RequestParam(required = false) String remark) {
+        SessionPOJO sessionPOJO = getSessionPoJO();
+        Long userId = sessionPOJO.getUserId();
+        taskService.commitUserTask(userId, taskId, commitAddress, remark);
         return WrapMapper.ok();
     }
 

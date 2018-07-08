@@ -42,7 +42,7 @@ public class BasicController {
      *
      * @return
      */
-    protected SessionPOJO getSessionPoJO(HttpServletRequest request) {
+    protected SessionPOJO getSessionPoJO() {
         String token = request.getHeader(AppProperties.TOKEN_HEADER);
         String salt = request.getHeader(AppProperties.AGENT_HEADER);
         String sessionId = JwtUtil.getSessionIdByToken(token, salt);
