@@ -13,11 +13,10 @@ public class UserInfoDTO implements Serializable {
      * 用户详情
      */
     private SysUser user;
-
     /**
      * 用户账户
      */
-    private List<UserAccountDTO> userAccountList;
+    private UserAccountDTO userAccount;
 
     public SysUser getUser() {
         return user;
@@ -27,11 +26,11 @@ public class UserInfoDTO implements Serializable {
         this.user = user;
     }
 
-    public List<UserAccountDTO> getUserAccountList() {
-        return userAccountList;
+    public UserAccountDTO getUserAccount() {
+        return userAccount;
     }
 
-    public void setUserAccountList(List<UserAccountDTO> userAccountList) {
-        this.userAccountList = userAccountList;
+    public void setUserAccount(UserAccountDTO userAccount) {
+        this.userAccount = userAccount;
     }
 }

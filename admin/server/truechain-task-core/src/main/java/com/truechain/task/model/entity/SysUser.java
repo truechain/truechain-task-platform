@@ -5,6 +5,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.Set;
 
@@ -62,7 +63,14 @@ public class SysUser extends BaseEntity {
      * 审核状态
      */
     private int auditStatus;
-
+    /**
+     * 账户
+     */
+    @OneToOne(mappedBy = "user")
+    private BsUserAccount userAccount;
+    /**
+     * 用户任务
+     */
     @JsonIgnore
     @OneToMany(mappedBy = "user")
     private Set<BsTaskUser> taskUserSet;
@@ -161,6 +169,14 @@ public class SysUser extends BaseEntity {
 
     public void setOpenId(String openId) {
         this.openId = openId;
+    }
+
+    public BsUserAccount getUserAccount() {
+        return userAccount;
+    }
+
+    public void setUserAccount(BsUserAccount userAccount) {
+        this.userAccount = userAccount;
     }
 
     public Set<BsTaskUser> getTaskUserSet() {

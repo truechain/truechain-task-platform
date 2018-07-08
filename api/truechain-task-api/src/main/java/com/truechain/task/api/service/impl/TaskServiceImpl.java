@@ -72,4 +72,9 @@ public class TaskServiceImpl implements TaskService {
         userTaskInfoDTO.setTask(taskUser.get().getTask());
         return userTaskInfoDTO;
     }
+
+    @Override
+    public void commitUserTask(Long userId, Long taskId, String commitAddress, String remark) {
+
+    }
 }
