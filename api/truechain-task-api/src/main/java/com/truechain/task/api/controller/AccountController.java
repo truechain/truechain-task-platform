@@ -14,8 +14,8 @@ import com.truechain.task.model.entity.SysDeclare;
 import com.truechain.task.model.entity.SysUser;
 import com.truechain.task.util.CommonUtil;
 import com.truechain.task.util.JwtUtil;
-import com.truechain.task.util.MD5Util;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,9 +43,13 @@ public class AccountController extends BasicController {
      * 注册
      */
     @PostMapping("/register")
-    public Wrapper register(@RequestParam String name, @RequestParam String wxNickName, @RequestParam String wxNum, @RequestParam String openId,
+    public Wrapper register(@RequestParam String name, @RequestParam String wxNickName, @RequestParam String wxNum, @RequestParam(required = false) String openId,
                             @RequestParam String trueChainAddress, @RequestParam String mobile, @RequestParam String verifyCode, @RequestParam("file") MultipartFile file) {
         Preconditions.checkArgument(!file.isEmpty(), "简历不能为空");
+        String realVerifyCode = stringRedisTemplate.opsForValue().get(mobile);
+        if (StringUtils.isBlank(realVerifyCode) || !realVerifyCode.equals(verifyCode)) {
+            throw new BusinessException("验证码不正确");
+        }
         String fileName = file.getOriginalFilename();
         File uploadFile = new File(AppProperties.UPLOAD_FILE_PATH + fileName);
         try {
@@ -68,11 +72,11 @@ public class AccountController extends BasicController {
      * 登录
      */
     @PostMapping("/login")
-    public Wrapper login(@RequestParam String userName, @RequestParam String password) {
-        SysUser user = userService.getUserByUserName(userName);
-        String realPass = user.getPassword();
-        if (!MD5Util.verify(password, realPass)) {
-            throw new BusinessException("密码不正确");
+    public Wrapper login(@RequestParam String mobile, @RequestParam String verifyCode) {
+        SysUser user = userService.getUserByMobile(mobile);
+        String realVerifyCode = stringRedisTemplate.opsForValue().get(mobile);
+        if (StringUtils.isBlank(realVerifyCode) || !realVerifyCode.equals(verifyCode)) {
+            throw new BusinessException("验证码不正确");
         }
         SessionPOJO sessionPOJO = sessionPOJOService.initSession(user);
         String salt = CommonUtil.getRandomString(6);
@@ -88,17 +92,10 @@ public class AccountController extends BasicController {
      * 获取验证码
      */
     @GetMapping("/verifyCode/{mobile}")
-    public Wrapper getVerifyCode() {
-
-        return WrapMapper.ok();
-    }
-
-    /**
-     * 校验验证码
-     */
-    @PostMapping("/verifyCode")
-    public Wrapper verifyCode(@RequestParam String mobile, @RequestParam String verifyCode) {
-        return WrapMapper.ok();
+    public Wrapper getVerifyCode(@PathVariable("mobile") String mobile) {
+        String verifyCode = CommonUtil.getRandomString(6);
+        stringRedisTemplate.opsForValue().set(mobile, verifyCode);
+        return WrapMapper.ok(verifyCode);
     }
 
     /**

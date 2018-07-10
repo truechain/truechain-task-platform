@@ -15,12 +15,12 @@ public interface UserService {
     SysUser getUserByOpenId(String openId);
 
     /**
-     * 根据用户名获取用户
+     * 根据手机号获取用户
      *
-     * @param userName
+     * @param mobile
      * @return
      */
-    SysUser getUserByUserName(String userName);
+    SysUser getUserByMobile(String mobile);
 
     /**
      * 添加用户

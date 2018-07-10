@@ -8,4 +8,9 @@ public interface SysUserRepository extends JpaRepository<SysUser, Long> {
     SysUser findByOpenId(String openId);
 
     SysUser findByUserName(String userName);
+
+    SysUser findByMobile(String mobile);
+
+    long countByMobile(String mobile);
+
 }

@@ -5,6 +5,7 @@ import com.truechain.task.api.model.dto.UserAccountDTO;
 import com.truechain.task.api.model.dto.UserInfoDTO;
 import com.truechain.task.api.repository.SysUserRepository;
 import com.truechain.task.api.service.UserService;
+import com.truechain.task.core.BusinessException;
 import com.truechain.task.model.entity.BsUserAccount;
 import com.truechain.task.model.entity.SysUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,15 +25,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public SysUser getUserByUserName(String userName) {
-        SysUser sysUser = userRepository.findByUserName(userName);
+    public SysUser getUserByMobile(String mobile) {
+        SysUser sysUser = userRepository.findByMobile(mobile);
         Preconditions.checkArgument(null != sysUser, "该用户不存在");
         return sysUser;
     }
 
     @Override
     public SysUser addUser(SysUser user) {
-        return null;
+        long count = userRepository.countByMobile(user.getMobile());
+        if (count > 0) {
+            throw new BusinessException("手机号已经注册");
+        }
+        user = userRepository.save(user);
+        return user;
     }
 
     @Override
