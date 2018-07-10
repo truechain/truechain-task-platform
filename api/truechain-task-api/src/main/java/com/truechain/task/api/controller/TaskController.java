@@ -2,6 +2,7 @@ package com.truechain.task.api.controller;
 
 import com.truechain.task.api.model.dto.SessionPOJO;
 import com.truechain.task.api.model.dto.TaskDTO;
+import com.truechain.task.api.model.dto.TaskTotalDTO;
 import com.truechain.task.api.model.dto.UserTaskInfoDTO;
 import com.truechain.task.api.service.TaskService;
 import com.truechain.task.core.WrapMapper;
@@ -44,8 +45,9 @@ public class TaskController extends BasicController {
      * 获取任务详情
      */
     @PostMapping("/getTaskInfo")
-    public Wrapper getTaskInfo() {
-        return WrapMapper.ok();
+    public Wrapper getTaskInfo(@RequestParam Long taskId) {
+        TaskDTO taskDTO = taskService.getTaskInfo(taskId);
+        return WrapMapper.ok(taskDTO);
     }
 
     /**
@@ -63,8 +65,8 @@ public class TaskController extends BasicController {
     public Wrapper getUserTaskList() {
         SessionPOJO sessionPOJO = getSessionPoJO();
         Long userId = sessionPOJO.getUserId();
-        TaskDTO taskDTO = taskService.getUserTaskList(userId);
-        return WrapMapper.ok(taskDTO);
+        TaskTotalDTO taskTotalDTO = taskService.getUserTaskList(userId);
+        return WrapMapper.ok(taskTotalDTO);
     }
 
     /**

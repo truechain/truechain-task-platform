@@ -104,6 +104,7 @@ public class AccountController extends BasicController {
     /**
      * 获取使用说明
      */
+    @PostMapping("/getDeclare")
     public Wrapper getDeclare() {
         SysDeclare declare = declareService.getDefaultDeclare();
         return WrapMapper.ok(declare);

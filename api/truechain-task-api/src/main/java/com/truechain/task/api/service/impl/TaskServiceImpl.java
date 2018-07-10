@@ -2,6 +2,7 @@ package com.truechain.task.api.service.impl;
 
 import com.google.common.base.Preconditions;
 import com.truechain.task.api.model.dto.TaskDTO;
+import com.truechain.task.api.model.dto.TaskTotalDTO;
 import com.truechain.task.api.model.dto.UserTaskInfoDTO;
 import com.truechain.task.api.repository.BsTaskRepository;
 import com.truechain.task.api.repository.SysUserRepository;
@@ -35,28 +36,35 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDTO getUserTaskList(Long userId) {
+    public TaskDTO getTaskInfo(Long taskId) {
         TaskDTO taskDTO = new TaskDTO();
+        BsTask task = taskRepository.findOne(taskId);
+        return taskDTO;
+    }
+
+    @Override
+    public TaskTotalDTO getUserTaskList(Long userId) {
+        TaskTotalDTO taskTotalDTO = new TaskTotalDTO();
         SysUser user = userRepository.findOne(userId);
         Preconditions.checkArgument(user != null, "用户不存在");
         Set<BsTaskUser> taskUserSet = user.getTaskUserSet();
         if (CollectionUtils.isEmpty(taskUserSet)) {
             return null;
         }
-        taskDTO.setTaskTotal(taskUserSet.size());
-        taskDTO.setTaskingTotal(0);
-        taskDTO.setTaskComplateTolal(0);
-        taskDTO.setTaskList(new ArrayList<>(taskUserSet.size()));
+        taskTotalDTO.setTaskTotal(taskUserSet.size());
+        taskTotalDTO.setTaskingTotal(0);
+        taskTotalDTO.setTaskComplateTolal(0);
+        taskTotalDTO.setTaskList(new ArrayList<>(taskUserSet.size()));
         for (BsTaskUser taskUser : taskUserSet) {
             if (taskUser.getStatus() == 1) {
-                taskDTO.setTaskComplateTolal(taskDTO.getTaskComplateTolal() + 1);
+                taskTotalDTO.setTaskComplateTolal(taskTotalDTO.getTaskComplateTolal() + 1);
             } else {
-                taskDTO.setTaskingTotal(taskDTO.getTaskingTotal() + 1);
+                taskTotalDTO.setTaskingTotal(taskTotalDTO.getTaskingTotal() + 1);
             }
             BsTask task = taskUser.getTask();
-            taskDTO.getTaskList().add(task);
+            taskTotalDTO.getTaskList().add(task);
         }
-        return taskDTO;
+        return taskTotalDTO;
     }
 
     @Override
