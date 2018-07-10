@@ -1,4 +1,5 @@
-/target/
+*.class
+target
 !.mvn/wrapper/maven-wrapper.jar
 
 ### STS ###
@@ -15,6 +16,11 @@
 *.iws
 *.iml
 *.ipr
+
+# Package Files #
+*.jar
+*.war
+*.ear
 
 ### NetBeans ###
 /nbproject/private/
