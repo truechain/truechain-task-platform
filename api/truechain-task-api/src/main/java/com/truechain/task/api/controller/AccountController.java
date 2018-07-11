@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 账户Controller
@@ -47,7 +48,10 @@ public class AccountController extends BasicController {
                             @RequestParam String trueChainAddress, @RequestParam String mobile, @RequestParam String verifyCode, @RequestParam("file") MultipartFile file) {
         Preconditions.checkArgument(!file.isEmpty(), "简历不能为空");
         String realVerifyCode = stringRedisTemplate.opsForValue().get(mobile);
-        if (StringUtils.isBlank(realVerifyCode) || !realVerifyCode.equals(verifyCode)) {
+        if (StringUtils.isBlank(realVerifyCode)) {
+            throw new BusinessException("验证码已过期");
+        }
+        if (!realVerifyCode.equals(verifyCode)) {
             throw new BusinessException("验证码不正确");
         }
         String fileName = file.getOriginalFilename();
@@ -75,7 +79,10 @@ public class AccountController extends BasicController {
     public Wrapper login(@RequestParam String mobile, @RequestParam String verifyCode) {
         SysUser user = userService.getUserByMobile(mobile);
         String realVerifyCode = stringRedisTemplate.opsForValue().get(mobile);
-        if (StringUtils.isBlank(realVerifyCode) || !realVerifyCode.equals(verifyCode)) {
+        if (StringUtils.isBlank(realVerifyCode)) {
+            throw new BusinessException("验证码已过期");
+        }
+        if (!realVerifyCode.equals(verifyCode)) {
             throw new BusinessException("验证码不正确");
         }
         SessionPOJO sessionPOJO = sessionPOJOService.initSession(user);
@@ -85,7 +92,7 @@ public class AccountController extends BasicController {
         loginDTO.setUserUid(user.getId());
         loginDTO.setAgent(salt);
         loginDTO.setToken(token);
-        return WrapMapper.ok();
+        return WrapMapper.ok(loginDTO);
     }
 
     /**
@@ -94,7 +101,7 @@ public class AccountController extends BasicController {
     @GetMapping("/verifyCode/{mobile}")
     public Wrapper getVerifyCode(@PathVariable("mobile") String mobile) {
         String verifyCode = CommonUtil.getRandomString(6);
-        stringRedisTemplate.opsForValue().set(mobile, verifyCode);
+        stringRedisTemplate.opsForValue().set(mobile, verifyCode, 3, TimeUnit.MINUTES);
         return WrapMapper.ok(verifyCode);
     }
 
