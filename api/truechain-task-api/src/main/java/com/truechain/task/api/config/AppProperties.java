@@ -14,6 +14,7 @@ public class AppProperties {
 
     public static String UPLOAD_FILE_PATH;
 
+
     @PostConstruct
     public void init() {
         TOKEN_HEADER = tokenHeader;
@@ -29,4 +30,5 @@ public class AppProperties {
 
     @Value("${app.upload.file-path}")
     private String uploadFilePath;
+
 }

@@ -45,6 +45,10 @@ spring:
 app:
   upload:
     file-path: D://
+  sms:
+    smsUserName: TRUE888hy
+    smsPassword: ADljCe
+
 
 ---
 spring:
@@ -63,3 +67,6 @@ spring:
 app:
   upload:
     file-path: /home/work/data/upload
+  sms:
+    smsUserName: TRUE888hy
+    smsPassword: ADljCe
