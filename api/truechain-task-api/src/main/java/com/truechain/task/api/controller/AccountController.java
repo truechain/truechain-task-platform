@@ -14,15 +14,16 @@ import com.truechain.task.model.entity.SysDeclare;
 import com.truechain.task.model.entity.SysUser;
 import com.truechain.task.util.CommonUtil;
 import com.truechain.task.util.JwtUtil;
+import com.truechain.task.util.SMSHttpRequest;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 账户Controller
@@ -39,6 +40,12 @@ public class AccountController extends BasicController {
 
     @Autowired
     private SessionPOJOService sessionPOJOService;
+
+    @Value("${app.sms.smsUserName}")
+    private String smsUserName;
+
+    @Value("${app.sms.smsPassword}")
+    private String smsPassword;
 
     /**
      * 注册
@@ -92,7 +99,7 @@ public class AccountController extends BasicController {
         loginDTO.setUserUid(user.getId());
         loginDTO.setAgent(salt);
         loginDTO.setToken(token);
-        return WrapMapper.ok(loginDTO);
+        return WrapMapper.ok();
     }
 
     /**
@@ -101,7 +108,8 @@ public class AccountController extends BasicController {
     @GetMapping("/verifyCode/{mobile}")
     public Wrapper getVerifyCode(@PathVariable("mobile") String mobile) {
         String verifyCode = CommonUtil.getRandomString(6);
-        stringRedisTemplate.opsForValue().set(mobile, verifyCode, 3, TimeUnit.MINUTES);
+        SMSHttpRequest.sendVerifyCodeSMS(smsUserName,smsPassword,mobile,verifyCode);                                //调用SMSAPI发送验证码短信
+        stringRedisTemplate.opsForValue().set(mobile, verifyCode);
         return WrapMapper.ok(verifyCode);
     }
 
