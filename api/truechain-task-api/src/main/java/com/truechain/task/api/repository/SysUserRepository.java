@@ -2,8 +2,9 @@ package com.truechain.task.api.repository;
 
 import com.truechain.task.model.entity.SysUser;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.querydsl.QueryDslPredicateExecutor;
 
-public interface SysUserRepository extends JpaRepository<SysUser, Long> {
+public interface SysUserRepository extends JpaRepository<SysUser, Long>, QueryDslPredicateExecutor<SysUser> {
 
     SysUser findByOpenId(String openId);
 

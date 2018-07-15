@@ -13,10 +13,11 @@ public interface TaskService {
      * 获取任务分页数据
      *
      * @param task
-     * @param pageable
+     * @param pageIndex
+     * @param pageSize
      * @return
      */
-    Page<BsTask> getTaskPage(BsTask task, Pageable pageable);
+    Page<BsTask> getTaskPage(BsTask task, int pageIndex, int pageSize);
 
     /**
      * 获取任务详情
@@ -24,15 +25,16 @@ public interface TaskService {
      * @param taskId
      * @return
      */
-    TaskDTO getTaskInfo(Long taskId);
+    TaskDTO getTaskInfo(Long taskId, Long userId);
 
     /**
      * 获取用户任务列表
      *
      * @param userId
+     * @param taskStatus
      * @return
      */
-    TaskTotalDTO getUserTaskList(Long userId);
+    TaskTotalDTO getUserTaskList(Long userId, Integer taskStatus);
 
     /**
      * 获取用户任务状态
@@ -42,6 +44,14 @@ public interface TaskService {
      * @return
      */
     UserTaskInfoDTO getUserTaskInfo(Long userId, Long taskId);
+
+    /**
+     * 抢任务
+     *
+     * @param taskDetailId
+     * @param userId
+     */
+    void holdTask(Long taskDetailId, Long userId);
 
     /**
      * 提交用户任务

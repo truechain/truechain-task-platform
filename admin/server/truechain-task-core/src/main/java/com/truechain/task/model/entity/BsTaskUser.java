@@ -16,13 +16,17 @@ public class BsTaskUser extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 状态
+     * 状态(0-任务中,1-已经完成)
      */
     private int status;
     /**
      * 审核状态
      */
     private int auditStatus;
+    /**
+     * 审核结果
+     */
+    private String auditResult;
     /**
      * 提交地址
      */
@@ -34,15 +38,15 @@ public class BsTaskUser extends BaseEntity {
     /**
      * 个人奖励
      */
-    private String reward;
+    private Double rewardNum;
 
     /**
      * 任务
      */
     @JsonIgnore
     @ManyToOne
-    @JoinColumn(name = "taskId")
-    private BsTask task;
+    @JoinColumn(name = "taskDetailId")
+    private BsTaskDetail taskDetail;
     /**
      * 人员
      */
@@ -51,12 +55,36 @@ public class BsTaskUser extends BaseEntity {
     @JoinColumn(name = "userId")
     private SysUser user;
 
-    public BsTask getTask() {
-        return task;
+    public int getAuditStatus() {
+        return auditStatus;
     }
 
-    public void setTask(BsTask task) {
-        this.task = task;
+    public void setAuditStatus(int auditStatus) {
+        this.auditStatus = auditStatus;
+    }
+
+    public String getAuditResult() {
+        return auditResult;
+    }
+
+    public void setAuditResult(String auditResult) {
+        this.auditResult = auditResult;
+    }
+
+    public Double getRewardNum() {
+        return rewardNum;
+    }
+
+    public void setRewardNum(Double rewardNum) {
+        this.rewardNum = rewardNum;
+    }
+
+    public BsTaskDetail getTaskDetail() {
+        return taskDetail;
+    }
+
+    public void setTaskDetail(BsTaskDetail taskDetail) {
+        this.taskDetail = taskDetail;
     }
 
     public SysUser getUser() {

@@ -46,7 +46,7 @@ public class SysUser extends BaseEntity {
     /**
      * 等级
      */
-    private Integer level;
+    private String level;
     /**
      * 钱包地址
      */
@@ -66,6 +66,7 @@ public class SysUser extends BaseEntity {
     /**
      * 账户
      */
+    @JsonIgnore
     @OneToOne(mappedBy = "user")
     private BsUserAccount userAccount;
     /**
@@ -115,11 +116,11 @@ public class SysUser extends BaseEntity {
         this.mobile = mobile;
     }
 
-    public Integer getLevel() {
+    public String getLevel() {
         return level;
     }
 
-    public void setLevel(Integer level) {
+    public void setLevel(String level) {
         this.level = level;
     }
 

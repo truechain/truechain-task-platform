@@ -14,6 +14,10 @@ public class UserInfoDTO implements Serializable {
      */
     private SysUser user;
     /**
+     * 推荐人数
+     */
+    private Long recommendPeople;
+    /**
      * 用户账户
      */
     private UserAccountDTO userAccount;
@@ -32,5 +36,13 @@ public class UserInfoDTO implements Serializable {
 
     public void setUserAccount(UserAccountDTO userAccount) {
         this.userAccount = userAccount;
+    }
+
+    public Long getRecommendPeople() {
+        return recommendPeople;
+    }
+
+    public void setRecommendPeople(Long recommendPeople) {
+        this.recommendPeople = recommendPeople;
     }
 }

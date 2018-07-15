@@ -1,8 +1,11 @@
 package com.truechain.task.api.service;
 
 
+import com.truechain.task.api.model.dto.RecommendTaskDTO;
 import com.truechain.task.api.model.dto.UserInfoDTO;
 import com.truechain.task.model.entity.SysUser;
+
+import java.util.List;
 
 public interface UserService {
 
@@ -34,7 +37,16 @@ public interface UserService {
      * 获取用户详情
      *
      * @param userId
+     * @param rewardType
      * @return
      */
-    UserInfoDTO getUserInfo(long userId);
+    UserInfoDTO getUserInfo(long userId, Integer rewardType);
+
+    /**
+     * 获取推荐记录列表
+     *
+     * @param userId
+     * @return
+     */
+    List<RecommendTaskDTO> getRecommendUserList(long userId);
 }

@@ -5,8 +5,8 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Set;
 
 /**
@@ -25,11 +25,11 @@ public class BsTask extends BaseEntity {
     /**
      * 任务等级
      */
-    private int level;
+    private String level;
     /**
      * 类别
      */
-    private int category;
+    private Integer category;
     /**
      * 开始时间
      */
@@ -41,15 +41,23 @@ public class BsTask extends BaseEntity {
     /**
      * 奖励类型
      */
-    private int rewardType;
+    private Integer rewardType;
     /**
      * 奖励数量
      */
-    private String rewardNum;
+    private Double rewardNum;
     /**
-     * 任务状态
+     * 人数限制
      */
-    private int status;
+    private int peopleNum;
+    /**
+     * 图片地址
+     */
+    private String iconPath;
+    /**
+     * 审核任务状态
+     */
+    private Integer auditStatus;
     /**
      * 提交地址
      */
@@ -65,11 +73,10 @@ public class BsTask extends BaseEntity {
     @OneToMany(mappedBy = "task")
     private Set<BsTaskDetail> taskDetailSet;
     /**
-     * 任务人员情况
+     * 任务状态
      */
-    @JsonIgnore
-    @OneToOne(mappedBy = "task")
-    private BsTaskUser bsTaskUser;
+    @Transient
+    private int taskStatus;
 
     public String getName() {
         return name;
@@ -79,19 +86,19 @@ public class BsTask extends BaseEntity {
         this.name = name;
     }
 
-    public int getLevel() {
+    public String getLevel() {
         return level;
     }
 
-    public void setLevel(int level) {
+    public void setLevel(String level) {
         this.level = level;
     }
 
-    public int getCategory() {
+    public Integer getCategory() {
         return category;
     }
 
-    public void setCategory(int category) {
+    public void setCategory(Integer category) {
         this.category = category;
     }
 
@@ -111,28 +118,28 @@ public class BsTask extends BaseEntity {
         this.endDateTime = endDateTime;
     }
 
-    public int getRewardType() {
+    public Integer getRewardType() {
         return rewardType;
     }
 
-    public void setRewardType(int rewardType) {
+    public void setRewardType(Integer rewardType) {
         this.rewardType = rewardType;
     }
 
-    public String getRewardNum() {
+    public Double getRewardNum() {
         return rewardNum;
     }
 
-    public void setRewardNum(String rewardNum) {
+    public void setRewardNum(Double rewardNum) {
         this.rewardNum = rewardNum;
     }
 
-    public int getStatus() {
-        return status;
+    public Integer getAuditStatus() {
+        return auditStatus;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setAuditStatus(Integer auditStatus) {
+        this.auditStatus = auditStatus;
     }
 
     public String getPushAddress() {
@@ -159,11 +166,27 @@ public class BsTask extends BaseEntity {
         this.taskDetailSet = taskDetailSet;
     }
 
-    public BsTaskUser getBsTaskUser() {
-        return bsTaskUser;
+    public int getTaskStatus() {
+        return taskStatus;
     }
 
-    public void setBsTaskUser(BsTaskUser bsTaskUser) {
-        this.bsTaskUser = bsTaskUser;
+    public void setTaskStatus(int taskStatus) {
+        this.taskStatus = taskStatus;
+    }
+
+    public int getPeopleNum() {
+        return peopleNum;
+    }
+
+    public void setPeopleNum(int peopleNum) {
+        this.peopleNum = peopleNum;
+    }
+
+    public String getIconPath() {
+        return iconPath;
+    }
+
+    public void setIconPath(String iconPath) {
+        this.iconPath = iconPath;
     }
 }

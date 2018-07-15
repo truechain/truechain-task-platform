@@ -28,7 +28,11 @@ public class BsUserAccountDetail extends BaseEntity {
     /**
      * 奖励类型
      */
-    private int rewardType;
+    private Integer rewardType;
+    /**
+     * 奖励来源
+     */
+    private Integer rewardResource;
     /**
      * 奖励
      */
@@ -64,5 +68,13 @@ public class BsUserAccountDetail extends BaseEntity {
 
     public void setReward(String reward) {
         this.reward = reward;
+    }
+
+    public Integer getRewardResource() {
+        return rewardResource;
+    }
+
+    public void setRewardResource(Integer rewardResource) {
+        this.rewardResource = rewardResource;
     }
 }

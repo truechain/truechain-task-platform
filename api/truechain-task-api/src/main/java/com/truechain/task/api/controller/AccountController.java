@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 账户Controller
@@ -99,7 +100,7 @@ public class AccountController extends BasicController {
         loginDTO.setUserUid(user.getId());
         loginDTO.setAgent(salt);
         loginDTO.setToken(token);
-        return WrapMapper.ok();
+        return WrapMapper.ok(loginDTO);
     }
 
     /**
@@ -108,8 +109,8 @@ public class AccountController extends BasicController {
     @GetMapping("/verifyCode/{mobile}")
     public Wrapper getVerifyCode(@PathVariable("mobile") String mobile) {
         String verifyCode = CommonUtil.getRandomString(6);
-        SMSHttpRequest.sendVerifyCodeSMS(smsUserName,smsPassword,mobile,verifyCode);                                //调用SMSAPI发送验证码短信
-        stringRedisTemplate.opsForValue().set(mobile, verifyCode);
+        SMSHttpRequest.sendVerifyCodeSMS(smsUserName, smsPassword, mobile, verifyCode);                                //调用SMSAPI发送验证码短信
+        stringRedisTemplate.opsForValue().set(mobile, verifyCode, 3, TimeUnit.MINUTES);
         return WrapMapper.ok(verifyCode);
     }
 

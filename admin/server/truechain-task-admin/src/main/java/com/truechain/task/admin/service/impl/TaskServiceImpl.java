@@ -52,7 +52,7 @@ public class TaskServiceImpl implements TaskService {
     public void enableTask(Long taskId) {
         BsTask bsTask = taskRepository.findOne(taskId);
         Preconditions.checkArgument(null != bsTask, "该任务不存在");
-        bsTask.setStatus(TaskStatusEnum.ENABLE.getCode());
+        bsTask.setAuditStatus(TaskStatusEnum.ENABLE.getCode());
         taskRepository.save(bsTask);
     }
 
@@ -60,7 +60,7 @@ public class TaskServiceImpl implements TaskService {
     public void disableTask(Long taskId) {
         BsTask bsTask = taskRepository.findOne(taskId);
         Preconditions.checkArgument(null != bsTask, "该任务不存在");
-        bsTask.setStatus(TaskStatusEnum.DISABLE.getCode());
+        bsTask.setAuditStatus(TaskStatusEnum.DISABLE.getCode());
         taskRepository.save(bsTask);
     }
 }

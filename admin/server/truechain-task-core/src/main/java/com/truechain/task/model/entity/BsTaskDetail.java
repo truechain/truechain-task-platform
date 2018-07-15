@@ -3,10 +3,8 @@ package com.truechain.task.model.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Set;
 
 /**
  * 岗位
@@ -29,7 +27,7 @@ public class BsTaskDetail extends BaseEntity {
     /**
      * 奖励
      */
-    private String reward;
+    private Double rewardNum;
     /**
      * 任务
      */
@@ -37,6 +35,27 @@ public class BsTaskDetail extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "taskId")
     private BsTask task;
+    /**
+     * 报名人员
+     */
+    @JsonIgnore
+    @OneToMany(mappedBy = "taskDetail")
+    private Set<BsTaskUser> taskUserSet;
+    /**
+     * 已报人数
+     */
+    @Transient
+    private int hasPeople;
+    /**
+     * 是否已满
+     */
+    @Transient
+    private int isFull;
+    /**
+     * 是否已经抢到
+     */
+    @Transient
+    private int isHold;
 
     public String getStation() {
         return station;
@@ -54,12 +73,12 @@ public class BsTaskDetail extends BaseEntity {
         this.peopleNum = peopleNum;
     }
 
-    public String getReward() {
-        return reward;
+    public Double getRewardNum() {
+        return rewardNum;
     }
 
-    public void setReward(String reward) {
-        this.reward = reward;
+    public void setRewardNum(Double rewardNum) {
+        this.rewardNum = rewardNum;
     }
 
     public BsTask getTask() {
@@ -68,5 +87,37 @@ public class BsTaskDetail extends BaseEntity {
 
     public void setTask(BsTask task) {
         this.task = task;
+    }
+
+    public int getHasPeople() {
+        return hasPeople;
+    }
+
+    public void setHasPeople(int hasPeople) {
+        this.hasPeople = hasPeople;
+    }
+
+    public Set<BsTaskUser> getTaskUserSet() {
+        return taskUserSet;
+    }
+
+    public void setTaskUserSet(Set<BsTaskUser> taskUserSet) {
+        this.taskUserSet = taskUserSet;
+    }
+
+    public int getIsFull() {
+        return isFull;
+    }
+
+    public void setIsFull(int isFull) {
+        this.isFull = isFull;
+    }
+
+    public int getIsHold() {
+        return isHold;
+    }
+
+    public void setIsHold(int isHold) {
+        this.isHold = isHold;
     }
 }
