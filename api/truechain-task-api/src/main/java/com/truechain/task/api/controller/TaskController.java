@@ -35,7 +35,7 @@ public class TaskController extends BasicController {
      * 获取我的任务列表
      */
     @PostMapping("/getUserTaskList")
-    public Wrapper getUserTaskList(@RequestParam(required = false) Integer taskStatus) {
+    public Wrapper getUserTaskList(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam(required = false) Integer taskStatus) {
         SessionPOJO sessionPOJO = getSessionPoJO();
         Long userId = sessionPOJO.getUserId();
         TaskTotalDTO taskTotalDTO = taskService.getUserTaskList(userId, taskStatus);
@@ -46,7 +46,7 @@ public class TaskController extends BasicController {
      * 获取我的任务详情
      */
     @PostMapping("/getUserTaskInfo")
-    public Wrapper getUserTaskInfo(@RequestParam Long taskId) {
+    public Wrapper getUserTaskInfo(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long taskId) {
         SessionPOJO sessionPOJO = getSessionPoJO();
         Long userId = sessionPOJO.getUserId();
         UserTaskInfoDTO userTaskInfoDTO = taskService.getUserTaskInfo(userId, taskId);
@@ -57,7 +57,7 @@ public class TaskController extends BasicController {
      * 提交任务
      */
     @PostMapping("/commitUserTask")
-    public Wrapper commitUserTask(@RequestParam Long taskId, @RequestParam(required = false) String commitAddress, @RequestParam(required = false) String remark) {
+    public Wrapper commitUserTask(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long taskId, @RequestParam(required = false) String commitAddress, @RequestParam(required = false) String remark) {
         SessionPOJO sessionPOJO = getSessionPoJO();
         Long userId = sessionPOJO.getUserId();
         taskService.commitUserTask(userId, taskId, commitAddress, remark);

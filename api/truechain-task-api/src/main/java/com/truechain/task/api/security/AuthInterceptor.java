@@ -23,7 +23,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object object) throws Exception {
-        if (HttpMethod.OPTIONS.equals(request.getMethod())) {
+        if ("OPTIONS".equals(request.getMethod())) {
             return true;
         }
         String uri = request.getRequestURI();
@@ -41,6 +41,12 @@ public class AuthInterceptor implements HandlerInterceptor {
         String token = request.getHeader(AppProperties.TOKEN_HEADER);
         String salt = request.getHeader(AppProperties.AGENT_HEADER);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(salt) || !JwtUtil.verifyToken(token, salt)) {
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+            return false;
+        }
+        try {
+            JwtUtil.getSessionIdByToken(token, salt);
+        } catch (Exception e) {
             response.setStatus(HttpStatus.FORBIDDEN.value());
             return false;
         }

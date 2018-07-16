@@ -95,7 +95,7 @@ public class AccountController extends BasicController {
         }
         SessionPOJO sessionPOJO = sessionPOJOService.initSession(user);
         String salt = CommonUtil.getRandomString(6);
-        String token = JwtUtil.createToken(salt, sessionPOJO.getId(), 10000L);
+        String token = JwtUtil.createToken(salt, sessionPOJO.getId(), 259200000L);
         LoginDTO loginDTO = new LoginDTO();
         loginDTO.setUserUid(user.getId());
         loginDTO.setAgent(salt);

@@ -3,12 +3,16 @@ package com.truechain.task.api.controller;
 import com.truechain.task.api.config.AppProperties;
 import com.truechain.task.api.model.dto.SessionPOJO;
 import com.truechain.task.api.security.SessionPOJOService;
+import com.truechain.task.core.BusinessException;
+import com.truechain.task.util.JwtUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,16 +49,14 @@ public class BasicController {
         SessionPOJO sessionPOJO = null;
         String token = request.getHeader(AppProperties.TOKEN_HEADER);
         String salt = request.getHeader(AppProperties.AGENT_HEADER);
-        /*if (StringUtils.isBlank(token) && StringUtils.isBlank(salt)) {
+        if (StringUtils.isBlank(token) && StringUtils.isBlank(salt)) {
             return sessionPOJO;
-        }*/
-        /*String sessionId = JwtUtil.getSessionIdByToken(token, salt);
+        }
+        String sessionId = JwtUtil.getSessionIdByToken(token, salt);
         if (StringUtils.isBlank(sessionId)) {
             throw new BusinessException("用户尚未登录");
         }
-        SessionPOJO sessionPOJO = sessionPOJOService.getBySessionId(sessionId);*/
-        sessionPOJO = new SessionPOJO();
-        sessionPOJO.setUserId(1L);
+        sessionPOJO = sessionPOJOService.getBySessionId(sessionId);
         return sessionPOJO;
     }
 }

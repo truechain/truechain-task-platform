@@ -70,3 +70,8 @@ app:
   sms:
     smsUserName: TRUE888hy
     smsPassword: ADljCe
+springfox:
+  documentation:
+    swagger:
+      v2:
+        host: www.phptrain.cn/api

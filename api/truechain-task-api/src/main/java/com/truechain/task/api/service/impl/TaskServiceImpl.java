@@ -158,12 +158,12 @@ public class TaskServiceImpl extends BasicService implements TaskService {
         Preconditions.checkArgument(null != user, "用户不存在");
         BsTaskDetail taskDetail = taskDetailRepository.findOne(taskDetailId);
         Preconditions.checkArgument(null != taskDetail, "任务不存在");
-        QBsTaskDetail qtaskDetail = QBsTaskDetail.bsTaskDetail;
-        long count = taskDetailRepository.count(qtaskDetail.id.eq(taskDetailId).and(qtaskDetail.taskUserSet.any().id.eq(userId)));
+        QBsTaskUser qtaskUser = QBsTaskUser.bsTaskUser;
+        long count = taskUserRepository.count(qtaskUser.user.eq(user).and(qtaskUser.taskDetail.eq(taskDetail)));
         if (count > 0) {
             throw new BusinessException("该用户已经抢到任务");
         }
-        count = taskDetailRepository.count(qtaskDetail.taskUserSet.isNotEmpty());
+        count = taskUserRepository.count(qtaskUser.taskDetail.eq(taskDetail).and(qtaskUser.user.isNotNull()));
         if (count >= taskDetail.getPeopleNum()) {
             throw new BusinessException("任务已满");
         }
