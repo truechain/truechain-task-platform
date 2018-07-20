@@ -1,7 +1,7 @@
 package com.truechain.task.admin.controller;
 
 import com.truechain.task.admin.config.AppProperties;
-import com.truechain.task.model.dto.SessionPOJO;
+import com.truechain.task.admin.model.dto.SessionPOJO;
 import com.truechain.task.admin.security.PermissionService;
 import com.truechain.task.admin.security.SessionPOJOService;
 import com.truechain.task.util.JwtUtil;

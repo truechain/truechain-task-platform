@@ -1,15 +1,14 @@
 package com.truechain.task.admin.security;
 
 import com.truechain.task.admin.config.AppProperties;
+import com.truechain.task.admin.model.dto.SessionPOJO;
 import com.truechain.task.core.Wrapper;
-import com.truechain.task.model.dto.SessionPOJO;
 import com.truechain.task.model.enums.GlobalStatusEnum;
 import com.truechain.task.util.JwtUtil;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -32,7 +31,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object object) throws Exception {
-        if (HttpMethod.OPTIONS.equals(request.getMethod())) {
+        if ("OPTIONS".equals(request.getMethod())) {
             return true;
         }
         String uri = request.getRequestURI();
@@ -53,9 +52,16 @@ public class AuthInterceptor implements HandlerInterceptor {
             response.setStatus(HttpStatus.FORBIDDEN.value());
             return false;
         }
-        String sessionId = JwtUtil.getSessionIdByToken(token, salt);
-        SessionPOJO sessionPOJO = sessionPOJOService.getBySessionId(sessionId);
+        String sessionId = null;
+        try {
+            sessionId = JwtUtil.getSessionIdByToken(token, salt);
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+            return false;
+        }
 
+
+        SessionPOJO sessionPOJO = sessionPOJOService.getBySessionId(sessionId);
         //鉴权
         if (!permissionService.checkPermission(uri, sessionPOJO)) {
             response.setHeader("Content-type", "text/html;charset=UTF-8");

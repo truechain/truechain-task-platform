@@ -187,4 +187,5 @@ public class SysUser extends BaseEntity {
     public void setTaskUserSet(Set<BsTaskUser> taskUserSet) {
         this.taskUserSet = taskUserSet;
     }
+
 }

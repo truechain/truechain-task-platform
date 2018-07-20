@@ -1,7 +1,7 @@
 package com.truechain.task.admin.security;
 
 import com.truechain.task.admin.repository.RedisRepository;
-import com.truechain.task.model.dto.SessionPOJO;
+import com.truechain.task.admin.model.dto.SessionPOJO;
 import com.truechain.task.model.entity.AuthResource;
 import com.truechain.task.model.entity.AuthRole;
 import com.truechain.task.admin.service.RoleService;

@@ -24,7 +24,7 @@ public class DeclareController extends BasicController {
      * 获取使用说明数据
      */
     @PostMapping("/getDeclarePage")
-    public Wrapper getDeclarePage(@RequestParam int pageIndex, @RequestParam int pageSize) {
+    public Wrapper getDeclarePage(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestParam(required = false) String startDate, @RequestParam(required = false) String endDate, @RequestParam(required = false) String updateUser, @RequestParam int pageIndex, @RequestParam int pageSize) {
         Pageable pageable = new PageRequest(pageIndex - 1, pageSize);
         Page<SysDeclare> declarePage = declareService.getDeclarePage(null, pageable);
         return WrapMapper.ok(declarePage);
@@ -34,7 +34,7 @@ public class DeclareController extends BasicController {
      * 获取使用说明详情
      */
     @PostMapping("/getDeclareInfo")
-    public Wrapper getDeclareInfo(@RequestParam Long declareId) {
+    public Wrapper getDeclareInfo(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestParam Long declareId) {
         SysDeclare declare = declareService.getDeclareInfo(declareId);
         return WrapMapper.ok(declare);
     }
@@ -43,7 +43,7 @@ public class DeclareController extends BasicController {
      * 添加说明
      */
     @PostMapping("/addDeclare")
-    public Wrapper addDeclare(@RequestBody SysDeclare declare) {
+    public Wrapper addDeclare(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestBody SysDeclare declare) {
         declareService.addDeclare(declare);
         return WrapMapper.ok();
     }
@@ -52,7 +52,7 @@ public class DeclareController extends BasicController {
      * 更新说明
      */
     @PostMapping("/updateDeclare")
-    public Wrapper updateDeclare(@RequestBody SysDeclare declare) {
+    public Wrapper updateDeclare(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestBody SysDeclare declare) {
         declareService.updateDeclare(declare);
         return WrapMapper.ok();
     }
@@ -61,7 +61,7 @@ public class DeclareController extends BasicController {
      * 删除说明
      */
     @PostMapping("/deleteDeclare")
-    public Wrapper deleteDeclare(@RequestParam Long declareId) {
+    public Wrapper deleteDeclare(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestParam Long declareId) {
         declareService.deleteDeclare(declareId);
         return WrapMapper.ok();
     }

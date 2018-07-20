@@ -2,7 +2,7 @@ package com.truechain.task.admin.service.impl;
 
 import com.truechain.task.core.BusinessException;
 import com.truechain.task.model.dto.LoginDTO;
-import com.truechain.task.model.dto.SessionPOJO;
+import com.truechain.task.admin.model.dto.SessionPOJO;
 import com.truechain.task.model.entity.AuthUser;
 import com.truechain.task.admin.repository.AuthUserRepository;
 import com.truechain.task.admin.security.SessionPOJOService;
@@ -44,7 +44,7 @@ public class AccountServiceImpl implements AccountService {
         }
         SessionPOJO sessionPOJO = sessionPoJOService.initSession(authUser);
         String salt = CommonUtil.getRandomString(6);
-        String token = JwtUtil.createToken(salt, sessionPOJO.getId(), 10000L);
+        String token = JwtUtil.createToken(salt, sessionPOJO.getId(), 259200000L);
         LoginDTO loginDTO = new LoginDTO();
         loginDTO.setUserUid(authUser.getId());
         loginDTO.setAgent(salt);

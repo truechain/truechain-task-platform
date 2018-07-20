@@ -3,10 +3,7 @@ package com.truechain.task.model.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "BsUserAccountDetail")
@@ -19,12 +16,19 @@ public class BsUserAccountDetail extends BaseEntity {
     private BsUserAccount userAccount;
 
     /**
-     * 任务(包括发布任务，推荐目前也作为一种任务考虑)
+     * 任务
      */
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "taskId")
     private BsTask task;
+    /**
+     * 推荐任务
+     */
+    @JsonIgnore
+    @OneToOne
+    @JoinColumn(name = "recommendTaskId")
+    private BsRecommendTask recommendTask;
     /**
      * 奖励类型
      */
@@ -54,12 +58,20 @@ public class BsUserAccountDetail extends BaseEntity {
         this.task = task;
     }
 
-    public int getRewardType() {
-        return rewardType;
+    public BsRecommendTask getRecommendTask() {
+        return recommendTask;
     }
 
-    public void setRewardType(int rewardType) {
+    public void setRecommendTask(BsRecommendTask recommendTask) {
+        this.recommendTask = recommendTask;
+    }
+
+    public void setRewardType(Integer rewardType) {
         this.rewardType = rewardType;
+    }
+
+    public int getRewardType() {
+        return rewardType;
     }
 
     public String getReward() {

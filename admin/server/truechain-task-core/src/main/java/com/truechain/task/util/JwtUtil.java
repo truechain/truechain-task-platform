@@ -65,7 +65,7 @@ public class JwtUtil {
             if (e.getMessage().contains("not match locally computed signature")) {
                 throw new BusinessException("签名不匹配");
             }
-            return null;
+            throw e;
         }
     }
 

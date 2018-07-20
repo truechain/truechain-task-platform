@@ -28,7 +28,7 @@ public class AdminRoleController extends BasicController {
      * 授权资源给角色
      */
     @PostMapping("/authorityRoleResource")
-    public Wrapper authorityRoleResource(@RequestParam Integer roleId, @RequestParam Long resourceId) {
+    public Wrapper authorityRoleResource(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestParam Integer roleId, @RequestParam Long resourceId) {
         roleService.addRoleResource(roleId, resourceId);
         return WrapMapper.ok();
     }
@@ -36,8 +36,8 @@ public class AdminRoleController extends BasicController {
     /**
      * 删除对应的角色的授权资源
      */
-    @DeleteMapping("/deleteAuthorityRoleResource")
-    public Wrapper deleteAuthorityRoleResource(@RequestParam Integer roleId, @RequestParam Long resourceId) {
+    @PostMapping("/deleteAuthorityRoleResource")
+    public Wrapper deleteAuthorityRoleResource(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestParam Integer roleId, @RequestParam Long resourceId) {
         roleService.deleteRoleResource(roleId, resourceId);
         return WrapMapper.ok();
     }
@@ -46,7 +46,7 @@ public class AdminRoleController extends BasicController {
      * 获取角色
      */
     @PostMapping("/getRolePage")
-    public Wrapper getRolePage(@RequestParam Integer pageIndex, @RequestParam Integer pageSize) {
+    public Wrapper getRolePage(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestParam Integer pageIndex, @RequestParam Integer pageSize) {
         Pageable pageable = new PageRequest(pageIndex - 1, pageSize);
         Page<AuthRole> rolePage = roleService.getRolePageByCriteria(null, pageable);
         return WrapMapper.ok(rolePage);
@@ -57,7 +57,7 @@ public class AdminRoleController extends BasicController {
      * 添加角色
      */
     @PostMapping("/addRole")
-    public Wrapper addRole(@RequestBody AuthRole role) {
+    public Wrapper addRole(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestBody AuthRole role) {
         roleService.addRole(role);
         return WrapMapper.ok();
     }
@@ -66,7 +66,7 @@ public class AdminRoleController extends BasicController {
      * 更新角色
      */
     @PostMapping("/updateRole")
-    public Wrapper updateRole(@RequestBody AuthRole role) {
+    public Wrapper updateRole(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestBody AuthRole role) {
         roleService.updateRole(role);
         return WrapMapper.ok();
     }
@@ -75,7 +75,7 @@ public class AdminRoleController extends BasicController {
      * 根据角色ID删除角色
      */
     @PostMapping("/deleteRole")
-    public Wrapper deleteRoleByRoleId(@RequestParam Integer roleId) {
+    public Wrapper deleteRoleByRoleId(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestParam Integer roleId) {
         roleService.deleteRoleByRoleId(roleId);
         return WrapMapper.ok();
     }

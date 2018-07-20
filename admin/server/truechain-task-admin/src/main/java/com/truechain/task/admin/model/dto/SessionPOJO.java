@@ -1,4 +1,4 @@
-package com.truechain.task.model.dto;
+package com.truechain.task.admin.model.dto;
 
 import com.truechain.task.model.entity.AuthRole;
 

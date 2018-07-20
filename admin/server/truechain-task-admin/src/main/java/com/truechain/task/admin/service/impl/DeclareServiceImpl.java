@@ -1,9 +1,9 @@
 package com.truechain.task.admin.service.impl;
 
 import com.google.common.base.Preconditions;
-import com.truechain.task.model.entity.SysDeclare;
 import com.truechain.task.admin.repository.SysDeclareRepository;
 import com.truechain.task.admin.service.DeclareService;
+import com.truechain.task.model.entity.SysDeclare;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -24,7 +24,8 @@ public class UpdateLogController extends BasicController {
      * 获取更新日志记录
      */
     @PostMapping("/getUpdateLogPage")
-    public Wrapper getUpdateLogPage(@RequestParam int pageIndex, @RequestParam int pageSize) {
+    public Wrapper getUpdateLogPage(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,
+                                    @RequestParam int pageIndex, @RequestParam int pageSize) {
         Pageable pageable = new PageRequest(pageIndex - 1, pageSize);
         SysUpdateLog updateLog = new SysUpdateLog();
         Page<SysUpdateLog> updateLogPage = updateLogService.getUpdateLogPage(updateLog, pageable);
@@ -35,7 +36,7 @@ public class UpdateLogController extends BasicController {
      * 添加更新日志记录
      */
     @PostMapping("/addUpdateLog")
-    public Wrapper addUpdateLog(@RequestBody SysUpdateLog updateLog) {
+    public Wrapper addUpdateLog(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody SysUpdateLog updateLog) {
         updateLogService.addUpdateLog(updateLog);
         return WrapMapper.ok();
     }
@@ -44,7 +45,7 @@ public class UpdateLogController extends BasicController {
      * 更新日志记录
      */
     @PostMapping("/updateUpdateLog")
-    public Wrapper updateUpdateLog(@RequestBody SysUpdateLog updateLog) {
+    public Wrapper updateUpdateLog(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody SysUpdateLog updateLog) {
         updateLogService.updateUpdateLog(updateLog);
         return WrapMapper.ok();
     }
@@ -53,7 +54,7 @@ public class UpdateLogController extends BasicController {
      * 删除日志记录
      */
     @PostMapping("/deleteUpdateLog")
-    public Wrapper deleteUpdateLog(@RequestParam Long logId) {
+    public Wrapper deleteUpdateLog(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long logId) {
         updateLogService.deleteUpdateLog(logId);
         return WrapMapper.ok();
     }

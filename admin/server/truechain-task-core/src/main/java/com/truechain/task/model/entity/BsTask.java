@@ -6,7 +6,6 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import java.util.Set;
 
 /**
@@ -49,11 +48,15 @@ public class BsTask extends BaseEntity {
     /**
      * 人数限制
      */
-    private int peopleNum;
+    private Integer peopleNum;
     /**
      * 图片地址
      */
     private String iconPath;
+    /**
+     * 任务状态
+     */
+    private Integer taskStatus;
     /**
      * 审核任务状态
      */
@@ -72,11 +75,6 @@ public class BsTask extends BaseEntity {
     @JsonIgnore
     @OneToMany(mappedBy = "task")
     private Set<BsTaskDetail> taskDetailSet;
-    /**
-     * 任务状态
-     */
-    @Transient
-    private int taskStatus;
 
     public String getName() {
         return name;
@@ -166,11 +164,15 @@ public class BsTask extends BaseEntity {
         this.taskDetailSet = taskDetailSet;
     }
 
-    public int getTaskStatus() {
+    public void setPeopleNum(Integer peopleNum) {
+        this.peopleNum = peopleNum;
+    }
+
+    public Integer getTaskStatus() {
         return taskStatus;
     }
 
-    public void setTaskStatus(int taskStatus) {
+    public void setTaskStatus(Integer taskStatus) {
         this.taskStatus = taskStatus;
     }
 
@@ -189,4 +191,5 @@ public class BsTask extends BaseEntity {
     public void setIconPath(String iconPath) {
         this.iconPath = iconPath;
     }
+
 }

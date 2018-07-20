@@ -1,5 +1,6 @@
 package com.truechain.task.admin.service;
 
+import com.truechain.task.admin.model.dto.UserDTO;
 import com.truechain.task.model.entity.SysUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +13,7 @@ public interface UserService {
      * @param user
      * @param pageable
      */
-    Page<SysUser> getUserPage(SysUser user, Pageable pageable);
+    Page<SysUser> getUserPage(UserDTO user, Pageable pageable);
 
     /**
      * 获取用户详情
@@ -32,7 +33,8 @@ public interface UserService {
      * 审核用户
      *
      * @param userId
+     * @param rewardNum
      */
-    void auditUser(Long userId);
+    void auditUser(Long userId, String rewardNum);
 
 }

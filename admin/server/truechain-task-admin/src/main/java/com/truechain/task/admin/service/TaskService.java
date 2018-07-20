@@ -1,5 +1,7 @@
 package com.truechain.task.admin.service;
 
+import com.truechain.task.admin.model.dto.TaskDTO;
+import com.truechain.task.admin.model.dto.TaskInfoDTO;
 import com.truechain.task.model.entity.BsTask;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +18,7 @@ public interface TaskService {
      * @param task
      * @param pageable
      */
-    Page<BsTask> getTaskPage(BsTask task, Pageable pageable);
+    Page<BsTask> getTaskPage(TaskDTO task, Pageable pageable);
 
 
     /**
@@ -24,7 +26,7 @@ public interface TaskService {
      *
      * @param taskId
      */
-    BsTask getTaskInfo(Long taskId);
+    TaskInfoDTO getTaskInfo(Long taskId);
 
     /**
      * 新增任务
