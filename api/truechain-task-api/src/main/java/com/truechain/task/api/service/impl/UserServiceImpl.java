@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.truechain.task.api.model.dto.RecommendTaskDTO;
 import com.truechain.task.api.model.dto.UserAccountDTO;
 import com.truechain.task.api.model.dto.UserInfoDTO;
+import com.truechain.task.api.repository.BsRecommendTaskRepository;
 import com.truechain.task.api.repository.BsUserAccountDetailRepository;
 import com.truechain.task.api.repository.SysUserRepository;
 import com.truechain.task.api.service.UserService;
@@ -28,6 +29,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private BsUserAccountDetailRepository userAccountDetailRepository;
+
+    @Autowired
+    private BsRecommendTaskRepository recommendTaskRepository;
 
     @Override
     public SysUser getUserByOpenId(String openId) {
@@ -59,7 +63,9 @@ public class UserServiceImpl implements UserService {
         SysUser sysUser = userRepository.findOne(userId);
         Preconditions.checkArgument(null != sysUser, "该用户不存在");
         userInfoDTO.setUser(sysUser);
-        userInfoDTO.setRecommendPeople(3L);
+        QBsUserAccountDetail qUserAccountDetail = QBsUserAccountDetail.bsUserAccountDetail;
+        long count = userAccountDetailRepository.count(qUserAccountDetail.recommendTask.user.eq(sysUser));
+        userInfoDTO.setRecommendPeople(count);
         UserAccountDTO userAccountDTO = new UserAccountDTO();
         userAccountDTO.setGitReward("0");
         userAccountDTO.setTrueReward("0");
@@ -81,17 +87,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<RecommendTaskDTO> getRecommendUserList(long userId) {
+        SysUser user = userRepository.findOne(userId);
+        Preconditions.checkArgument(null != user, "用户不存在");
+        QBsUserAccountDetail qUserAccountDetail = QBsUserAccountDetail.bsUserAccountDetail;
+        Iterable<BsUserAccountDetail> userAccountDetailIterable = userAccountDetailRepository.findAll(qUserAccountDetail.recommendTask.user.eq(user));
         List<RecommendTaskDTO> recommendTaskDTOList = new ArrayList<>();
-        RecommendTaskDTO recommendTaskDTO = new RecommendTaskDTO();
-        recommendTaskDTO.setPersonName("小米1");
-        recommendTaskDTO.setReward("100");
-        recommendTaskDTO.setCreateTime("2018-06-22 11:24:57");
-        recommendTaskDTOList.add(recommendTaskDTO);
-        recommendTaskDTO = new RecommendTaskDTO();
-        recommendTaskDTO.setPersonName("小米2");
-        recommendTaskDTO.setReward("300");
-        recommendTaskDTO.setCreateTime("2018-06-21 11:24:57");
-        recommendTaskDTOList.add(recommendTaskDTO);
+        userAccountDetailIterable.forEach(x -> {
+            RecommendTaskDTO recommendTaskDTO = new RecommendTaskDTO();
+            recommendTaskDTO.setPersonName(x.getRecommendTask().getRecommendUser().getPersonName());
+            recommendTaskDTO.setReward(x.getReward());
+            recommendTaskDTO.setCreateTime(x.getCreateTime());
+            recommendTaskDTOList.add(recommendTaskDTO);
+        });
         return recommendTaskDTOList;
     }
 }

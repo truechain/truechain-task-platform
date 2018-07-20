@@ -115,15 +115,16 @@ public class TaskServiceImpl extends BasicService implements TaskService {
         SysUser user = userRepository.findOne(userId);
         Preconditions.checkArgument(user != null, "用户不存在");
         QBsTaskUser qTaskUser = QBsTaskUser.bsTaskUser;
-        long count = taskUserRepository.count(qTaskUser.user.id.eq(userId));
+        long count = taskUserRepository.count(qTaskUser.user.eq(user));
         taskTotalDTO.setTaskTotal(count);
-        count = taskUserRepository.count(qTaskUser.user.id.eq(userId).and(qTaskUser.status.eq(0)));
+        count = taskUserRepository.count(qTaskUser.user.eq(user).and(qTaskUser.status.eq(0)));
         taskTotalDTO.setTaskingTotal(count);
-        count = taskUserRepository.count(qTaskUser.user.id.eq(userId).and(qTaskUser.status.eq(1)));
+        count = taskUserRepository.count(qTaskUser.user.eq(user).and(qTaskUser.status.eq(1)));
         taskTotalDTO.setTaskComplateTolal(count);
         BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qTaskUser.user.eq(user));
         if (null != taskStatus) {
-            builder.and(qTaskUser.user.id.eq(userId).and(qTaskUser.status.eq(taskStatus)));
+            builder.and(qTaskUser.status.eq(taskStatus));
         }
         Iterable<BsTaskUser> taskUserIterable = taskUserRepository.findAll(builder);
         taskTotalDTO.setTaskList(new ArrayList<>());
