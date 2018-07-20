@@ -16,18 +16,19 @@ import com.truechain.task.model.entity.BsTaskUser;
 import com.truechain.task.model.entity.SysUser;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import javax.servlet.ServletOutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * 报表Controller
@@ -50,6 +51,11 @@ public class ReportController extends BasicController {
         Pageable pageable = new PageRequest(pageIndex - 1, pageSize);
         Page<SysUser> userPage = userService.getUserPage(null, pageable);
 
+        Page<UserProfilePagePojo> result = convert(userPage);
+        return WrapMapper.ok(result);
+    }
+
+    private Page<UserProfilePagePojo> convert(Page<SysUser> userPage) {
         Set<Long> userIdSet = Sets.newHashSet();
         userPage.forEach(sysUser -> userIdSet.add(sysUser.getId()));
         Page<UserProfilePagePojo> result = userPage.map(source -> new UserProfilePagePojo(source));
@@ -67,13 +73,13 @@ public class ReportController extends BasicController {
                     double rewardValue = bsTaskUser.getRewardNum() != null ? NumberUtils.toDouble(bsTaskUser.getRewardNum().toString(), 0) : 0;
                     //奖励类型(1-true,2-ttr,3-rmp)
                     final int rewardType = bsTaskUser.getTaskDetail().getTask().getRewardType();
-                    if(rewardType == 1){
+                    if (rewardType == 1) {
                         userProfilePagePojo.setTrueValue(userProfilePagePojo.getTrueValue() + rewardValue);
                     }
-                    if(rewardType == 2){
+                    if (rewardType == 2) {
                         userProfilePagePojo.setTtrValue(userProfilePagePojo.getTtrValue() + rewardValue);
                     }
-                    if(rewardType == 3){
+                    if (rewardType == 3) {
                         userProfilePagePojo.setRmbValue(userProfilePagePojo.getRmbValue() + rewardValue);
                     }
                     userProfilePagePojo.setTrueValue(userProfilePagePojo.getTrueValue() + rewardValue);
@@ -85,7 +91,7 @@ public class ReportController extends BasicController {
         }
         //获取用户推荐
 
-        return WrapMapper.ok(result);
+        return result;
     }
 
     /**
@@ -106,13 +112,13 @@ public class ReportController extends BasicController {
                 double rewardValue = bsTaskUser.getRewardNum() != null ? NumberUtils.toDouble(bsTaskUser.getRewardNum().toString(), 0) : 0;
                 //奖励类型(1-true,2-ttr,3-rmp)
                 final int rewardType = bsTaskUser.getTaskDetail().getTask().getRewardType();
-                if(rewardType == 1){
+                if (rewardType == 1) {
                     rewardHistoryPojo.setRewardType("true");
                 }
-                if(rewardType == 2){
+                if (rewardType == 2) {
                     rewardHistoryPojo.setRewardType("ttr");
                 }
-                if(rewardType == 3){
+                if (rewardType == 3) {
                     rewardHistoryPojo.setRewardType("rmb");
                 }
                 rewardHistoryPojo.setRewardNum(rewardValue);
@@ -135,9 +141,9 @@ public class ReportController extends BasicController {
         for (long i = 0; i < 8; i++) {
             UserRecommendPagePojo userRecommendPagePojo = new UserRecommendPagePojo();
             userRecommendPagePojo.setId(i);
-            userRecommendPagePojo.setName("小"+i);
-            userRecommendPagePojo.setWxName("wx_xiao"+i);
-            userRecommendPagePojo.setWxNum("wx_num_xiao"+i);
+            userRecommendPagePojo.setName("小" + i);
+            userRecommendPagePojo.setWxName("wx_xiao" + i);
+            userRecommendPagePojo.setWxNum("wx_num_xiao" + i);
             userRecommendPagePojo.setLevel("A");
             userRecommendPagePojo.setRecommendTime("2018-06-22 20:45:36");
 
@@ -168,4 +174,76 @@ public class ReportController extends BasicController {
         }
         return WrapMapper.ok(result);
     }
+
+    @GetMapping("/export")
+    public void export(@RequestParam int pageIndex, @RequestParam int pageSize) {
+
+        Pageable pageable = new PageRequest(pageIndex - 1, pageSize);
+        Page<SysUser> userPage = userService.getUserPage(null, pageable);
+
+        Page<UserProfilePagePojo> userProfilePagePojos = convert(userPage);
+        response.setContentType("application/binary;charset=UTF-8");
+        try {
+            ServletOutputStream out = response.getOutputStream();
+
+            //设置文件头：最后一个参数是设置下载文件名(这里我们叫：张三.pdf)
+            response.setHeader("Content-Disposition", "attachment;fileName=" + URLEncoder.encode("导出" + ".xls", "UTF-8"));
+
+            // 第一步，创建一个workbook，对应一个Excel文件
+            HSSFWorkbook workbook = new HSSFWorkbook();
+
+            // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet
+            HSSFSheet hssfSheet = workbook.createSheet("sheet1");
+
+            // 第三步，在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short
+
+
+            // 第四步，创建单元格，并设置值表头 设置表头居中
+            HSSFCellStyle hssfCellStyle = workbook.createCellStyle();
+            hssfCellStyle.setAlignment(HorizontalAlignment.CENTER);
+            //表头
+            HSSFRow headerRow = hssfSheet.createRow(0);
+            String[] headers = {"姓名", "微信昵称", "微信号", "抢任务数", "完成任务数", "进行中任务数", "true数量", "ttr数量", "rmb数量", "用户"};
+            for (int i = 0; i < headers.length; i++) {
+                HSSFCell headCell = headerRow.createCell(i);
+                headCell.setCellValue(headers[i]);
+                headCell.setCellStyle(hssfCellStyle);
+            }
+
+            for (int rowNum = 0;rowNum < userProfilePagePojos.getContent().size();rowNum++){
+                UserProfilePagePojo userProfilePagePojo = userProfilePagePojos.getContent().get(rowNum);
+                HSSFRow row = hssfSheet.createRow(rowNum + 1);
+                //姓名
+                HSSFCell[] hssfCellArray = new HSSFCell[10];
+                for (int i = 0; i < hssfCellArray.length; i++) {
+                    hssfCellArray[i] = row.createCell(i);
+                    hssfCellArray[i].setCellStyle(hssfCellStyle);
+                }
+                hssfCellArray[0].setCellValue(userProfilePagePojo.getSysUser().getUserName());
+                hssfCellArray[1].setCellValue(userProfilePagePojo.getSysUser().getWxNickName());
+                hssfCellArray[2].setCellValue(userProfilePagePojo.getSysUser().getWxNum());
+                hssfCellArray[3].setCellValue(userProfilePagePojo.getTaskCount());
+                hssfCellArray[4].setCellValue(userProfilePagePojo.getTaskDoneCount());
+                hssfCellArray[5].setCellValue(userProfilePagePojo.getTaskDoingCount());
+                hssfCellArray[6].setCellValue(userProfilePagePojo.getTrueValue());
+                hssfCellArray[7].setCellValue(userProfilePagePojo.getTtrValue());
+                hssfCellArray[8].setCellValue(userProfilePagePojo.getRmbValue());
+                hssfCellArray[9].setCellValue(userProfilePagePojo.getRecommendCount());
+            }
+
+            // 第七步，将文件输出到客户端浏览器
+            try {
+                workbook.write(out);
+                out.flush();
+                out.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
