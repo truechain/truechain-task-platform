@@ -1,7 +1,5 @@
 package com.truechain.task.api.controller;
 
-import com.google.common.base.Preconditions;
-import com.truechain.task.api.config.AppProperties;
 import com.truechain.task.api.model.dto.LoginDTO;
 import com.truechain.task.api.model.dto.SessionPOJO;
 import com.truechain.task.api.security.SessionPOJOService;
@@ -15,15 +13,11 @@ import com.truechain.task.model.entity.SysUser;
 import com.truechain.task.util.CommonUtil;
 import com.truechain.task.util.JwtUtil;
 import com.truechain.task.util.SMSHttpRequest;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -52,9 +46,7 @@ public class AccountController extends BasicController {
      * 注册
      */
     @PostMapping("/register")
-    public Wrapper register(@RequestParam String name, @RequestParam String wxNickName, @RequestParam String wxNum, @RequestParam(required = false) String openId,
-                            @RequestParam String trueChainAddress, @RequestParam String mobile, @RequestParam String verifyCode, @RequestParam("file") MultipartFile file) {
-        Preconditions.checkArgument(!file.isEmpty(), "简历不能为空");
+    public Wrapper register(@RequestParam String mobile, @RequestParam String verifyCode) {
         String realVerifyCode = stringRedisTemplate.opsForValue().get(mobile);
         if (StringUtils.isBlank(realVerifyCode)) {
             throw new BusinessException("验证码已过期");
@@ -62,20 +54,9 @@ public class AccountController extends BasicController {
         if (!realVerifyCode.equals(verifyCode)) {
             throw new BusinessException("验证码不正确");
         }
-        String fileName = file.getOriginalFilename();
-        File uploadFile = new File(AppProperties.UPLOAD_FILE_PATH + fileName);
-        try {
-            FileUtils.writeByteArrayToFile(uploadFile, file.getBytes());
-        } catch (IOException e) {
-            throw new BusinessException("文件上传异常");
-        }
         SysUser user = new SysUser();
-        user.setPersonName(name);
-        user.setWxNickName(wxNickName);
-        user.setWxNum(wxNum);
-        user.setOpenId(openId);
         user.setMobile(mobile);
-        user.setResumeFilePath(uploadFile.getPath());
+        user.setAuditStatus(0);
         userService.addUser(user);
         return WrapMapper.ok();
     }

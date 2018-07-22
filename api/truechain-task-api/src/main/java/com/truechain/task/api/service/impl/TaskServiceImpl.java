@@ -95,7 +95,7 @@ public class TaskServiceImpl extends BasicService implements TaskService {
                     taskDTO.setIsHold(1);
                     taskDetail.setIsHold(1);
                 } else {
-                    if (user.getLevel().compareTo(task.getLevel()) > 0) {
+                    if (StringUtils.isBlank(user.getLevel()) || user.getLevel().compareTo(task.getLevel()) > 0) {
                         taskDTO.setIsLevelEnough(0);
                     }
                 }
@@ -157,6 +157,7 @@ public class TaskServiceImpl extends BasicService implements TaskService {
     public void holdTask(Long taskDetailId, Long userId) {
         SysUser user = userRepository.findOne(userId);
         Preconditions.checkArgument(null != user, "用户不存在");
+        Preconditions.checkArgument(user.getAuditStatus() == 1, "当前资料审核中暂时无法接取该任务");
         BsTaskDetail taskDetail = taskDetailRepository.findOne(taskDetailId);
         Preconditions.checkArgument(null != taskDetail, "任务不存在");
         QBsTaskUser qtaskUser = QBsTaskUser.bsTaskUser;

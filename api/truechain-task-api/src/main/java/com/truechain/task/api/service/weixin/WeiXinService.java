@@ -2,7 +2,6 @@ package com.truechain.task.api.service.weixin;
 
 import com.truechain.task.api.model.dto.AccessTokenDTO;
 import com.truechain.task.api.model.dto.JsapiTicketDTO;
-import com.truechain.task.api.repository.RedisRepository;
 import com.truechain.task.util.CommonUtil;
 import com.truechain.task.util.DateUtil;
 import com.truechain.task.util.JsonUtil;
@@ -55,6 +54,7 @@ public class WeiXinService {
         String jsapi_ticket = stringRedisTemplate.opsForValue().get(wxTicketRedisKey);
         if (StringUtils.isBlank(jsapi_ticket)) {
             getWxTokenToRedis();
+            jsapi_ticket = stringRedisTemplate.opsForValue().get(wxTicketRedisKey);
         }
         Map<String, String> resMap = null;
         if (StringUtils.isNotBlank(jsapi_ticket)) {

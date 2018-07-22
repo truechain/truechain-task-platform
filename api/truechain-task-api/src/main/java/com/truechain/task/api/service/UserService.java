@@ -34,6 +34,14 @@ public interface UserService {
     SysUser addUser(SysUser user);
 
     /**
+     * 更新用户信息
+     *
+     * @param user
+     * @return
+     */
+    SysUser updateUser(SysUser user);
+
+    /**
      * 获取用户详情
      *
      * @param userId
@@ -41,6 +49,14 @@ public interface UserService {
      * @return
      */
     UserInfoDTO getUserInfo(long userId, Integer rewardType);
+
+    /**
+     * 获取用户信息
+     *
+     * @param userId
+     * @return
+     */
+    SysUser getByUserId(Long userId);
 
     /**
      * 获取推荐记录列表

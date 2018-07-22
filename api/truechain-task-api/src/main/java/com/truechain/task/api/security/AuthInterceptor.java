@@ -5,7 +5,6 @@ import com.truechain.task.util.JwtUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -40,7 +39,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         //认证
         String token = request.getHeader(AppProperties.TOKEN_HEADER);
         String salt = request.getHeader(AppProperties.AGENT_HEADER);
-        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(salt) || !JwtUtil.verifyToken(token, salt)) {
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(salt)) {
             response.setStatus(HttpStatus.FORBIDDEN.value());
             return false;
         }

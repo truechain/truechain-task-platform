@@ -58,6 +58,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public SysUser updateUser(SysUser user) {
+        SysUser sysUser = userRepository.findOne(user.getId());
+        Preconditions.checkArgument(null != sysUser, "用户不存在");
+        sysUser.setPersonName(user.getPersonName());
+        sysUser.setWxNickName(user.getWxNickName());
+        sysUser.setWxNum(user.getWxNum());
+        sysUser.setOpenId(user.getOpenId());
+        sysUser.setTrueChainAddress(user.getTrueChainAddress());
+        sysUser.setResumeFilePath(user.getResumeFilePath());
+        sysUser = userRepository.save(user);
+        return sysUser;
+    }
+
+    @Override
     public UserInfoDTO getUserInfo(long userId, Integer rewardType) {
         UserInfoDTO userInfoDTO = new UserInfoDTO();
         SysUser sysUser = userRepository.findOne(userId);
@@ -83,6 +97,13 @@ public class UserServiceImpl implements UserService {
         }
         userInfoDTO.setUserAccount(userAccountDTO);
         return userInfoDTO;
+    }
+
+    @Override
+    public SysUser getByUserId(Long userId) {
+        SysUser sysUser = userRepository.findOne(userId);
+        Preconditions.checkArgument(null != sysUser, "该用户不存在");
+        return sysUser;
     }
 
     @Override
