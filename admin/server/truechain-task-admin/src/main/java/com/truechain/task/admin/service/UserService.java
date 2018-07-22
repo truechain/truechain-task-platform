@@ -37,4 +37,10 @@ public interface UserService {
      */
     void auditUser(Long userId, String rewardNum);
 
+    /**
+     * 获取兼职总人数
+     *
+     * @return
+     */
+    long countPartTimeTotalPeople();
 }

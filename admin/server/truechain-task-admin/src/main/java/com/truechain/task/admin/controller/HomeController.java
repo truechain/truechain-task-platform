@@ -1,7 +1,10 @@
 package com.truechain.task.admin.controller;
 
+import com.truechain.task.admin.service.TaskService;
+import com.truechain.task.admin.service.UserService;
 import com.truechain.task.core.WrapMapper;
 import com.truechain.task.core.Wrapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,13 +17,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/home")
 public class HomeController extends BasicController {
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private TaskService taskService;
 
     /**
      * 获取兼职总人数
      */
     @GetMapping("/countPartTimeTotalPeople")
     public Wrapper countPartTimeTotalPeople(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent) {
-        return WrapMapper.ok(123);
+        long count = userService.countPartTimeTotalPeople();
+        return WrapMapper.ok(count);
     }
 
     /**
@@ -28,7 +37,8 @@ public class HomeController extends BasicController {
      */
     @GetMapping("/countTotalTask")
     public Wrapper countTotalTask(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent) {
-        return WrapMapper.ok(234);
+        long count = taskService.countTotalTask();
+        return WrapMapper.ok(count);
     }
 
     /**

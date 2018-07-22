@@ -69,4 +69,9 @@ public class UserServiceImpl implements UserService {
         sysUser.setAuditStatus(AuditStatusEnum.AUDITED.getCode());
         userRepository.save(sysUser);
     }
+
+    @Override
+    public long countPartTimeTotalPeople() {
+        return userRepository.count();
+    }
 }

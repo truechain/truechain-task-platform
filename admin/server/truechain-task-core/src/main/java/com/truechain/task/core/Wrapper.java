@@ -17,6 +17,8 @@ public class Wrapper<T> implements Serializable {
 
     private T result;
 
+    private long costs;
+
     public Wrapper() {
 
     }
@@ -57,5 +59,13 @@ public class Wrapper<T> implements Serializable {
     public Wrapper setResult(T result) {
         this.result = result;
         return this;
+    }
+
+    public long getCosts() {
+        return costs;
+    }
+
+    public void setCosts(long costs) {
+        this.costs = costs;
     }
 }

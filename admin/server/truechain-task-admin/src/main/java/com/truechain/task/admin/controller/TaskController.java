@@ -2,6 +2,7 @@ package com.truechain.task.admin.controller;
 
 import com.google.common.base.Preconditions;
 import com.truechain.task.admin.model.dto.TaskDTO;
+import com.truechain.task.admin.model.dto.TaskEntryFromInfoDTO;
 import com.truechain.task.admin.model.dto.TaskInfoDTO;
 import com.truechain.task.admin.service.TaskService;
 import com.truechain.task.core.WrapMapper;
@@ -12,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 /**
@@ -48,8 +51,10 @@ public class TaskController extends BasicController {
     /**
      * 获取报名表信息
      */
-    public Wrapper getEntryFormInfo(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent) {
-        return WrapMapper.ok();
+    @PostMapping("/getEntryFormInfo")
+    public Wrapper getEntryFormInfo(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long taskId) {
+        List<TaskEntryFromInfoDTO> entryFromInfoDTOList = taskService.getEntryFormInfo(taskId);
+        return WrapMapper.ok(entryFromInfoDTOList);
     }
 
     /**
@@ -100,7 +105,9 @@ public class TaskController extends BasicController {
     /**
      * 审核报名表人员
      */
-    public Wrapper auditEntryFormUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent) {
+    @PostMapping("/auditEntryFormUser")
+    public Wrapper auditEntryFormUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long taskUserId) {
+        taskService.auditEntryFormUser(taskUserId);
         return WrapMapper.ok();
     }
 }

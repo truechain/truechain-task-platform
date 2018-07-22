@@ -1,10 +1,13 @@
 package com.truechain.task.admin.service;
 
 import com.truechain.task.admin.model.dto.TaskDTO;
+import com.truechain.task.admin.model.dto.TaskEntryFromInfoDTO;
 import com.truechain.task.admin.model.dto.TaskInfoDTO;
 import com.truechain.task.model.entity.BsTask;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 
 /**
@@ -27,6 +30,14 @@ public interface TaskService {
      * @param taskId
      */
     TaskInfoDTO getTaskInfo(Long taskId);
+
+    /**
+     * 获取报名表信息
+     *
+     * @param taskId
+     * @return
+     */
+    List<TaskEntryFromInfoDTO> getEntryFormInfo(Long taskId);
 
     /**
      * 新增任务
@@ -67,6 +78,25 @@ public interface TaskService {
      */
     void disableTask(Long taskId);
 
+    /**
+     * 审核个人任务
+     *
+     * @param taskUserId
+     */
+    void auditEntryFormUser(Long taskUserId);
 
+    /**
+     * 总任务数
+     *
+     * @return
+     */
+    long countTotalTask();
+
+    /**
+     * 完成任务数
+     *
+     * @return
+     */
+    long countComplateTask();
 }
 

@@ -1,9 +1,12 @@
 package com.truechain.task.admin.service.impl;
 
 import com.google.common.base.Preconditions;
+import com.querydsl.core.BooleanBuilder;
 import com.truechain.task.admin.repository.SysDeclareRepository;
 import com.truechain.task.admin.service.DeclareService;
+import com.truechain.task.model.entity.QSysDeclare;
 import com.truechain.task.model.entity.SysDeclare;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +20,18 @@ public class DeclareServiceImpl implements DeclareService {
 
     @Override
     public Page<SysDeclare> getDeclarePage(SysDeclare declare, Pageable pageable) {
-        Page<SysDeclare> declarePage = declareRepository.findAll(pageable);
+        QSysDeclare qSysDeclare = QSysDeclare.sysDeclare;
+        BooleanBuilder builder = new BooleanBuilder();
+        if (StringUtils.isNotBlank(declare.getStartDate())) {
+            builder.and(qSysDeclare.createTime.gt(declare.getStartDate()));
+        }
+        if (StringUtils.isNotBlank(declare.getEndDate())) {
+            builder.and(qSysDeclare.createTime.lt(declare.getEndDate()));
+        }
+        if (StringUtils.isNotBlank(declare.getUpdateUser())) {
+            builder.and(qSysDeclare.updateUser.like(declare.getUpdateUser() + "%"));
+        }
+        Page<SysDeclare> declarePage = declareRepository.findAll(builder, pageable);
         return declarePage;
     }
 

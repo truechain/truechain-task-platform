@@ -4,7 +4,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.Version;
+import javax.persistence.Transient;
 
 @Table(name = "SysDeclare")
 @Entity
@@ -29,6 +29,16 @@ public class SysDeclare extends BaseEntity {
      * 版本
      */
     private String version;
+    /**
+     * 开始日期
+     */
+    @Transient
+    private String startDate;
+    /**
+     * 结束日期
+     */
+    @Transient
+    private String endDate;
 
     public int getType() {
         return type;
@@ -60,5 +70,21 @@ public class SysDeclare extends BaseEntity {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
     }
 }
