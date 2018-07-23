@@ -48,6 +48,8 @@ app:
   sms:
     smsUserName: TRUE888hy
     smsPassword: ADljCe
+logging:
+  config: classpath:log/logback-dev.xml
 
 
 ---
@@ -79,5 +81,4 @@ springfox:
       v2:
         host: www.phptrain.cn/api
 logging:
-  path: /home/work/data/log/truechain-task-api/
-  file: truechain-task-api.log
+  config: classpath:log/logback-test.xml

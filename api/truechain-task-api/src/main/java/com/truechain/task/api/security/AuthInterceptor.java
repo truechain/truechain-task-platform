@@ -1,7 +1,10 @@
 package com.truechain.task.api.security;
 
 import com.truechain.task.api.config.AppProperties;
+import com.truechain.task.core.WrapMapper;
+import com.truechain.task.core.Wrapper;
 import com.truechain.task.util.JwtUtil;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 public class AuthInterceptor implements HandlerInterceptor {
 
@@ -40,13 +45,13 @@ public class AuthInterceptor implements HandlerInterceptor {
         String token = request.getHeader(AppProperties.TOKEN_HEADER);
         String salt = request.getHeader(AppProperties.AGENT_HEADER);
         if (StringUtils.isEmpty(token) || StringUtils.isEmpty(salt)) {
-            response.setStatus(HttpStatus.FORBIDDEN.value());
+            forbidden(response);
             return false;
         }
         try {
             JwtUtil.getSessionIdByToken(token, salt);
         } catch (Exception e) {
-            response.setStatus(HttpStatus.FORBIDDEN.value());
+            forbidden(response);
             return false;
         }
 
@@ -61,5 +66,18 @@ public class AuthInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e) throws Exception {
 
+    }
+
+    /**
+     * forbidden
+     *
+     * @param response
+     */
+    private void forbidden(HttpServletResponse response) throws IOException {
+        response.setCharacterEncoding("utf-8");
+        response.setHeader("content-type", "text/html;charset=utf-8");
+        Wrapper wrapper = WrapMapper.wrap(HttpStatus.FORBIDDEN.value(), "拒绝访问");
+        PrintWriter out = response.getWriter();
+        out.write(new JSONObject(wrapper).toString());
     }
 }

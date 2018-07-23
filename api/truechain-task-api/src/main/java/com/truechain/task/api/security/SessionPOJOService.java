@@ -7,6 +7,8 @@ import com.truechain.task.util.CommonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.TimeUnit;
+
 @Service
 public class SessionPOJOService {
 
@@ -24,7 +26,7 @@ public class SessionPOJOService {
         String sessionId = CommonUtil.getRandomString(6);
         sessionPOJO.setId(sessionId);
         sessionPOJO.setUserId(user.getId());
-        sessionPOJORedisRepository.set(sessionId, sessionPOJO);
+        sessionPOJORedisRepository.set(sessionId, sessionPOJO, 30, TimeUnit.DAYS);
         return sessionPOJO;
     }
 

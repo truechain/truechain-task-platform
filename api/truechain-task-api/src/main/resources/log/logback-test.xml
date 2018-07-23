@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="30 seconds" debug="false">
+
+	<property name="contextName" value="truechain-task-api"/>
+	<property name="appName" value="TRUECHAIN-TASK-API"/>
+	<property name="profile" value="TEST" />
+	<contextName>${contextName}</contextName>
+	<property name="log.path" value="/home/work/data/log/" />
+
+	<appender name="logFile"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<!-- 日志文件目录 -->
+		<file>${log.path}/${contextName}/${contextName}.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- 非当天的Log文件备份为... -->
+			<fileNamePattern>${log.path}/${contextName}/${contextName}.%d{yyyy-MM-dd}.zip
+			</fileNamePattern>
+			<!-- 超过30天的备份文件将被删除 -->
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">  
+		    <level>INFO</level>  
+		</filter>
+		<encoder>
+			<!-- 打印一级caller，包含包名、类名、方法及行号 （生产时尽量不使用）-->
+			<pattern>%d{yyyy-MM-dd;HH:mm:ss.SSS} ${appName} ${profile} [%thread] %-5level %caller{1} - %msg%n%n</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="com.truechain.task" level="debug" additivity="false">
+		<appender-ref ref="logFile" />
+	</logger>
+	
+	<root level="info" additivity="false">
+		<appender-ref ref="logFile" />
+	</root>
+
+</configuration>

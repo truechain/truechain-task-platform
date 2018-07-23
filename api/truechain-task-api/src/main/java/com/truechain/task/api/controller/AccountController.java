@@ -48,7 +48,8 @@ public class AccountController extends BasicController {
      */
     @PostMapping("/register")
     public Wrapper register(@RequestParam String mobile, @RequestParam String verifyCode) {
-        String realVerifyCode = stringRedisTemplate.opsForValue().get(mobile);
+        String verifyRedisKey = "verify_" + mobile;
+        String realVerifyCode = stringRedisTemplate.opsForValue().get(verifyRedisKey);
         if (StringUtils.isBlank(realVerifyCode)) {
             throw new BusinessException("验证码已过期");
         }
@@ -69,7 +70,8 @@ public class AccountController extends BasicController {
     @PostMapping("/login")
     public Wrapper login(@RequestParam String mobile, @RequestParam String verifyCode) {
         SysUser user = userService.getUserByMobile(mobile);
-        String realVerifyCode = stringRedisTemplate.opsForValue().get(mobile);
+        String verifyRedisKey = "verify_" + mobile;
+        String realVerifyCode = stringRedisTemplate.opsForValue().get(verifyRedisKey);
         if (StringUtils.isBlank(realVerifyCode)) {
             throw new BusinessException("验证码已过期");
         }
@@ -78,7 +80,7 @@ public class AccountController extends BasicController {
         }
         SessionPOJO sessionPOJO = sessionPOJOService.initSession(user);
         String salt = CommonUtil.getRandomString(6);
-        String token = JwtUtil.createToken(salt, sessionPOJO.getId(), 259200000L);
+        String token = JwtUtil.createToken(salt, sessionPOJO.getId(), 30 * 24 * 3600 * 1000 + 1000);
         LoginDTO loginDTO = new LoginDTO();
         loginDTO.setUserUid(user.getId());
         loginDTO.setAgent(salt);
@@ -94,9 +96,23 @@ public class AccountController extends BasicController {
     public Wrapper getVerifyCode(@PathVariable("mobile") String mobile) {
         SysUser user = userService.getUserByMobile(mobile);
         String verifyType = null != user ? "login_" : "register_";
+        // 如果还能获取到说明上一个验证码未过期
+        String verifyRedisKey = "verify_" + mobile;
+        if (stringRedisTemplate.hasKey(verifyRedisKey)) {
+            throw new BusinessException("您的请求过于频繁，请于3分钟后再次获取");
+        }
+
+        // 判断当天获取的次数是否超限（按type分别计数）
+        String veriCodeTimesRedisKey = mobile + "_vericode_" + verifyType + "_times";
+        Integer vericodeTimes = (Integer) redisTemplate.opsForValue().get(veriCodeTimesRedisKey);
+        if (null != vericodeTimes && vericodeTimes > 5) {
+            throw new BusinessException("验证次数已超上限，请明天再试");
+        }
+        stringRedisTemplate.opsForValue().increment(veriCodeTimesRedisKey, 1);
+        redisTemplate.expire(veriCodeTimesRedisKey, 1, TimeUnit.DAYS);
         String verifyCode = CommonUtil.getRandomString(6);
         SMSHttpRequest.sendVerifyCodeSMS(smsUserName, smsPassword, mobile, verifyCode);                                //调用SMSAPI发送验证码短信
-        stringRedisTemplate.opsForValue().set(mobile, verifyCode, 5, TimeUnit.MINUTES);
+        stringRedisTemplate.opsForValue().set(verifyRedisKey, verifyCode, 3, TimeUnit.MINUTES);
         return WrapMapper.ok(verifyCode);
     }
 

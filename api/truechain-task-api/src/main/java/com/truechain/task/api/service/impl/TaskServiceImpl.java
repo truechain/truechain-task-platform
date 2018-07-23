@@ -159,9 +159,11 @@ public class TaskServiceImpl extends BasicService implements TaskService {
     public void holdTask(Long taskDetailId, Long userId) {
         SysUser user = userRepository.findOne(userId);
         Preconditions.checkArgument(null != user, "用户不存在");
-        Preconditions.checkArgument(user.getAuditStatus() == AuditStatusEnum.UNAUDITED.getCode(), "当前资料审核中暂时无法接取该任务");
+        Preconditions.checkArgument(user.getAuditStatus() == AuditStatusEnum.AUDITED.getCode(), "当前资料审核中暂时无法接取该任务");
         BsTaskDetail taskDetail = taskDetailRepository.findOne(taskDetailId);
         Preconditions.checkArgument(null != taskDetail, "任务不存在");
+        BsTask bsTask = taskDetail.getTask();
+        Preconditions.checkArgument(user.getLevel().compareTo(bsTask.getLevel()) <= 0, "您的等级不够，请选择符合您开发等级的任务");
         QBsTaskUser qtaskUser = QBsTaskUser.bsTaskUser;
         long count = taskUserRepository.count(qtaskUser.user.eq(user).and(qtaskUser.taskDetail.eq(taskDetail)));
         if (count > 0) {
