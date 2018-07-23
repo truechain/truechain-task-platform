@@ -25,10 +25,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletOutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
-import java.util.function.Consumer;
 
 /**
  * 报表Controller
@@ -67,7 +65,7 @@ public class ReportController extends BasicController {
             if (userProfilePagePojoMap.containsKey(bsTaskUser.getId())) {
                 UserProfilePagePojo userProfilePagePojo = userProfilePagePojoMap.get(bsTaskUser.getId());
                 userProfilePagePojo.setTaskCount(userProfilePagePojo.getTaskCount() + 1);
-                if (bsTaskUser.getStatus() == 1) {              //1-任务已经完成
+                if (bsTaskUser.getTaskStatus() == 1) {              //1-任务已经完成
                     userProfilePagePojo.setTaskDoneCount(userProfilePagePojo.getTaskDoneCount() + 1);
                     //奖励价值
                     double rewardValue = bsTaskUser.getRewardNum() != null ? NumberUtils.toDouble(bsTaskUser.getRewardNum().toString(), 0) : 0;
@@ -84,7 +82,7 @@ public class ReportController extends BasicController {
                     }
                     userProfilePagePojo.setTrueValue(userProfilePagePojo.getTrueValue() + rewardValue);
                 }
-                if (bsTaskUser.getStatus() == 0) {              //0-任务正在进行
+                if (bsTaskUser.getTaskStatus() == 0) {              //0-任务正在进行
                     userProfilePagePojo.setTaskDoingCount(userProfilePagePojo.getTaskDoingCount() + 1);
                 }
             }
@@ -106,7 +104,7 @@ public class ReportController extends BasicController {
         for (BsTaskUser bsTaskUser : bsTaskUserList) {
             UserRewardHistoryPojo rewardHistoryPojo = new UserRewardHistoryPojo();
             rewardHistoryPojo.setId(bsTaskUser.getId());
-            if (bsTaskUser.getStatus() == 1) {
+            if (bsTaskUser.getTaskStatus() == 1) {
                 rewardHistoryPojo.setEventName("完成任务");
                 rewardHistoryPojo.setGotTime(bsTaskUser.getUpdateTime());
                 double rewardValue = bsTaskUser.getRewardNum() != null ? NumberUtils.toDouble(bsTaskUser.getRewardNum().toString(), 0) : 0;
@@ -166,7 +164,7 @@ public class ReportController extends BasicController {
             String taskName = Joiner.on("-").join(bsTaskUser.getTaskDetail().getTask().getName(), bsTaskUser.getTaskDetail().getStation());
             userTaskStatePojo.setTaskName(taskName);
             userTaskStatePojo.setTaskLevel(bsTaskUser.getTaskDetail().getTask().getLevel());
-            userTaskStatePojo.setTaskState(bsTaskUser.getStatus());
+            userTaskStatePojo.setTaskState(bsTaskUser.getTaskStatus());
             userTaskStatePojo.setTaskCategory(bsTaskUser.getTaskDetail().getTask().getCategory());
             userTaskStatePojo.setTaskStartTime(bsTaskUser.getCreateTime());
 

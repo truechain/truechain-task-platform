@@ -58,6 +58,7 @@ public class AccountController extends BasicController {
         user.setMobile(mobile);
         user.setAuditStatus(0);
         userService.addUser(user);
+        redisTemplate.delete(mobile);
         return WrapMapper.ok();
     }
 
@@ -81,6 +82,7 @@ public class AccountController extends BasicController {
         loginDTO.setUserUid(user.getId());
         loginDTO.setAgent(salt);
         loginDTO.setToken(token);
+        redisTemplate.delete(mobile);
         return WrapMapper.ok(loginDTO);
     }
 
@@ -89,9 +91,11 @@ public class AccountController extends BasicController {
      */
     @GetMapping("/verifyCode/{mobile}")
     public Wrapper getVerifyCode(@PathVariable("mobile") String mobile) {
+        SysUser user = userService.getUserByMobile(mobile);
+        String verifyType = null != user ? "login_" : "register_";
         String verifyCode = CommonUtil.getRandomString(6);
         SMSHttpRequest.sendVerifyCodeSMS(smsUserName, smsPassword, mobile, verifyCode);                                //调用SMSAPI发送验证码短信
-        stringRedisTemplate.opsForValue().set(mobile, verifyCode, 3, TimeUnit.MINUTES);
+        stringRedisTemplate.opsForValue().set(mobile, verifyCode, 5, TimeUnit.MINUTES);
         return WrapMapper.ok(verifyCode);
     }
 

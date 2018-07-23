@@ -18,7 +18,7 @@ public class BsTaskUser extends BaseEntity {
     /**
      * 状态(0-任务中,1-已经完成)
      */
-    private int status;
+    private int taskStatus;
     /**
      * 审核状态
      */
@@ -95,12 +95,12 @@ public class BsTaskUser extends BaseEntity {
         this.user = user;
     }
 
-    public int getStatus() {
-        return status;
+    public int getTaskStatus() {
+        return taskStatus;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setTaskStatus(int taskStatus) {
+        this.taskStatus = taskStatus;
     }
 
     public String getPushAddress() {

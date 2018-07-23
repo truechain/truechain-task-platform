@@ -142,7 +142,7 @@ public class TaskServiceImpl implements TaskService {
     public void auditEntryFormUser(Long taskUserId) {
         BsTaskUser taskUser = taskUserRepository.findOne(taskUserId);
         Preconditions.checkArgument(null != taskUser, "数据有误");
-        taskUser.setStatus(1);
+        taskUser.setTaskStatus(1);
         taskUser.setAuditStatus(1);
         taskUserRepository.save(taskUser);
     }

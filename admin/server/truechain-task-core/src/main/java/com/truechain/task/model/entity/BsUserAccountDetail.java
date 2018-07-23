@@ -38,9 +38,9 @@ public class BsUserAccountDetail extends BaseEntity {
      */
     private Integer rewardResource;
     /**
-     * 奖励
+     * 奖励数量
      */
-    private String reward;
+    private Double rewardNum;
 
     public BsUserAccount getUserAccount() {
         return userAccount;
@@ -74,12 +74,12 @@ public class BsUserAccountDetail extends BaseEntity {
         return rewardType;
     }
 
-    public String getReward() {
-        return reward;
+    public Double getRewardNum() {
+        return rewardNum;
     }
 
-    public void setReward(String reward) {
-        this.reward = reward;
+    public void setRewardNum(Double rewardNum) {
+        this.rewardNum = rewardNum;
     }
 
     public Integer getRewardResource() {

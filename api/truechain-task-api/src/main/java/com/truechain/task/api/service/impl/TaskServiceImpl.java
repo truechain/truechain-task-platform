@@ -132,7 +132,7 @@ public class TaskServiceImpl extends BasicService implements TaskService {
         while (iterable.hasNext()) {
             BsTaskUser taskUser = iterable.next();
             BsTask task = taskUser.getTaskDetail().getTask();
-            task.setTaskStatus(taskUser.getStatus());
+            task.setTaskStatus(taskUser.getTaskStatus());
             taskTotalDTO.getTaskList().add(task);
         }
         return taskTotalDTO;
@@ -184,7 +184,7 @@ public class TaskServiceImpl extends BasicService implements TaskService {
         Preconditions.checkArgument(null != taskUser, "用户未执行该任务");
         taskUser.setPushAddress(commitAddress);
         taskUser.setRemark(remark);
-        taskUser.setStatus(1);
+        taskUser.setTaskStatus(1);
         taskUserRepository.save(taskUser);
     }
 }

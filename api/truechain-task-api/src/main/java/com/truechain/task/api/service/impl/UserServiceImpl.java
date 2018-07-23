@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
         sysUser.setOpenId(user.getOpenId());
         sysUser.setTrueChainAddress(user.getTrueChainAddress());
         sysUser.setResumeFilePath(user.getResumeFilePath());
-        sysUser = userRepository.save(user);
+        sysUser = userRepository.save(sysUser);
         return sysUser;
     }
 
@@ -116,7 +116,7 @@ public class UserServiceImpl implements UserService {
         userAccountDetailIterable.forEach(x -> {
             RecommendTaskDTO recommendTaskDTO = new RecommendTaskDTO();
             recommendTaskDTO.setPersonName(x.getRecommendTask().getRecommendUser().getPersonName());
-            recommendTaskDTO.setReward(x.getReward());
+            recommendTaskDTO.setReward(x.getRewardNum());
             recommendTaskDTO.setCreateTime(x.getCreateTime());
             recommendTaskDTOList.add(recommendTaskDTO);
         });

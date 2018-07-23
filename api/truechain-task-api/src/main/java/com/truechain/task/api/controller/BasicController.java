@@ -10,9 +10,9 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,6 +24,9 @@ public class BasicController {
 
     @Autowired
     protected StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    protected RedisTemplate redisTemplate;
 
     @Autowired
     private SessionPOJOService sessionPOJOService;
