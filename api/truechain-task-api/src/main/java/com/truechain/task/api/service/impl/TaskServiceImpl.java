@@ -59,12 +59,12 @@ public class TaskServiceImpl extends BasicService implements TaskService {
         Pageable pageable = null;
         if (null != task.getRewardType()) {
             if (task.getRewardType() == 1) {
-                pageable = new PageRequest(pageIndex - 1, pageSize, Sort.Direction.ASC, "rewardNum");
+                pageable = new PageRequest(pageIndex - 1, pageSize, Sort.Direction.ASC, "rewardNum", "updateTime");
             } else {
-                pageable = new PageRequest(pageIndex - 1, pageSize, Sort.Direction.DESC, "rewardNum");
+                pageable = new PageRequest(pageIndex - 1, pageSize, Sort.Direction.DESC, "rewardNum", "updateTime");
             }
         } else {
-            pageable = new PageRequest(pageIndex - 1, pageSize);
+            pageable = new PageRequest(pageIndex - 1, pageSize, Sort.Direction.DESC, "updateTime");
         }
         Page<BsTask> taskPage = taskRepository.findAll(builder, pageable);
         return taskPage;
@@ -118,16 +118,17 @@ public class TaskServiceImpl extends BasicService implements TaskService {
         QBsTaskUser qTaskUser = QBsTaskUser.bsTaskUser;
         long count = taskUserRepository.count(qTaskUser.user.eq(user));
         taskTotalDTO.setTaskTotal(count);
-        count = taskUserRepository.count(qTaskUser.user.eq(user).and(qTaskUser.status.eq(0)));
+        count = taskUserRepository.count(qTaskUser.user.eq(user).and(qTaskUser.taskStatus.eq(0)));
         taskTotalDTO.setTaskingTotal(count);
-        count = taskUserRepository.count(qTaskUser.user.eq(user).and(qTaskUser.status.eq(1)));
+        count = taskUserRepository.count(qTaskUser.user.eq(user).and(qTaskUser.taskStatus.eq(1)));
         taskTotalDTO.setTaskComplateTolal(count);
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qTaskUser.user.eq(user));
         if (null != taskStatus) {
-            builder.and(qTaskUser.status.eq(taskStatus));
+            builder.and(qTaskUser.taskStatus.eq(taskStatus));
         }
-        Iterable<BsTaskUser> taskUserIterable = taskUserRepository.findAll(builder);
+        Sort sort = new Sort(Sort.Direction.DESC, "createTime");
+        Iterable<BsTaskUser> taskUserIterable = taskUserRepository.findAll(builder, sort);
         taskTotalDTO.setTaskList(new ArrayList<>());
         Iterator<BsTaskUser> iterable = taskUserIterable.iterator();
         while (iterable.hasNext()) {
@@ -164,7 +165,7 @@ public class TaskServiceImpl extends BasicService implements TaskService {
         QBsTaskUser qtaskUser = QBsTaskUser.bsTaskUser;
         long count = taskUserRepository.count(qtaskUser.user.eq(user).and(qtaskUser.taskDetail.eq(taskDetail)));
         if (count > 0) {
-            throw new BusinessException("该用户已经抢到任务");
+            throw new BusinessException("你已抢过该任务，不可重复抢取");
         }
         count = taskUserRepository.count(qtaskUser.taskDetail.eq(taskDetail).and(qtaskUser.user.isNotNull()));
         if (count >= taskDetail.getPeopleNum()) {

@@ -56,10 +56,6 @@ public class SysUser extends BaseEntity {
      */
     private String resumeFilePath;
     /**
-     * 状态
-     */
-    private int status;
-    /**
      * 审核状态
      */
     private int auditStatus;
@@ -138,14 +134,6 @@ public class SysUser extends BaseEntity {
 
     public void setResumeFilePath(String resumeFilePath) {
         this.resumeFilePath = resumeFilePath;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
     }
 
     public int getAuditStatus() {
