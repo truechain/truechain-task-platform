@@ -10,6 +10,7 @@ import com.truechain.task.core.WrapMapper;
 import com.truechain.task.core.Wrapper;
 import com.truechain.task.model.entity.SysDeclare;
 import com.truechain.task.model.entity.SysUser;
+import com.truechain.task.model.enums.AuditStatusEnum;
 import com.truechain.task.util.CommonUtil;
 import com.truechain.task.util.JwtUtil;
 import com.truechain.task.util.SMSHttpRequest;
@@ -56,7 +57,7 @@ public class AccountController extends BasicController {
         }
         SysUser user = new SysUser();
         user.setMobile(mobile);
-        user.setAuditStatus(0);
+        user.setAuditStatus(AuditStatusEnum.UNCOMPLATE.getCode());
         userService.addUser(user);
         redisTemplate.delete(mobile);
         return WrapMapper.ok();

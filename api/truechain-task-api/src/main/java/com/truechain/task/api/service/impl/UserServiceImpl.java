@@ -13,6 +13,7 @@ import com.truechain.task.model.entity.BsUserAccount;
 import com.truechain.task.model.entity.BsUserAccountDetail;
 import com.truechain.task.model.entity.QBsUserAccountDetail;
 import com.truechain.task.model.entity.SysUser;
+import com.truechain.task.model.enums.AuditStatusEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -67,6 +68,7 @@ public class UserServiceImpl implements UserService {
         sysUser.setOpenId(user.getOpenId());
         sysUser.setTrueChainAddress(user.getTrueChainAddress());
         sysUser.setResumeFilePath(user.getResumeFilePath());
+        sysUser.setAuditStatus(AuditStatusEnum.UNAUDITED.getCode());
         sysUser = userRepository.save(sysUser);
         return sysUser;
     }

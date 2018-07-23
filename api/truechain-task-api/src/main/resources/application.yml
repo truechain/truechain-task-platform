@@ -64,6 +64,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  http:
+    multipart:
+      max-file-size: 10MB
 app:
   upload:
     file-path: /home/work/data/upload/
