@@ -90,6 +90,14 @@ public class BaseEntity implements Serializable {
         this.updateTime = DateUtil.getDate();
     }
 
+    public void setUpdatetime(String updatetime) {
+        if (StringUtils.isBlank(updatetime)) {
+            this.updateTime = updatetime;
+        } else {
+            this.updateTime = DateUtil.getDate();
+        }
+    }
+
     public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
     }
