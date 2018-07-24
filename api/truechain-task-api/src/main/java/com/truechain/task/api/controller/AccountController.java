@@ -1,5 +1,6 @@
 package com.truechain.task.api.controller;
 
+import com.google.common.base.Preconditions;
 import com.truechain.task.api.model.dto.LoginDTO;
 import com.truechain.task.api.model.dto.SessionPOJO;
 import com.truechain.task.api.security.SessionPOJOService;
@@ -70,6 +71,7 @@ public class AccountController extends BasicController {
     @PostMapping("/login")
     public Wrapper login(@RequestParam String mobile, @RequestParam String verifyCode) {
         SysUser user = userService.getUserByMobile(mobile);
+        Preconditions.checkArgument(null != user, "该用户不存在");
         String verifyRedisKey = "verify_" + mobile;
         String realVerifyCode = stringRedisTemplate.opsForValue().get(verifyRedisKey);
         if (StringUtils.isBlank(realVerifyCode)) {
@@ -80,7 +82,7 @@ public class AccountController extends BasicController {
         }
         SessionPOJO sessionPOJO = sessionPOJOService.initSession(user);
         String salt = CommonUtil.getRandomString(6);
-        String token = JwtUtil.createToken(salt, sessionPOJO.getId(), 30 * 24 * 3600 * 1000 + 1000);
+        String token = JwtUtil.createToken(salt, sessionPOJO.getId(), 31);
         LoginDTO loginDTO = new LoginDTO();
         loginDTO.setUserUid(user.getId());
         loginDTO.setAgent(salt);
@@ -99,7 +101,7 @@ public class AccountController extends BasicController {
         // 如果还能获取到说明上一个验证码未过期
         String verifyRedisKey = "verify_" + mobile;
         if (stringRedisTemplate.hasKey(verifyRedisKey)) {
-            throw new BusinessException("您的请求过于频繁，请于3分钟后再次获取");
+            throw new BusinessException("您的请求过于频繁，请于1分钟后再次获取");
         }
 
         // 判断当天获取的次数是否超限（按type分别计数）
@@ -112,7 +114,7 @@ public class AccountController extends BasicController {
         redisTemplate.expire(veriCodeTimesRedisKey, 1, TimeUnit.DAYS);
         String verifyCode = CommonUtil.getRandomString(6);
         SMSHttpRequest.sendVerifyCodeSMS(smsUserName, smsPassword, mobile, verifyCode);                                //调用SMSAPI发送验证码短信
-        stringRedisTemplate.opsForValue().set(verifyRedisKey, verifyCode, 3, TimeUnit.MINUTES);
+        stringRedisTemplate.opsForValue().set(verifyRedisKey, verifyCode, 1, TimeUnit.MINUTES);
         return WrapMapper.ok(verifyCode);
     }
 

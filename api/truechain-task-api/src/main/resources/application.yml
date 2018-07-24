@@ -2,7 +2,7 @@ server:
   port: 8080
 spring:
   profiles:
-    active: dev
+    active: test
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     hikari:
@@ -63,9 +63,6 @@ spring:
     host: 127.0.0.1
     port: 6379
     password: true0614
-  jpa:
-    hibernate:
-      ddl-auto: update
   http:
     multipart:
       max-file-size: 10MB

@@ -23,10 +23,10 @@ public class GlobalHandler {
      * @param e
      * @return
      */
-    @ExceptionHandler(BusinessException.class)
+    @ExceptionHandler({BusinessException.class, IllegalArgumentException.class})
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Wrapper businessException(BusinessException e) {
+    public Wrapper businessException(Exception e) {
         logger.error("业务异常{}", e.getMessage(), e);
         return WrapMapper.error(e.getMessage());
     }
@@ -42,6 +42,6 @@ public class GlobalHandler {
     @ResponseBody
     public Wrapper exception(Exception e) {
         logger.info("全局异常信息{}", e.getMessage(), e);
-        return WrapMapper.error(e.getMessage());
+        return WrapMapper.error("系统异常");
     }
 }

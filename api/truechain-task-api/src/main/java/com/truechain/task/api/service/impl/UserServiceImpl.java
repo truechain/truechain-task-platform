@@ -44,7 +44,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public SysUser getUserByMobile(String mobile) {
         SysUser sysUser = userRepository.findByMobile(mobile);
-        Preconditions.checkArgument(null != sysUser, "该用户不存在");
         return sysUser;
     }
 
