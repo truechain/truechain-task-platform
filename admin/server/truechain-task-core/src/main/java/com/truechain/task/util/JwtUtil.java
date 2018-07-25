@@ -11,6 +11,9 @@ import org.slf4j.LoggerFactory;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 import java.security.Key;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 
 /**
@@ -51,7 +54,7 @@ public class JwtUtil {
      * @param salt
      * @return
      */
-    public static String getSessionIdByToken(String token, String salt) {
+    public static String getRedisKeyByToken(String token, String salt) {
         // 得到Key
         Key key = generalKey(salt);
         try {
@@ -73,20 +76,23 @@ public class JwtUtil {
      * createToken
      *
      * @param salt
-     * @param sessionId
-     * @param expireMillisecond
+     * @param redisKey
+     * @param expireDay
      * @return
      */
-    public static String createToken(String salt, String sessionId, long expireMillisecond) {
+    public static String createToken(String salt, String redisKey, long expireDay) {
         String issuer = "truechain";
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
         Date nbf = new Date(nowMillis - 180000L);
-        Date exp = new Date(nowMillis + expireMillisecond);
+        Instant instant = now.toInstant();
+        ZoneId zoneId = ZoneId.systemDefault();
+        LocalDate localDate = instant.atZone(zoneId).toLocalDate();
+        localDate = localDate.plusDays(expireDay);
+        Date exp = Date.from(localDate.atStartOfDay(zoneId).toInstant());
         Key signingKey = generalKey(salt);
-
         JwtBuilder builder = Jwts.builder().setHeaderParam("typ", "JWT").setHeaderParam("alg", "HS256")
-                .setIssuedAt(now).setIssuer(issuer).claim("payload", sessionId).signWith(SignatureAlgorithm.HS512, signingKey);
+                .setIssuedAt(now).setIssuer(issuer).claim("payload", redisKey).signWith(SignatureAlgorithm.HS512, signingKey);
         builder.setExpiration(exp).setNotBefore(nbf);
         return builder.compact();
     }

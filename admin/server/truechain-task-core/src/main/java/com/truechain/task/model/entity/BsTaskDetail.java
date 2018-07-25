@@ -1,6 +1,7 @@
 package com.truechain.task.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
@@ -27,6 +28,7 @@ public class BsTaskDetail extends BaseEntity {
     /**
      * 奖励
      */
+    /*@JsonProperty("reward")*/
     private Double rewardNum;
     /**
      * 任务

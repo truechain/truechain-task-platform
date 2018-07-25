@@ -54,7 +54,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
         String sessionId = null;
         try {
-            sessionId = JwtUtil.getSessionIdByToken(token, salt);
+            sessionId = JwtUtil.getRedisKeyByToken(token, salt);
         } catch (Exception e) {
             response.setStatus(HttpStatus.FORBIDDEN.value());
             return false;

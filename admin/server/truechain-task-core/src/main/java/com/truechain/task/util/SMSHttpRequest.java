@@ -1,18 +1,14 @@
 package com.truechain.task.util;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.rmi.CORBA.Util;
 
 /**
  * @version 1.0
@@ -20,6 +16,9 @@ import javax.rmi.CORBA.Util;
  * @Description SMS平台消息API密码加密处理
  */
 public class SMSHttpRequest {
+
+    private static final Logger logger = LoggerFactory.getLogger(SMSHttpRequest.class);
+
     /**
      * 向指定URL发送GET方法的请求
      *
@@ -62,7 +61,7 @@ public class SMSHttpRequest {
                 result += line;
             }
         } catch (Exception e) {
-            System.out.println(e);
+            logger.error("sendGet异常", e);
             return "发送GET请求出现异常！";
         }
         // 使用finally块来关闭输入流
@@ -72,7 +71,7 @@ public class SMSHttpRequest {
                     in.close();
                 }
             } catch (Exception e2) {
-                e2.printStackTrace();
+                logger.error("sendGet异常", e2);
             }
         }
         return result;
@@ -119,7 +118,7 @@ public class SMSHttpRequest {
                 result += line;
             }
         } catch (Exception e) {
-            System.out.println(e);
+            logger.error("sendGet异常", e);
             return "发送GET请求出现异常！";
         }
         // 使用finally块来关闭输入流
@@ -129,7 +128,7 @@ public class SMSHttpRequest {
                     in.close();
                 }
             } catch (Exception e2) {
-                e2.printStackTrace();
+                logger.error("sendGet异常", e2);
             }
         }
         return result;
@@ -176,7 +175,7 @@ public class SMSHttpRequest {
                 result += line;
             }
         } catch (Exception e) {
-            System.out.println(e);
+            logger.error("sendPost异常", e);
             return "发送 POST 请求出现异常！";
         }
         //使用finally块来关闭输出流、输入流
@@ -195,19 +194,19 @@ public class SMSHttpRequest {
         return result;
     }
 
-    public static void sendVerifyCodeSMS(String username,String password,String mobile, String verifyCode) {
+    public static void sendVerifyCodeSMS(String username, String password, String mobile, String verifyCode) {
         String url = "http://api.zthysms.com/sendSms.do";
-        String content = String.format("此次登录验证码%s【truechain】", verifyCode);
+        String content = String.format("此次验证码%s(1分钟有效)【truechain】", verifyCode);
         String tkey = SMSTimeUtil.getNowTime("yyyyMMddHHmmss");
         String xh = "";
         try {
             content = URLEncoder.encode(content, "utf-8");
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            logger.error("sendVerifyCodeSMS异常", e);
         }
         String param = "url=" + url + "&username=" + username + "&password=" + SMSMD5Gen.getMD5(SMSMD5Gen.getMD5(password) + tkey) + "&tkey=" + tkey + "&mobile=" + mobile + "&content=" + content + "&xh" + xh;
+        logger.info("sendVerifyCodeSMS-->param:" + param);
         String ret = sendPost(url, param);
-        System.out.println("ret:" + ret);
-        System.out.println(param);
+        logger.info("sendVerifyCodeSMS-->result:" + ret);
     }
 }

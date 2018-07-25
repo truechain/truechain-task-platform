@@ -6,6 +6,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Set;
 
 /**
@@ -75,6 +76,12 @@ public class BsTask extends BaseEntity {
     @JsonIgnore
     @OneToMany(mappedBy = "task")
     private Set<BsTaskDetail> taskDetailSet;
+
+    /**
+     * 任务明细ID
+     */
+    @Transient
+    private Long taskDetailId;
 
     public String getName() {
         return name;
@@ -176,14 +183,6 @@ public class BsTask extends BaseEntity {
         this.taskStatus = taskStatus;
     }
 
-    public int getPeopleNum() {
-        return peopleNum;
-    }
-
-    public void setPeopleNum(int peopleNum) {
-        this.peopleNum = peopleNum;
-    }
-
     public String getIconPath() {
         return iconPath;
     }
@@ -192,4 +191,15 @@ public class BsTask extends BaseEntity {
         this.iconPath = iconPath;
     }
 
+    public Long getTaskDetailId() {
+        return taskDetailId;
+    }
+
+    public void setTaskDetailId(Long taskDetailId) {
+        this.taskDetailId = taskDetailId;
+    }
+
+    public Integer getPeopleNum() {
+        return peopleNum;
+    }
 }
