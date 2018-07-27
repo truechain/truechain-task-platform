@@ -3,6 +3,7 @@ package com.truechain.task.admin.service.impl;
 import com.google.common.base.Preconditions;
 import com.querydsl.core.BooleanBuilder;
 import com.truechain.task.admin.model.dto.TaskDTO;
+import com.truechain.task.admin.model.dto.TaskEntryFromDTO;
 import com.truechain.task.admin.model.dto.TaskEntryFromInfoDTO;
 import com.truechain.task.admin.model.dto.TaskInfoDTO;
 import com.truechain.task.admin.repository.BsTaskDetailRepository;
@@ -78,26 +79,34 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskEntryFromInfoDTO> getEntryFormInfo(Long taskId) {
+    public TaskEntryFromDTO getEntryFormInfo(Long taskId) {
         BsTask task = taskRepository.findOne(taskId);
         Preconditions.checkArgument(null != task, "任务不存在");
+        TaskEntryFromDTO taskEntryFrom = new TaskEntryFromDTO();
+        taskEntryFrom.setTaskName(task.getName());
+        taskEntryFrom.setRewardType(task.getRewardType());
+        taskEntryFrom.setTotalAuditStatus(1);
         QBsTaskUser qBsTaskUser = QBsTaskUser.bsTaskUser;
         Iterable<BsTaskUser> taskUserIterable = taskUserRepository.findAll(qBsTaskUser.taskDetail.task.eq(task));
-        List<TaskEntryFromInfoDTO> taskEntryFromInfoDTOList = new ArrayList<>();
+        List<TaskEntryFromInfoDTO> taskEntryFromDTOList = new ArrayList<>();
         taskUserIterable.forEach(x -> {
-            TaskEntryFromInfoDTO taskEntryFromInfoDTO = new TaskEntryFromInfoDTO();
-            taskEntryFromInfoDTO.setTaskUserId(x.getId());
+            TaskEntryFromInfoDTO taskEntryFromDTO = new TaskEntryFromInfoDTO();
+            taskEntryFromDTO.setTaskUserId(x.getId());
             SysUser user = x.getUser();
-            taskEntryFromInfoDTO.setPersonName(user.getPersonName());
-            taskEntryFromInfoDTO.setWxNickName(user.getWxNickName());
-            taskEntryFromInfoDTO.setAuditStatus(x.getAuditStatus());
-            taskEntryFromInfoDTO.setRewardNum(x.getRewardNum());
-            taskEntryFromInfoDTO.setPushAddress(x.getPushAddress());
-            taskEntryFromInfoDTO.setRemark(x.getRemark());
-            taskEntryFromInfoDTO.setStation(x.getTaskDetail().getStation());
-            taskEntryFromInfoDTOList.add(taskEntryFromInfoDTO);
+            taskEntryFromDTO.setPersonName(user.getPersonName());
+            taskEntryFromDTO.setWxNickName(user.getWxNickName());
+            taskEntryFromDTO.setAuditStatus(x.getAuditStatus());
+            if (taskEntryFromDTO.getAuditStatus() == 0 && taskEntryFrom.getTotalAuditStatus() != 0) {
+                taskEntryFrom.setTotalAuditStatus(0);
+            }
+            taskEntryFromDTO.setRewardNum(x.getRewardNum());
+            taskEntryFromDTO.setPushAddress(x.getPushAddress());
+            taskEntryFromDTO.setRemark(x.getRemark());
+            taskEntryFromDTO.setStation(x.getTaskDetail().getStation());
+            taskEntryFromDTOList.add(taskEntryFromDTO);
         });
-        return taskEntryFromInfoDTOList;
+        taskEntryFrom.setTaskEntryFromInfoList(taskEntryFromDTOList);
+        return taskEntryFrom;
     }
 
     @Override

@@ -1,10 +1,10 @@
 package com.truechain.task.admin.service.impl;
 
-import com.truechain.task.core.BusinessException;
-import com.truechain.task.model.entity.AuthUser;
 import com.truechain.task.admin.repository.AuthUserRepository;
 import com.truechain.task.admin.service.AuthUserService;
+import com.truechain.task.core.BusinessException;
 import com.truechain.task.model.entity.AuthRole;
+import com.truechain.task.model.entity.AuthUser;
 import com.truechain.task.util.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,6 +26,10 @@ public class AuthUserServiceImpl implements AuthUserService {
         if (!StringUtils.isEmpty(user.getPassword())) {
             String password = user.getPassword();
             user.setPassword(MD5Util.generate(password));
+        }
+        long count = authUserRepository.countByUsername(user.getUsername());
+        if (count > 0) {
+            throw new BusinessException("用户名已被占用");
         }
         authUserRepository.save(user);
     }
@@ -62,6 +66,9 @@ public class AuthUserServiceImpl implements AuthUserService {
         AuthUser user = getUserById(userId);
         if (null == user) {
             throw new BusinessException("用户不存在");
+        }
+        if (user.getUsername().equals("admin")) {
+            throw new BusinessException("管理员不允许更改");
         }
         if (CollectionUtils.isEmpty(user.getRoles())) {
             AuthRole role = new AuthRole();

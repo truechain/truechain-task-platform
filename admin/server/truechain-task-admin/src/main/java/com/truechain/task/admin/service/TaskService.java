@@ -1,7 +1,7 @@
 package com.truechain.task.admin.service;
 
 import com.truechain.task.admin.model.dto.TaskDTO;
-import com.truechain.task.admin.model.dto.TaskEntryFromInfoDTO;
+import com.truechain.task.admin.model.dto.TaskEntryFromDTO;
 import com.truechain.task.admin.model.dto.TaskInfoDTO;
 import com.truechain.task.model.entity.BsTask;
 import org.springframework.data.domain.Page;
@@ -37,7 +37,7 @@ public interface TaskService {
      * @param taskId
      * @return
      */
-    List<TaskEntryFromInfoDTO> getEntryFormInfo(Long taskId);
+    TaskEntryFromDTO getEntryFormInfo(Long taskId);
 
     /**
      * 新增任务

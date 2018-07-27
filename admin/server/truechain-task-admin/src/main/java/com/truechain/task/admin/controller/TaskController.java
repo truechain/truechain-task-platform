@@ -2,7 +2,7 @@ package com.truechain.task.admin.controller;
 
 import com.google.common.base.Preconditions;
 import com.truechain.task.admin.model.dto.TaskDTO;
-import com.truechain.task.admin.model.dto.TaskEntryFromInfoDTO;
+import com.truechain.task.admin.model.dto.TaskEntryFromDTO;
 import com.truechain.task.admin.model.dto.TaskInfoDTO;
 import com.truechain.task.admin.service.TaskService;
 import com.truechain.task.core.WrapMapper;
@@ -21,7 +21,7 @@ import java.util.List;
  * 任务Controller
  */
 @RestController
-@RequestMapping("/tast")
+@RequestMapping("/task")
 public class TaskController extends BasicController {
 
     @Autowired
@@ -53,8 +53,8 @@ public class TaskController extends BasicController {
      */
     @PostMapping("/getEntryFormInfo")
     public Wrapper getEntryFormInfo(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long taskId) {
-        List<TaskEntryFromInfoDTO> entryFromInfoDTOList = taskService.getEntryFormInfo(taskId);
-        return WrapMapper.ok(entryFromInfoDTOList);
+        TaskEntryFromDTO taskEntryFromDTO = taskService.getEntryFormInfo(taskId);
+        return WrapMapper.ok(taskEntryFromDTO);
     }
 
     /**

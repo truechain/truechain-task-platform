@@ -1,13 +1,9 @@
 package com.truechain.task.admin.model.dto;
 
-import java.io.Serializable;
+public class TaskEntryFromInfoDTO {
 
-/**
- * 任务报名表
- */
-public class TaskEntryFromInfoDTO implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+    public TaskEntryFromInfoDTO() {
+    }
 
     /**
      * id

@@ -25,8 +25,6 @@ public class AuthUser extends BaseEntity implements Serializable {
      * 实际姓名
      */
     private String realName;
-
-    private String avatar;
     /**
      * 电话
      */
@@ -51,7 +49,11 @@ public class AuthUser extends BaseEntity implements Serializable {
      * 角色ID
      */
     @Transient
-    private Integer roleId;
+    private List<Integer> roleIdList;
+    /**
+     * 备注
+     */
+    private String remark;
     /**
      * 角色
      */
@@ -84,13 +86,6 @@ public class AuthUser extends BaseEntity implements Serializable {
         this.realName = realName;
     }
 
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
 
     public String getPhone() {
         return phone;
@@ -132,12 +127,20 @@ public class AuthUser extends BaseEntity implements Serializable {
         this.resource = resource;
     }
 
-    public Integer getRoleId() {
-        return roleId;
+    public List<Integer> getRoleIdList() {
+        return roleIdList;
     }
 
-    public void setRoleId(Integer roleId) {
-        this.roleId = roleId;
+    public void setRoleIdList(List<Integer> roleIdList) {
+        this.roleIdList = roleIdList;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 
     public List<AuthRole> getRoles() {
