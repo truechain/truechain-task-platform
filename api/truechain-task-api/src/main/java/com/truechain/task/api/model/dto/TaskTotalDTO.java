@@ -1,6 +1,7 @@
 package com.truechain.task.api.model.dto;
 
 import com.truechain.task.model.entity.BsTask;
+import com.truechain.task.model.entity.BsTaskDetail;
 
 import java.io.Serializable;
 import java.util.List;

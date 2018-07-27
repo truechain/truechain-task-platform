@@ -5,17 +5,7 @@
 	<property name="appName" value="TRUECHAIN-TASK-API"/>
 	<property name="profile" value="TEST" />
 	<contextName>${contextName}</contextName>
-	<property name="log.path" value="/home/work/data/test/log/" />
-
-	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-			<level>debug</level>
-		</filter>
-		<encoder>
-			<pattern>%d{yyyy-MM-dd;HH:mm:ss.SSS} ${appName} ${profile} [%thread] %-5level %caller{1} - %msg%n%n
-			</pattern>
-		</encoder>
-	</appender>
+	<property name="log.path" value="/home/work/data/log/" />
 
 	<appender name="logFile"
 		class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -38,12 +28,10 @@
 	</appender>
 
 	<logger name="com.truechain.task" level="debug" additivity="false">
-		<appender-ref ref="console"/>
 		<appender-ref ref="logFile" />
 	</logger>
 	
 	<root level="info" additivity="false">
-		<appender-ref ref="console"/>
 		<appender-ref ref="logFile" />
 	</root>
 

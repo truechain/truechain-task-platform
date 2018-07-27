@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="30 seconds" debug="false">
 
-	<property name="contextName" value="truechain-task-api"/>
-	<property name="appName" value="TRUECHAIN-TASK-API"/>
+	<property name="contextName" value="truechain-task-admin"/>
+	<property name="appName" value="TRUECHAIN-TASK-ADMIN"/>
 	<property name="profile" value="TEST" />
 	<contextName>${contextName}</contextName>
 	<property name="log.path" value="/home/work/data/test/log/" />

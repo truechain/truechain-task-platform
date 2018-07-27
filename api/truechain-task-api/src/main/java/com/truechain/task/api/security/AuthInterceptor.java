@@ -7,7 +7,7 @@ import com.truechain.task.util.JwtUtil;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -22,8 +22,11 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthInterceptor.class);
 
-    @Autowired
-    private SessionPOJOService sessionPOJOService;
+    private StringRedisTemplate stringRedisTemplate;
+
+    public AuthInterceptor(StringRedisTemplate stringRedisTemplate) {
+        this.stringRedisTemplate = stringRedisTemplate;
+    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object object) throws Exception {
@@ -48,13 +51,20 @@ public class AuthInterceptor implements HandlerInterceptor {
             forbidden(response);
             return false;
         }
+        String redisKey = null;
         try {
-            JwtUtil.getSessionIdByToken(token, salt);
+            redisKey = JwtUtil.getRedisKeyByToken(token, salt);
         } catch (Exception e) {
             forbidden(response);
             return false;
         }
 
+        String sessionId = stringRedisTemplate.opsForValue().get(redisKey);
+        if (null == sessionId) {
+            logger.info("--用户验证失败：前端token与后端redis不一致，验证失败URI: {}，验证失败Token: {}，验证失败Salt: {}，--返回登录页面。", uri, token,
+                    salt);
+            forbidden(response);
+        }
         return true;
     }
 

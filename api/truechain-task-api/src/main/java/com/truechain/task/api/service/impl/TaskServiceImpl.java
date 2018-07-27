@@ -3,6 +3,7 @@ package com.truechain.task.api.service.impl;
 import com.google.common.base.Preconditions;
 import com.querydsl.core.BooleanBuilder;
 import com.truechain.task.api.model.dto.TaskDTO;
+import com.truechain.task.api.model.dto.TaskDetailDTO;
 import com.truechain.task.api.model.dto.TaskTotalDTO;
 import com.truechain.task.api.model.dto.UserTaskInfoDTO;
 import com.truechain.task.api.repository.BsTaskDetailRepository;
@@ -21,11 +22,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -87,9 +86,9 @@ public class TaskServiceImpl extends BasicService implements TaskService {
             }
             if (null != userId && taskDTO.getIsHold() == 0) {
                 SysUser user = userRepository.findOne(userId);
+                Preconditions.checkArgument(null != user, "用户不存在");
                 taskDTO.setUserLevel(user.getLevel());
                 taskDTO.setIsLevelEnough(1);
-                Preconditions.checkArgument(null != user, "用户不存在");
                 QBsTaskDetail qtaskDetail = QBsTaskDetail.bsTaskDetail;
                 long exists = taskDetailRepository.count(qtaskDetail.id.eq(taskDetail.getId()).and(qtaskDetail.taskUserSet.any().user.eq(user)));
                 if (exists > 0) {
@@ -133,24 +132,35 @@ public class TaskServiceImpl extends BasicService implements TaskService {
         Iterator<BsTaskUser> iterable = taskUserIterable.iterator();
         while (iterable.hasNext()) {
             BsTaskUser taskUser = iterable.next();
-            BsTask task = taskUser.getTaskDetail().getTask();
+            BsTaskDetail taskDetail = taskUser.getTaskDetail();
+            BsTask bsTask = taskDetail.getTask();
+            BsTask task = new BsTask();
+            task.setId(bsTask.getId());
+            task.setName(bsTask.getName());
+            task.setLevel(bsTask.getLevel());
+            task.setCategory(bsTask.getCategory());
+            task.setIconPath(bsTask.getIconPath());
+            task.setPeopleNum(bsTask.getPeopleNum());
             task.setTaskStatus(taskUser.getTaskStatus());
+            task.setTaskDetailId(taskDetail.getId());
             taskTotalDTO.getTaskList().add(task);
         }
         return taskTotalDTO;
     }
 
     @Override
-    public UserTaskInfoDTO getUserTaskInfo(Long userId, Long taskId) {
+    public UserTaskInfoDTO getUserTaskInfo(Long userId, Long taskDetailId) {
         UserTaskInfoDTO userTaskInfoDTO = new UserTaskInfoDTO();
         SysUser user = userRepository.findOne(userId);
         Preconditions.checkArgument(user != null, "用户不存在");
-        Set<BsTaskUser> taskUserSet = user.getTaskUserSet();
-        Preconditions.checkArgument(!CollectionUtils.isEmpty(taskUserSet), "用户尚无任务");
-        Optional<BsTaskUser> taskUser = taskUserSet.stream().filter(x -> x.getTaskDetail().getTask().getId().equals(taskId)).findFirst();
-        Preconditions.checkArgument(taskUser.isPresent(), "该任务不存在");
-        userTaskInfoDTO.setTaskCompleteInfo(taskUser.get());
-        userTaskInfoDTO.setTask(taskUser.get().getTaskDetail().getTask());
+        BsTaskDetail taskDetail = taskDetailRepository.findOne(taskDetailId);
+        Preconditions.checkArgument(taskDetail != null, "任务不存在");
+        BsTask task = taskDetail.getTask();
+        Preconditions.checkArgument(task != null, "任务不存在");
+        userTaskInfoDTO.setTask(task);
+        QBsTaskUser qBsTaskUser = QBsTaskUser.bsTaskUser;
+        BsTaskUser taskUser = taskUserRepository.findOne(qBsTaskUser.user.eq(user).and(qBsTaskUser.taskDetail.eq(taskDetail)));
+        userTaskInfoDTO.setTaskCompleteInfo(taskUser);
         return userTaskInfoDTO;
     }
 
@@ -180,15 +190,16 @@ public class TaskServiceImpl extends BasicService implements TaskService {
     }
 
     @Override
-    public void commitUserTask(Long userId, Long taskId, String commitAddress, String remark) {
-        BsTask task = taskRepository.findOne(taskId);
-        Preconditions.checkArgument(null != task, "任务不存在");
+    public void commitUserTask(Long userId, TaskDetailDTO taskDetailDTO) {
+        BsTaskDetail taskDetail = taskDetailRepository.findOne(taskDetailDTO.getTaskDetailId());
+        Preconditions.checkArgument(null != taskDetail, "任务不存在");
         QBsTaskUser qTaskUser = QBsTaskUser.bsTaskUser;
-        BsTaskUser taskUser = taskUserRepository.findOne(qTaskUser.user.id.eq(userId).and(qTaskUser.taskDetail.task.eq(task)));
+        BsTaskUser taskUser = taskUserRepository.findOne(qTaskUser.user.id.eq(userId).and(qTaskUser.taskDetail.eq(taskDetail)));
         Preconditions.checkArgument(null != taskUser, "用户未执行该任务");
-        taskUser.setPushAddress(commitAddress);
-        taskUser.setRemark(remark);
+        taskUser.setPushAddress(taskDetailDTO.getCommitAddress());
+        taskUser.setRemark(taskDetailDTO.getRemark());
         taskUser.setTaskStatus(1);
+        taskUser.setRewardNum(taskDetail.getRewardNum());
         taskUserRepository.save(taskUser);
     }
 }

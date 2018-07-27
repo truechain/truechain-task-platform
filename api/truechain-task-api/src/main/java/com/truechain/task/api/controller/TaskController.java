@@ -1,6 +1,8 @@
 package com.truechain.task.api.controller;
 
+import com.google.common.base.Preconditions;
 import com.truechain.task.api.model.dto.SessionPOJO;
+import com.truechain.task.api.model.dto.TaskDetailDTO;
 import com.truechain.task.api.model.dto.TaskTotalDTO;
 import com.truechain.task.api.model.dto.UserTaskInfoDTO;
 import com.truechain.task.api.service.TaskService;
@@ -46,10 +48,10 @@ public class TaskController extends BasicController {
      * 获取我的任务详情
      */
     @PostMapping("/getUserTaskInfo")
-    public Wrapper getUserTaskInfo(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long taskId) {
+    public Wrapper getUserTaskInfo(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long taskDetailId) {
         SessionPOJO sessionPOJO = getSessionPoJO();
         Long userId = sessionPOJO.getUserId();
-        UserTaskInfoDTO userTaskInfoDTO = taskService.getUserTaskInfo(userId, taskId);
+        UserTaskInfoDTO userTaskInfoDTO = taskService.getUserTaskInfo(userId, taskDetailId);
         return WrapMapper.ok(userTaskInfoDTO);
     }
 
@@ -57,10 +59,11 @@ public class TaskController extends BasicController {
      * 提交任务
      */
     @PostMapping("/commitUserTask")
-    public Wrapper commitUserTask(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long taskId, @RequestParam(required = false) String commitAddress, @RequestParam(required = false) String remark) {
+    public Wrapper commitUserTask(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody TaskDetailDTO taskDetailDTO) {
         SessionPOJO sessionPOJO = getSessionPoJO();
         Long userId = sessionPOJO.getUserId();
-        taskService.commitUserTask(userId, taskId, commitAddress, remark);
+        Preconditions.checkArgument(null != taskDetailDTO.getTaskDetailId(), "任务ID不能为空");
+        taskService.commitUserTask(userId, taskDetailDTO);
         return WrapMapper.ok();
     }
 

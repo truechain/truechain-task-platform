@@ -12,7 +12,7 @@ public class RecommendTaskDTO implements Serializable {
     /**
      * 奖励
      */
-    private Double reward;
+    private Double rewardNum;
     /**
      * 时间
      */
@@ -26,12 +26,12 @@ public class RecommendTaskDTO implements Serializable {
         this.personName = personName;
     }
 
-    public Double getReward() {
-        return reward;
+    public Double getRewardNum() {
+        return rewardNum;
     }
 
-    public void setReward(Double reward) {
-        this.reward = reward;
+    public void setRewardNum(Double rewardNum) {
+        this.rewardNum = rewardNum;
     }
 
     public String getCreateTime() {

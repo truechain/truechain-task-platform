@@ -66,7 +66,7 @@ public class UserController extends BasicController {
      * 更新个人信息
      */
     @PostMapping("/updateUserInfo")
-    public Wrapper updateUserInfo(@RequestParam Long userId, @RequestParam String name, @RequestParam String wxNickName, @RequestParam String wxNum, @RequestParam(required = false) String openId,
+    public Wrapper updateUserInfo(@RequestParam Long userId, @RequestParam String name, @RequestParam String wxNickName, @RequestParam(required = false) String wxNum, @RequestParam(required = false) String openId,
                                   @RequestParam String trueChainAddress, @RequestParam("file") MultipartFile file) {
         Preconditions.checkArgument(!file.isEmpty(), "简历不能为空");
         String fileName = file.getOriginalFilename();

@@ -55,11 +55,12 @@ public class BasicController {
         if (StringUtils.isBlank(token) && StringUtils.isBlank(salt)) {
             return sessionPOJO;
         }
-        String sessionId = JwtUtil.getSessionIdByToken(token, salt);
-        if (StringUtils.isBlank(sessionId)) {
+        String redisKey = JwtUtil.getRedisKeyByToken(token, salt);
+        if (StringUtils.isBlank(redisKey)) {
             throw new BusinessException("用户尚未登录");
         }
-        sessionPOJO = sessionPOJOService.getBySessionId(sessionId);
+        String userId = stringRedisTemplate.opsForValue().get(redisKey);
+        sessionPOJO = sessionPOJOService.getByUserId(userId);
         return sessionPOJO;
     }
 }

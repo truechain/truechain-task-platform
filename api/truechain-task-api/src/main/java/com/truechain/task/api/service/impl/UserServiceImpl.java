@@ -117,7 +117,7 @@ public class UserServiceImpl implements UserService {
         userAccountDetailIterable.forEach(x -> {
             RecommendTaskDTO recommendTaskDTO = new RecommendTaskDTO();
             recommendTaskDTO.setPersonName(x.getRecommendTask().getRecommendUser().getPersonName());
-            recommendTaskDTO.setReward(x.getRewardNum());
+            recommendTaskDTO.setRewardNum(x.getRewardNum());
             recommendTaskDTO.setCreateTime(x.getCreateTime());
             recommendTaskDTOList.add(recommendTaskDTO);
         });

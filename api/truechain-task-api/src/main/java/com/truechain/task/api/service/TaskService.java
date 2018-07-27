@@ -1,11 +1,11 @@
 package com.truechain.task.api.service;
 
 import com.truechain.task.api.model.dto.TaskDTO;
+import com.truechain.task.api.model.dto.TaskDetailDTO;
 import com.truechain.task.api.model.dto.TaskTotalDTO;
 import com.truechain.task.api.model.dto.UserTaskInfoDTO;
 import com.truechain.task.model.entity.BsTask;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 public interface TaskService {
 
@@ -40,10 +40,10 @@ public interface TaskService {
      * 获取用户任务状态
      *
      * @param userId
-     * @param taskId
+     * @param taskDetailId
      * @return
      */
-    UserTaskInfoDTO getUserTaskInfo(Long userId, Long taskId);
+    UserTaskInfoDTO getUserTaskInfo(Long userId, Long taskDetailId);
 
     /**
      * 抢任务
@@ -57,9 +57,7 @@ public interface TaskService {
      * 提交用户任务
      *
      * @param userId
-     * @param taskId
-     * @param commitAddress
-     * @param remark
+     * @param taskDetailDTO
      */
-    void commitUserTask(Long userId, Long taskId, String commitAddress, String remark);
+    void commitUserTask(Long userId, TaskDetailDTO taskDetailDTO);
 }
