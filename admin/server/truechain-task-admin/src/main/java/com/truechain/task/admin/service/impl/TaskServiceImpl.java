@@ -10,6 +10,7 @@ import com.truechain.task.admin.repository.BsTaskDetailRepository;
 import com.truechain.task.admin.repository.BsTaskRepository;
 import com.truechain.task.admin.repository.BsTaskUserRepository;
 import com.truechain.task.admin.service.TaskService;
+import com.truechain.task.core.BusinessException;
 import com.truechain.task.model.entity.*;
 import com.truechain.task.model.enums.TaskStatusEnum;
 import org.apache.commons.lang3.StringUtils;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +74,11 @@ public class TaskServiceImpl implements TaskService {
         TaskInfoDTO taskInfoDTO = new TaskInfoDTO();
         BsTask task = taskRepository.findOne(taskId);
         Preconditions.checkArgument(null != task, "任务不存在");
+        String iconPath = task.getIconPath();
+        if (StringUtils.isNotBlank(iconPath)) {
+            iconPath = iconPath.substring(iconPath.lastIndexOf("/"));
+            task.setIconPath("http://phptrain.cn/taskicon" + iconPath);
+        }
         taskInfoDTO.setTask(task);
         Set<BsTaskDetail> taskDetailList = task.getTaskDetailSet();
         taskInfoDTO.setTaskDetailList(taskDetailList);
@@ -110,19 +117,38 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public BsTask addTask(BsTask task) {
+    @Transactional
+    public BsTask addTask(TaskInfoDTO taskInfoDTO) {
+        BsTask task = taskInfoDTO.getTask();
+        task.setAuditStatus(0);
+        long peopleNum = taskInfoDTO.getTaskDetailList().stream().mapToInt(x -> x.getPeopleNum()).sum();
+        task.setPeopleNum((int) peopleNum);
         task = taskRepository.save(task);
+        for (BsTaskDetail taskDetail : taskInfoDTO.getTaskDetailList()) {
+            taskDetail.setTask(task);
+            taskDetailRepository.save(taskDetail);
+        }
         return task;
     }
 
     @Override
-    public BsTask updateTask(BsTask task) {
+    @Transactional
+    public BsTask updateTask(TaskInfoDTO taskInfoDTO) {
+        BsTask task = taskInfoDTO.getTask();
         BsTask bsTask = taskRepository.findOne(task.getId());
         Preconditions.checkArgument(null != bsTask, "该任务不存在");
+        Preconditions.checkArgument(1 == bsTask.getTaskStatus(), "任务不是启用状态");
         QBsTaskDetail qBsTaskDetail = QBsTaskDetail.bsTaskDetail;
         long count = taskDetailRepository.count(qBsTaskDetail.task.eq(task).and(qBsTaskDetail.taskUserSet.isNotEmpty()));
         Preconditions.checkArgument(count <= 0, "任务已经有人在执行");
+        long peopleNum = taskInfoDTO.getTaskDetailList().stream().mapToInt(x -> x.getPeopleNum()).sum();
+        task.setPeopleNum((int) peopleNum);
         bsTask = taskRepository.save(bsTask);
+        taskDetailRepository.deleteByTask(bsTask);
+        for (BsTaskDetail taskDetail : taskInfoDTO.getTaskDetailList()) {
+            taskDetail.setTask(task);
+            taskDetailRepository.save(taskDetail);
+        }
         return bsTask;
     }
 
@@ -151,8 +177,21 @@ public class TaskServiceImpl implements TaskService {
     public void auditEntryFormUser(Long taskUserId) {
         BsTaskUser taskUser = taskUserRepository.findOne(taskUserId);
         Preconditions.checkArgument(null != taskUser, "数据有误");
-        taskUser.setTaskStatus(1);
         taskUser.setAuditStatus(1);
+        taskUserRepository.save(taskUser);
+    }
+
+    @Override
+    public void rewardEntryFromUser(Long taskUserId) {
+        BsTaskUser taskUser = taskUserRepository.findOne(taskUserId);
+        Preconditions.checkArgument(null != taskUser, "数据有误");
+        if (taskUser.getAuditStatus() == 0) {
+            throw new BusinessException("数据尚未审核");
+        }
+        if (taskUser.getAuditStatus() == 1) {
+            throw new BusinessException("奖励已经发放");
+        }
+        taskUser.setAuditStatus(2);
         taskUserRepository.save(taskUser);
     }
 

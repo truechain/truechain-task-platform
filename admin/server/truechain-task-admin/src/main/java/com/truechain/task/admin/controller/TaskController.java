@@ -1,20 +1,33 @@
 package com.truechain.task.admin.controller;
 
 import com.google.common.base.Preconditions;
+import com.truechain.task.admin.config.AppProperties;
 import com.truechain.task.admin.model.dto.TaskDTO;
 import com.truechain.task.admin.model.dto.TaskEntryFromDTO;
 import com.truechain.task.admin.model.dto.TaskInfoDTO;
 import com.truechain.task.admin.service.TaskService;
+import com.truechain.task.core.BusinessException;
 import com.truechain.task.core.WrapMapper;
 import com.truechain.task.core.Wrapper;
 import com.truechain.task.model.entity.BsTask;
+import com.truechain.task.model.entity.BsTaskDetail;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -23,6 +36,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/task")
 public class TaskController extends BasicController {
+
+    private static final Logger logger = LoggerFactory.getLogger(TaskController.class);
 
     @Autowired
     private TaskService taskService;
@@ -58,11 +73,49 @@ public class TaskController extends BasicController {
     }
 
     /**
+     * 上传图片
+     */
+    @PostMapping("/uploadTaskIcon")
+    public Wrapper uploadTaskIcon(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            throw new BusinessException("请选择文件");
+        }
+        String fileName = file.getOriginalFilename();
+        File uploadFile = new File(AppProperties.TASK_ICON_PATH + fileName);
+        try {
+            FileUtils.writeByteArrayToFile(uploadFile, file.getBytes());
+        } catch (IOException e) {
+            throw new BusinessException("文件上传异常");
+        }
+        Map<String, String> result = new HashMap<>();
+        String path = uploadFile.getPath();
+        result.put("path", path);
+        String showPath = "http://phptrain.cn/taskicon/" + fileName;
+        result.put("showPath", showPath);
+        return WrapMapper.ok(result);
+    }
+
+    /**
      * 新增任务
      */
     @PostMapping("/addTask")
-    public Wrapper addTask(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody BsTask task) {
-        taskService.addTask(task);
+    public Wrapper addTask(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody TaskInfoDTO taskInfoDTO) {
+        logger.info("addTask taskInfoDTO{}", new JSONObject(taskInfoDTO));
+        Preconditions.checkArgument(null != taskInfoDTO, "数据为空");
+        BsTask task = taskInfoDTO.getTask();
+        Preconditions.checkArgument(null != task, "任务数据为空");
+        Preconditions.checkArgument(StringUtils.isNotBlank(task.getName()), "任务名称不能为空");
+        Preconditions.checkArgument(StringUtils.isNotBlank(task.getLevel()), "任务等级不能为空");
+        Preconditions.checkArgument(null != task.getRewardType(), "奖励类型不能为空");
+        Preconditions.checkArgument(null != task.getRewardNum(), "奖励不能为空");
+        Preconditions.checkArgument(null != taskInfoDTO.getTaskDetailList(), "任务信息不完整");
+        Set<BsTaskDetail> taskDetailSet = taskInfoDTO.getTaskDetailList();
+        for (BsTaskDetail taskDetail : taskDetailSet) {
+            Preconditions.checkArgument(StringUtils.isNotBlank(taskDetail.getStation()), "岗位名称不能为空");
+            Preconditions.checkArgument(null != taskDetail.getPeopleNum(), "人数不能为空");
+            Preconditions.checkArgument(null != taskDetail.getRewardNum(), "奖励不能为空");
+        }
+        taskService.addTask(taskInfoDTO);
         return WrapMapper.ok();
     }
 
@@ -70,8 +123,24 @@ public class TaskController extends BasicController {
      * 更新任务
      */
     @PostMapping("/updateTask")
-    public Wrapper updateTask(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody BsTask task) {
-        taskService.updateTask(task);
+    public Wrapper updateTask(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody TaskInfoDTO taskInfoDTO) {
+        logger.info("updateTask taskInfoDTO{}", new JSONObject(taskInfoDTO));
+        Preconditions.checkArgument(null != taskInfoDTO, "数据为空");
+        BsTask task = taskInfoDTO.getTask();
+        Preconditions.checkArgument(null != task, "任务数据为空");
+        Preconditions.checkArgument(null != task.getId(), "任务ID不能为空");
+        Preconditions.checkArgument(StringUtils.isNotBlank(task.getName()), "任务名称不能为空");
+        Preconditions.checkArgument(StringUtils.isNotBlank(task.getLevel()), "任务等级不能为空");
+        Preconditions.checkArgument(null != task.getRewardType(), "奖励类型不能为空");
+        Preconditions.checkArgument(null != task.getRewardNum(), "奖励不能为空");
+        Preconditions.checkArgument(null != taskInfoDTO.getTaskDetailList(), "任务信息不完整");
+        Set<BsTaskDetail> taskDetailSet = taskInfoDTO.getTaskDetailList();
+        for (BsTaskDetail taskDetail : taskDetailSet) {
+            Preconditions.checkArgument(StringUtils.isNotBlank(taskDetail.getStation()), "岗位名称不能为空");
+            Preconditions.checkArgument(null != taskDetail.getPeopleNum(), "人数不能为空");
+            Preconditions.checkArgument(null != taskDetail.getRewardNum(), "奖励不能为空");
+        }
+        taskService.updateTask(taskInfoDTO);
         return WrapMapper.ok();
     }
 
@@ -108,6 +177,15 @@ public class TaskController extends BasicController {
     @PostMapping("/auditEntryFormUser")
     public Wrapper auditEntryFormUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long taskUserId) {
         taskService.auditEntryFormUser(taskUserId);
+        return WrapMapper.ok();
+    }
+
+    /**
+     * 发放奖励
+     */
+    @PostMapping("/rewardEntryFromUser")
+    public Wrapper rewardEntryFromUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long taskUserId) {
+        taskService.rewardEntryFromUser(taskUserId);
         return WrapMapper.ok();
     }
 }

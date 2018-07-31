@@ -46,6 +46,7 @@ spring:
 app:
   upload:
     file-path: D://
+    task-icon-path: D://
 logging:
   config: classpath:log/logback-dev.xml
 
@@ -67,7 +68,8 @@ spring:
       ddl-auto: none
 app:
   upload:
-    file-path: /home/work/data/test/upload/
+    file-path: /home/work/data/test/upload/resume/
+    task-icon-path: /home/work/data/test/upload/taskicon/
 springfox:
   documentation:
     swagger:
@@ -94,7 +96,8 @@ spring:
       ddl-auto: none
 app:
   upload:
-    file-path: /home/work/data/upload/
+    file-path: /home/work/data/upload/resume/
+    task-icon-path: /home/work/data/upload/taskicon/
 springfox:
   documentation:
     swagger:

@@ -20,17 +20,8 @@ public class ControllerLog {
     public void allController() {
     }
 
-    @Pointcut("execution(* com.truechain.task.admin.controller.*.*(..))")
-    public void subController() {
-    }
-
     @Around(value = "allController()")
     public Object controllerReturn(ProceedingJoinPoint point) throws Throwable {
-        return around(point);
-    }
-
-    @Around(value = "subController()")
-    public Object subControllerReturn(ProceedingJoinPoint point) throws Throwable {
         return around(point);
     }
 

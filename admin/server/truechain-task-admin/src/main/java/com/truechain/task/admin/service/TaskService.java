@@ -7,8 +7,6 @@ import com.truechain.task.model.entity.BsTask;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-
 
 /**
  * 任务Service
@@ -44,7 +42,7 @@ public interface TaskService {
      *
      * @param task
      */
-    BsTask addTask(BsTask task);
+    BsTask addTask(TaskInfoDTO task);
 
 
     /**
@@ -52,7 +50,7 @@ public interface TaskService {
      *
      * @param task
      */
-    BsTask updateTask(BsTask task);
+    BsTask updateTask(TaskInfoDTO task);
 
 
     /**
@@ -84,6 +82,13 @@ public interface TaskService {
      * @param taskUserId
      */
     void auditEntryFormUser(Long taskUserId);
+
+    /**
+     * 发放奖励
+     *
+     * @param taskUserId
+     */
+    void rewardEntryFromUser(Long taskUserId);
 
     /**
      * 总任务数

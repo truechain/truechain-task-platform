@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService {
         if (null != user.getAuditStatus()) {
             builder.and(qSysUser.auditStatus.eq(user.getAuditStatus()));
         }
-        if (null != user.getLevel()) {
+        if (StringUtils.isNotBlank(user.getLevel())) {
             builder.and(qSysUser.level.eq(user.getLevel()));
         }
         if (StringUtils.isNotBlank(user.getStartDate())) {
@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
             builder.and(qSysUser.personName.like(user.getName() + "%"));
         }
         if (StringUtils.isNotBlank(user.getWxNickName())) {
-            builder.and(qSysUser.wxNickName.like(user.getName() + "%"));
+            builder.and(qSysUser.wxNickName.like(user.getWxNickName() + "%"));
         }
         Page<SysUser> userPage = userRepository.findAll(builder, pageable);
         return userPage;
@@ -49,6 +49,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public SysUser getUserInfo(Long userId) {
         SysUser user = userRepository.findOne(userId);
+        String resumeFilePath = user.getResumeFilePath();
+        if (StringUtils.isNotBlank(resumeFilePath)) {
+            resumeFilePath = resumeFilePath.substring(resumeFilePath.lastIndexOf("/"));
+            user.setResumeFilePath("http://phptrain.cn/resume" + resumeFilePath);
+        }
         return user;
     }
 

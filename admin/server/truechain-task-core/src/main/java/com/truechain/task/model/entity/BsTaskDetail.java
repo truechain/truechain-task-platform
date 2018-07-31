@@ -24,7 +24,7 @@ public class BsTaskDetail extends BaseEntity {
     /**
      * 人数
      */
-    private int peopleNum;
+    private Integer peopleNum;
     /**
      * 奖励
      */
@@ -67,11 +67,11 @@ public class BsTaskDetail extends BaseEntity {
         this.station = station;
     }
 
-    public int getPeopleNum() {
+    public Integer getPeopleNum() {
         return peopleNum;
     }
 
-    public void setPeopleNum(int peopleNum) {
+    public void setPeopleNum(Integer peopleNum) {
         this.peopleNum = peopleNum;
     }
 
