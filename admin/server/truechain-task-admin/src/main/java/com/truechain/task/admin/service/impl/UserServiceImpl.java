@@ -5,14 +5,19 @@ import com.querydsl.core.BooleanBuilder;
 import com.truechain.task.admin.model.dto.UserDTO;
 import com.truechain.task.admin.repository.SysUserRepository;
 import com.truechain.task.admin.service.UserService;
+import com.truechain.task.model.entity.BsTask;
+import com.truechain.task.model.entity.QBsTask;
 import com.truechain.task.model.entity.QSysUser;
 import com.truechain.task.model.entity.SysUser;
 import com.truechain.task.model.enums.AuditStatusEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.Date;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -72,11 +77,28 @@ public class UserServiceImpl implements UserService {
         Preconditions.checkArgument(null != sysUser, "该用户不存在");
         Preconditions.checkArgument(AuditStatusEnum.UNAUDITED.equals(sysUser.getAuditStatus()), "用户已通过审核");
         sysUser.setAuditStatus(AuditStatusEnum.AUDITED.getCode());
+//        sysUser.setUpdateTime(new Date().toString());
         userRepository.save(sysUser);
     }
 
     @Override
     public long countPartTimeTotalPeople() {
         return userRepository.count();
+    }
+
+    public long countAuditPass(String beginDate,String endDate){
+        BooleanBuilder builder = new BooleanBuilder();
+        QSysUser qSysUser = QSysUser.sysUser;
+
+        builder.and(qSysUser.auditStatus.eq(0));
+        if (StringUtils.isNotBlank(beginDate)) {
+            builder.and(qSysUser.updateTime.gt(beginDate));
+        }
+        if (StringUtils.isNotBlank(endDate)) {
+            builder.and(qSysUser.updateTime.lt(endDate));
+        }
+
+        long count = userRepository.count(builder);
+        return count;
     }
 }

@@ -7,6 +7,10 @@ public class TaskDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * 任务执行人id
+     */
+    private Long userId;
+    /**
      * 开始时间
      */
     private String startDateTime;
@@ -125,5 +129,13 @@ public class TaskDTO implements Serializable {
 
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

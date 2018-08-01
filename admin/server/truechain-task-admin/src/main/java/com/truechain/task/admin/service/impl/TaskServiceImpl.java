@@ -2,10 +2,8 @@ package com.truechain.task.admin.service.impl;
 
 import com.google.common.base.Preconditions;
 import com.querydsl.core.BooleanBuilder;
-import com.truechain.task.admin.model.dto.TaskDTO;
-import com.truechain.task.admin.model.dto.TaskEntryFromDTO;
-import com.truechain.task.admin.model.dto.TaskEntryFromInfoDTO;
-import com.truechain.task.admin.model.dto.TaskInfoDTO;
+import com.truechain.task.admin.model.dto.*;
+import com.truechain.task.admin.repository.BsRecommendTaskRepository;
 import com.truechain.task.admin.repository.BsTaskDetailRepository;
 import com.truechain.task.admin.repository.BsTaskRepository;
 import com.truechain.task.admin.repository.BsTaskUserRepository;
@@ -36,6 +34,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private BsTaskUserRepository taskUserRepository;
+
+    @Autowired
+    private BsRecommendTaskRepository bsRecommendTaskRepository;
 
     @Override
     public Page<BsTask> getTaskPage(TaskDTO task, Pageable pageable) {
@@ -203,5 +204,32 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public long countComplateTask() {
         throw new UnsupportedOperationException();
+    }
+
+    public Page<BsRecommendTask> getBsRecommendTaskList(UserDTO user, Pageable pageable) {
+        BooleanBuilder builder = new BooleanBuilder();
+        QBsRecommendTask qbsRecommendTask = QBsRecommendTask.bsRecommendTask;
+        if (user.getId() != null && user.getId() > 0) {
+            builder.and(qbsRecommendTask.user.id.eq(user.getId()));
+        }
+
+        if (StringUtils.isNotBlank(user.getName())) {
+            builder.and(qbsRecommendTask.recommendUser.personName.eq(user.getName()));
+        }
+        if (null != user.getLevel()) {
+            builder.and(qbsRecommendTask.recommendUser.level.eq(user.getLevel()));
+        }
+        if (StringUtils.isNotBlank(user.getWxNickName())) {
+            builder.and(qbsRecommendTask.recommendUser.level.eq(user.getWxNickName()));
+        }
+        if (StringUtils.isNotBlank(user.getStartDate())) {
+            builder.and(qbsRecommendTask.createTime.gt(user.getStartDate()));
+        }
+        if (StringUtils.isNotBlank(user.getEndDate())) {
+            builder.and(qbsRecommendTask.createTime.lt(user.getEndDate()));
+        }
+
+        Page<BsRecommendTask> result = bsRecommendTaskRepository.findAll(builder, pageable);
+        return result;
     }
 }

@@ -1,17 +1,23 @@
 package com.truechain.task.admin.controller;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.common.util.concurrent.AtomicDouble;
+import com.truechain.task.admin.model.dto.TaskDTO;
+import com.truechain.task.admin.model.dto.TaskInfoDTO;
+import com.truechain.task.admin.model.dto.TimeRangeDTO;
+import com.truechain.task.admin.model.dto.UserDTO;
 import com.truechain.task.admin.service.BsTaskUserService;
+import com.truechain.task.admin.service.TaskService;
 import com.truechain.task.admin.service.UserService;
-import com.truechain.task.admin.viewPojo.UserProfilePagePojo;
-import com.truechain.task.admin.viewPojo.UserRecommendPagePojo;
-import com.truechain.task.admin.viewPojo.UserRewardHistoryPojo;
-import com.truechain.task.admin.viewPojo.UserTaskStatePojo;
+import com.truechain.task.admin.viewPojo.*;
 import com.truechain.task.core.WrapMapper;
 import com.truechain.task.core.Wrapper;
+import com.truechain.task.model.entity.BsRecommendTask;
+import com.truechain.task.model.entity.BsTask;
 import com.truechain.task.model.entity.BsTaskUser;
 import com.truechain.task.model.entity.SysUser;
 import io.swagger.annotations.ApiOperation;
@@ -27,6 +33,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.ServletOutputStream;
 import java.net.URLEncoder;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 报表Controller
@@ -41,14 +48,62 @@ public class ReportController extends BasicController {
     @Autowired
     private BsTaskUserService bsTaskUserService;
 
+    @Autowired
+    private TaskService taskService;
+
+
+
+    /**
+     * 统计分析的首页数据接口
+     * @param token
+     * @param agent
+     * @return
+     */
+    @PostMapping("/index")
+    public Wrapper index(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestBody TimeRangeDTO timeRange ){
+        //ReportIndexPojo
+        ReportIndexPojo reportIndexPojo = new ReportIndexPojo();
+        //通过审核用户数量
+        long userCount = userService.countAuditPass(timeRange.getStartDate(),timeRange.getEndDate());
+        reportIndexPojo.setUserCount(userCount);
+        //任务总量
+        TaskDTO taskDTO = new TaskDTO();
+        taskDTO.setStartDateTime(timeRange.getStartDate());
+        taskDTO.setEndDateTime(timeRange.getEndDate());
+        long taskCount = bsTaskUserService.getBsTaskUserCount(taskDTO);
+        reportIndexPojo.setTaskCount(taskCount);
+
+        taskDTO.setTaskStatus(0);       //完成
+        Pageable pageable = new PageRequest(1, Integer.MAX_VALUE);
+        Page<BsTaskUser> page = bsTaskUserService.getBsTaskUser(taskDTO,pageable);
+        //完成任务数
+        reportIndexPojo.setTaskDoneCount(page.getTotalElements());
+        page.forEach(bsTaskUser->{
+            if(bsTaskUser.getTaskDetail().getTask().getRewardType() == 1){
+                reportIndexPojo.setTrueValue(reportIndexPojo.getTrueValue() + bsTaskUser.getRewardNum());
+            }
+            if(bsTaskUser.getTaskDetail().getTask().getRewardType() == 2){
+                reportIndexPojo.setTtrValue(reportIndexPojo.getTtrValue() + bsTaskUser.getRewardNum());
+            }
+            if(bsTaskUser.getTaskDetail().getTask().getRewardType() == 3){
+                reportIndexPojo.setRmbValue(reportIndexPojo.getRmbValue() + bsTaskUser.getRewardNum());
+            }
+        });
+        //进行中任务数
+        reportIndexPojo.setTaskDoingCount(reportIndexPojo.getTaskCount() - reportIndexPojo.getTaskDoneCount());
+
+        return WrapMapper.ok(reportIndexPojo);
+    }
+
     /**
      * 获取用户概况数据
      */
     @PostMapping("/getUserProfilePage")
-    public Wrapper getUserProfilePage(@RequestParam int pageIndex, @RequestParam int pageSize) {
-        Pageable pageable = new PageRequest(pageIndex - 1, pageSize);
-        Page<SysUser> userPage = userService.getUserPage(null, pageable);
-
+    public Wrapper getUserProfilePage(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody UserDTO user) {
+        Preconditions.checkArgument(user.getPageIndex() > 0, "分页信息错误");
+        Preconditions.checkArgument(user.getPageSize() > 1, "分页信息错误");
+        Pageable pageable = new PageRequest(user.getPageIndex() - 1, user.getPageSize());
+        Page<SysUser> userPage = userService.getUserPage(user, pageable);
         Page<UserProfilePagePojo> result = convert(userPage);
         return WrapMapper.ok(result);
     }
@@ -132,21 +187,37 @@ public class ReportController extends BasicController {
      */
     @ApiOperation(value = "获取指定用户的推荐任务清单", notes = "返回结构")
     @PostMapping("/getRecommendStats")
-    public Wrapper getRecommendStats(@RequestParam Long userId) {
+    public Wrapper getRecommendStats(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody UserDTO user) {
+        Preconditions.checkArgument(user.getPageIndex() > 0, "分页信息错误");
+        Preconditions.checkArgument(user.getPageSize() > 1, "分页信息错误");
+        Pageable pageable = new PageRequest(user.getPageIndex() - 1, user.getPageSize());
         List<UserRecommendPagePojo> rewardHistoryPojoList = Lists.newArrayList();
 
-//        List<BsTaskUser> bsTaskUserList = bsTaskUserService.getBsTaskUserByUserIds(Sets.newHashSet(userId));
-        for (long i = 0; i < 8; i++) {
+        Page<BsRecommendTask> bsRecommendTaskList = taskService.getBsRecommendTaskList(user,pageable);
+        List<UserRecommendPagePojo> result = Lists.newArrayList();
+        bsRecommendTaskList.forEach(item->{
             UserRecommendPagePojo userRecommendPagePojo = new UserRecommendPagePojo();
-            userRecommendPagePojo.setId(i);
-            userRecommendPagePojo.setName("小" + i);
-            userRecommendPagePojo.setWxName("wx_xiao" + i);
-            userRecommendPagePojo.setWxNum("wx_num_xiao" + i);
-            userRecommendPagePojo.setLevel("A");
-            userRecommendPagePojo.setRecommendTime("2018-06-22 20:45:36");
+            userRecommendPagePojo.setId(item.getId());
+            userRecommendPagePojo.setName(item.getUser().getPersonName());
+            userRecommendPagePojo.setWxName(item.getUser().getWxNickName());
+            userRecommendPagePojo.setWxNum(item.getUser().getWxNum());
+            userRecommendPagePojo.setLevel(item.getUser().getLevel());
+            userRecommendPagePojo.setRecommendTime(item.getCreateTime());
 
             rewardHistoryPojoList.add(userRecommendPagePojo);
-        }
+        });
+//        List<BsTaskUser> bsTaskUserList = bsTaskUserService.getBsTaskUserByUserIds(Sets.newHashSet(userId));
+//        for (long i = 0; i < 8; i++) {
+//            UserRecommendPagePojo userRecommendPagePojo = new UserRecommendPagePojo();
+//            userRecommendPagePojo.setId(i);
+//            userRecommendPagePojo.setName("小" + i);
+//            userRecommendPagePojo.setWxName("wx_xiao" + i);
+//            userRecommendPagePojo.setWxNum("wx_num_xiao" + i);
+//            userRecommendPagePojo.setLevel("A");
+//            userRecommendPagePojo.setRecommendTime("2018-06-22 20:45:36");
+//
+//            rewardHistoryPojoList.add(userRecommendPagePojo);
+//        }
         return WrapMapper.ok(rewardHistoryPojoList);
     }
 
@@ -155,8 +226,14 @@ public class ReportController extends BasicController {
      */
     @ApiOperation(value = "获取指定用户的任务状态清单", notes = "返回结构中{taskName:任务名称;taskState:任务状态(0-任务中,1-已经完成);taskCategory:任务类型(0-个人，1-团队)}")
     @PostMapping("/getTaskStats")
-    public Wrapper getTaskStats(@RequestParam Long userId) {
-        List<BsTaskUser> tasks = bsTaskUserService.getBsTaskUserByUserIds(Sets.newHashSet(userId));
+    public Wrapper getTaskStats(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody TaskDTO taskDTO) {
+
+        Preconditions.checkArgument(taskDTO.getPageIndex() > 0, "分页信息错误");
+        Preconditions.checkArgument(taskDTO.getPageSize() > 1, "分页信息错误");
+        Pageable pageable = new PageRequest(taskDTO.getPageIndex() - 1, taskDTO.getPageSize());
+        Page<BsTaskUser> tasks = bsTaskUserService.getBsTaskUser(taskDTO, pageable);
+
+//        List<BsTaskUser> tasks = bsTaskUserService.getBsTaskUserByUserIds(Sets.newHashSet(userId));
         List<UserTaskStatePojo> result = Lists.newArrayList();
         for (BsTaskUser bsTaskUser : tasks) {
             UserTaskStatePojo userTaskStatePojo = new UserTaskStatePojo();
@@ -174,10 +251,12 @@ public class ReportController extends BasicController {
     }
 
     @GetMapping("/export")
-    public void export(@RequestParam int pageIndex, @RequestParam int pageSize) {
+    public void export(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody UserDTO user) {
 
-        Pageable pageable = new PageRequest(pageIndex - 1, pageSize);
-        Page<SysUser> userPage = userService.getUserPage(null, pageable);
+        Preconditions.checkArgument(user.getPageIndex() > 0, "分页信息错误");
+        Preconditions.checkArgument(user.getPageSize() > 1, "分页信息错误");
+        Pageable pageable = new PageRequest(user.getPageIndex() - 1, user.getPageSize());
+        Page<SysUser> userPage = userService.getUserPage(user, pageable);
 
         Page<UserProfilePagePojo> userProfilePagePojos = convert(userPage);
         response.setContentType("application/binary;charset=UTF-8");

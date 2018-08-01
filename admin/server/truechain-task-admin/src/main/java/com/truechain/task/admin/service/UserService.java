@@ -43,4 +43,6 @@ public interface UserService {
      * @return
      */
     long countPartTimeTotalPeople();
+
+    long countAuditPass(String beginDate,String endDate);
 }

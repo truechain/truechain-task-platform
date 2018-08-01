@@ -6,6 +6,8 @@ public class UserDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private Long id;
+
     private String startDate;
 
     private String endDate;
@@ -21,6 +23,14 @@ public class UserDTO implements Serializable {
     private int pageIndex;
 
     private int pageSize;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getStartDate() {
         return startDate;

@@ -3,7 +3,10 @@ package com.truechain.task.admin.service;
 import com.truechain.task.admin.model.dto.TaskDTO;
 import com.truechain.task.admin.model.dto.TaskEntryFromDTO;
 import com.truechain.task.admin.model.dto.TaskInfoDTO;
+import com.truechain.task.admin.model.dto.UserDTO;
+import com.truechain.task.model.entity.BsRecommendTask;
 import com.truechain.task.model.entity.BsTask;
+import com.truechain.task.model.entity.SysUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -103,5 +106,13 @@ public interface TaskService {
      * @return
      */
     long countComplateTask();
+
+    /**
+     * 推荐列表
+     * @param user
+     * @param pageable
+     * @return
+     */
+    Page<BsRecommendTask> getBsRecommendTaskList(UserDTO user, Pageable pageable);
 }
 
