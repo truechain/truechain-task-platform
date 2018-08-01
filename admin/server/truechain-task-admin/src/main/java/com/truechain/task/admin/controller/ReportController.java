@@ -6,10 +6,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.AtomicDouble;
-import com.truechain.task.admin.model.dto.TaskDTO;
-import com.truechain.task.admin.model.dto.TaskInfoDTO;
-import com.truechain.task.admin.model.dto.TimeRangeDTO;
-import com.truechain.task.admin.model.dto.UserDTO;
+import com.truechain.task.admin.model.dto.*;
 import com.truechain.task.admin.service.BsRecommendTaskService;
 import com.truechain.task.admin.service.BsTaskUserService;
 import com.truechain.task.admin.service.TaskService;
@@ -178,10 +175,10 @@ public class ReportController extends BasicController {
      */
     @ApiOperation(value = "获取指定用户的任务状态清单", notes = "返回结构中{taskName:任务名称;taskState:任务状态(0-任务中,1-已经完成)}")
     @PostMapping("/getRewardStats")
-    public Wrapper getRewardStats(@RequestParam Long userId) {
+    public Wrapper getRewardStats(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestParam RewardViewDTO rewardViewDTO) {
         List<UserRewardHistoryPojo> rewardHistoryPojoList = Lists.newArrayList();
 
-        List<BsTaskUser> bsTaskUserList = bsTaskUserService.getBsTaskUserByUserIds(Sets.newHashSet(userId));
+        List<BsTaskUser> bsTaskUserList = bsTaskUserService.getBsTaskUserByUserIds(Sets.newHashSet(rewardViewDTO.getUserId()));
         for (BsTaskUser bsTaskUser : bsTaskUserList) {
             UserRewardHistoryPojo rewardHistoryPojo = new UserRewardHistoryPojo();
             rewardHistoryPojo.setId(bsTaskUser.getId());
