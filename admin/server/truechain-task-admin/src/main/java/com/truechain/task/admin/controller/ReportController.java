@@ -175,7 +175,7 @@ public class ReportController extends BasicController {
      */
     @ApiOperation(value = "获取指定用户的任务状态清单", notes = "返回结构中{taskName:任务名称;taskState:任务状态(0-任务中,1-已经完成)}")
     @PostMapping("/getRewardStats")
-    public Wrapper getRewardStats(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestParam RewardViewDTO rewardViewDTO) {
+    public Wrapper getRewardStats(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestBody RewardViewDTO rewardViewDTO) {
         List<UserRewardHistoryPojo> rewardHistoryPojoList = Lists.newArrayList();
 
         List<BsTaskUser> bsTaskUserList = bsTaskUserService.getBsTaskUserByUserIds(Sets.newHashSet(rewardViewDTO.getUserId()));

@@ -1,6 +1,10 @@
 package com.truechain.task.admin.model.dto;
 
-public class RewardViewDTO extends TimeRangeDTO{
+import java.io.Serializable;
+
+public class RewardViewDTO extends TimeRangeDTO implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     private Long userId;
     private String channel;
     private String rewordType;
