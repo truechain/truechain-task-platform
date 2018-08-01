@@ -17,6 +17,7 @@ public class UserProfilePagePojo {
     private double ttrValue;
     private double rmbValue;
 
+    private String recommendPerson;
     private long recommendCount;
 
     public UserProfilePagePojo() {
@@ -103,5 +104,13 @@ public class UserProfilePagePojo {
 
     public void setRecommendCount(long recommendCount) {
         this.recommendCount = recommendCount;
+    }
+
+    public String getRecommendPerson() {
+        return recommendPerson;
+    }
+
+    public void setRecommendPerson(String recommendPerson) {
+        this.recommendPerson = recommendPerson;
     }
 }

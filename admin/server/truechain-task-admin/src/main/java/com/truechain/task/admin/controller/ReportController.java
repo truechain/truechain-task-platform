@@ -10,6 +10,7 @@ import com.truechain.task.admin.model.dto.TaskDTO;
 import com.truechain.task.admin.model.dto.TaskInfoDTO;
 import com.truechain.task.admin.model.dto.TimeRangeDTO;
 import com.truechain.task.admin.model.dto.UserDTO;
+import com.truechain.task.admin.service.BsRecommendTaskService;
 import com.truechain.task.admin.service.BsTaskUserService;
 import com.truechain.task.admin.service.TaskService;
 import com.truechain.task.admin.service.UserService;
@@ -25,6 +26,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -50,6 +52,9 @@ public class ReportController extends BasicController {
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private BsRecommendTaskService bsRecommendTaskService;
 
 
 
@@ -111,9 +116,30 @@ public class ReportController extends BasicController {
     private Page<UserProfilePagePojo> convert(Page<SysUser> userPage) {
         Set<Long> userIdSet = Sets.newHashSet();
         userPage.forEach(sysUser -> userIdSet.add(sysUser.getId()));
-        Page<UserProfilePagePojo> result = userPage.map(source -> new UserProfilePagePojo(source));
+
+        //获取用户推荐
+        //推荐人
+        Map<Long,BsRecommendTask> recommendTasks = bsRecommendTaskService.getMyRecommendUser(userIdSet);
+        //用户推荐数
+        Map<Long,Integer> recommendCounts = bsRecommendTaskService.getMyRecommendCount(userIdSet);
+
+        Page<UserProfilePagePojo> result = userPage.map(source -> {
+            UserProfilePagePojo userProfilePagePojo = new UserProfilePagePojo(source);
+            if(recommendTasks.containsKey(userProfilePagePojo.getId())){
+                BsRecommendTask bsRecommendTask = recommendTasks.get(userProfilePagePojo.getId());
+                userProfilePagePojo.setRecommendPerson(bsRecommendTask.getUser().getPersonName());
+            }
+            if(recommendCounts.containsKey(userProfilePagePojo.getId())){
+                Integer bsRecommendCount = recommendCounts.get(userProfilePagePojo.getId());
+                userProfilePagePojo.setRecommendCount(bsRecommendCount);
+            }
+            return userProfilePagePojo;
+        }
+        );
         Map<Long, UserProfilePagePojo> userProfilePagePojoMap = Maps.newHashMap();
         result.forEach(user -> userProfilePagePojoMap.put(user.getId(), user));
+
+
         //获取用户任务情况{抢任务数目,完成,进行中}
         List<BsTaskUser> taskUsers = bsTaskUserService.getBsTaskUserByUserIds(userIdSet);
         for (BsTaskUser bsTaskUser : taskUsers) {
@@ -142,7 +168,7 @@ public class ReportController extends BasicController {
                 }
             }
         }
-        //获取用户推荐
+
 
         return result;
     }
