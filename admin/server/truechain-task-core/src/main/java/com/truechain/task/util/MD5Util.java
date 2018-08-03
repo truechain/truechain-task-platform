@@ -164,6 +164,10 @@ public class MD5Util {
         System.out.println(password1);
         System.out.println(verify("123456", password));
         System.out.println(verify("123456", password1));
+
+
+        boolean verifyResult = MD5Util.verify("123456", "f7401027305461ec05871f73067a87456169b4988df7802d");
+        System.out.println(verifyResult);
     }
 
 }

@@ -1,9 +1,11 @@
 package com.truechain.task.admin.viewPojo;
 
+import java.io.Serializable;
+
 /**
  * 统计分析-用户任务列表
  */
-public class UserTaskStatePojo {
+public class UserTaskStatePojo implements Serializable {
     private Long id;
     private String taskName;
     private String taskLevel;

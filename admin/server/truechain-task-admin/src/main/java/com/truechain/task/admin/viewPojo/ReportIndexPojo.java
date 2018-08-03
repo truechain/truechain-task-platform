@@ -1,53 +1,36 @@
 package com.truechain.task.admin.viewPojo;
 
-import com.truechain.task.model.entity.SysUser;
+import java.io.Serializable;
 
-/**
- * 统计分析-用户任务列表
- */
-public class UserProfilePagePojo {
-    private Long id;
-    private SysUser sysUser;
+public class ReportIndexPojo implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+    private Long Id;
+    private Long userCount;
     private long taskCount;
     private long taskDoneCount;
     private long taskDoingCount;
-
     private double trueValue;
     private double ttrValue;
     private double rmbValue;
 
-    private String recommendPerson;
-    private long recommendCount;
-
-    public UserProfilePagePojo() {
-    }
-
-    public UserProfilePagePojo(SysUser sysUser) {
-        this.id = sysUser.getId();
-        this.sysUser = sysUser;
-//        this.taskCount = 0L;
-//        this.taskDoneCount = 0L;
-//        this.taskDoingCount = 0L;
-//        this.trueCount = 0L;
-//        this.ttrCount = 0L;
-//        this.rmbCount = 0L;
+    public ReportIndexPojo() {
     }
 
     public Long getId() {
-        return id;
+        return Id;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        Id = id;
     }
 
-    public SysUser getSysUser() {
-        return sysUser;
+    public Long getUserCount() {
+        return userCount;
     }
 
-    public void setSysUser(SysUser user) {
-        this.sysUser = user;
+    public void setUserCount(Long userCount) {
+        this.userCount = userCount;
     }
 
     public long getTaskCount() {
@@ -96,21 +79,5 @@ public class UserProfilePagePojo {
 
     public void setRmbValue(double rmbValue) {
         this.rmbValue = rmbValue;
-    }
-
-    public long getRecommendCount() {
-        return recommendCount;
-    }
-
-    public void setRecommendCount(long recommendCount) {
-        this.recommendCount = recommendCount;
-    }
-
-    public String getRecommendPerson() {
-        return recommendPerson;
-    }
-
-    public void setRecommendPerson(String recommendPerson) {
-        this.recommendPerson = recommendPerson;
     }
 }
