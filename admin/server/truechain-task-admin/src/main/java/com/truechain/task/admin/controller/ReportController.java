@@ -5,8 +5,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.common.util.concurrent.AtomicDouble;
 import com.truechain.task.admin.model.dto.*;
+import com.truechain.task.admin.model.viewPojo.*;
 import com.truechain.task.admin.service.BsRecommendTaskService;
 import com.truechain.task.admin.service.BsTaskUserService;
 import com.truechain.task.admin.service.TaskService;
@@ -15,7 +15,6 @@ import com.truechain.task.admin.viewPojo.*;
 import com.truechain.task.core.WrapMapper;
 import com.truechain.task.core.Wrapper;
 import com.truechain.task.model.entity.BsRecommendTask;
-import com.truechain.task.model.entity.BsTask;
 import com.truechain.task.model.entity.BsTaskUser;
 import com.truechain.task.model.entity.SysUser;
 import io.swagger.annotations.ApiOperation;
@@ -23,7 +22,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +30,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.ServletOutputStream;
 import java.net.URLEncoder;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 报表Controller

@@ -1,4 +1,4 @@
-package com.truechain.task.admin.viewPojo;
+package com.truechain.task.admin.model.viewPojo;
 
 /**
  * 统计分析-用户任务列表

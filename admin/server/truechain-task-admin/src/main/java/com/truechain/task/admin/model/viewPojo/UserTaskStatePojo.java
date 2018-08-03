@@ -1,4 +1,4 @@
-package com.truechain.task.admin.viewPojo;
+package com.truechain.task.admin.model.viewPojo;
 
 import java.io.Serializable;
 
