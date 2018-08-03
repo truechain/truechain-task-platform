@@ -67,11 +67,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void auditUser(Long userId, String rewardNum) {
+    public void auditUser(Long userId, String level, String rewardNum) {
         SysUser sysUser = userRepository.findOne(userId);
         Preconditions.checkArgument(null != sysUser, "该用户不存在");
         Preconditions.checkArgument(AuditStatusEnum.UNAUDITED.equals(sysUser.getAuditStatus()), "用户已通过审核");
         sysUser.setAuditStatus(AuditStatusEnum.AUDITED.getCode());
+        sysUser.setLevel(level);
         userRepository.save(sysUser);
     }
 

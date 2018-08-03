@@ -59,8 +59,8 @@ public class UserController extends BasicController {
      * 审核用户
      */
     @PostMapping("/auditUser")
-    public Wrapper auditUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long userId, @RequestParam String rewardNum) {
-        userService.auditUser(userId, rewardNum);
+    public Wrapper auditUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long userId, @RequestParam String level, @RequestParam String rewardNum) {
+        userService.auditUser(userId, level, rewardNum);
         return WrapMapper.ok();
     }
 }

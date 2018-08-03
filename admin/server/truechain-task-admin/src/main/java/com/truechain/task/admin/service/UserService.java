@@ -33,9 +33,10 @@ public interface UserService {
      * 审核用户
      *
      * @param userId
+     * @param level
      * @param rewardNum
      */
-    void auditUser(Long userId, String rewardNum);
+    void auditUser(Long userId,String level, String rewardNum);
 
     /**
      * 获取兼职总人数
