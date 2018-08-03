@@ -5,13 +5,15 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.truechain.task.admin.model.dto.*;
+import com.truechain.task.admin.model.dto.RewardViewDTO;
+import com.truechain.task.admin.model.dto.TaskDTO;
+import com.truechain.task.admin.model.dto.TimeRangeDTO;
+import com.truechain.task.admin.model.dto.UserDTO;
 import com.truechain.task.admin.model.viewPojo.*;
 import com.truechain.task.admin.service.BsRecommendTaskService;
 import com.truechain.task.admin.service.BsTaskUserService;
 import com.truechain.task.admin.service.TaskService;
 import com.truechain.task.admin.service.UserService;
-import com.truechain.task.admin.viewPojo.*;
 import com.truechain.task.core.WrapMapper;
 import com.truechain.task.core.Wrapper;
 import com.truechain.task.model.entity.BsRecommendTask;
@@ -29,7 +31,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletOutputStream;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 报表Controller
