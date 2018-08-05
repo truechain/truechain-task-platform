@@ -101,13 +101,4 @@ public class AdminUserController extends BasicController {
         return WrapMapper.ok();
     }
 
-
-    /**
-     * 用户登出
-     */
-    @GetMapping("/exit")
-    public Wrapper accountExit(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent) {
-
-        return WrapMapper.ok();
-    }
 }

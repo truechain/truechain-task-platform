@@ -1,15 +1,12 @@
 package com.truechain.task.admin.controller;
 
-import com.google.common.base.Preconditions;
 import com.truechain.task.admin.service.AccountService;
 import com.truechain.task.core.WrapMapper;
 import com.truechain.task.core.Wrapper;
 import com.truechain.task.model.dto.LoginDTO;
-import com.truechain.task.model.entity.AuthUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -48,5 +45,14 @@ public class AccountController extends BasicController {
         return WrapMapper.ok(loginDTO);
     }
 
+
+    /**
+     * 用户登出
+     */
+    @GetMapping("/exit")
+    public Wrapper accountExit(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent) {
+
+        return WrapMapper.ok();
+    }
 
 }

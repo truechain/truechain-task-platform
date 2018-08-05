@@ -11,6 +11,7 @@ import com.truechain.task.core.WrapMapper;
 import com.truechain.task.core.Wrapper;
 import com.truechain.task.model.entity.BsTask;
 import com.truechain.task.model.entity.BsTaskDetail;
+import com.truechain.task.model.entity.BsTaskUser;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
@@ -185,7 +186,7 @@ public class TaskController extends BasicController {
      */
     @PostMapping("/rewardEntryFromUser")
     public Wrapper rewardEntryFromUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long taskUserId) {
-        taskService.rewardEntryFromUser(taskUserId);
-        return WrapMapper.ok();
+        BsTaskUser bsTaskUser = taskService.rewardEntryFromUser(taskUserId);
+        return WrapMapper.ok(bsTaskUser);
     }
 }

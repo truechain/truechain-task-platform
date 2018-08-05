@@ -26,6 +26,10 @@ public class AuthRole extends BaseEntity implements Serializable {
      */
     private Short status;
     /**
+     * 备注
+     */
+    private String remark;
+    /**
      * 用户ID
      */
     @Transient
@@ -43,6 +47,11 @@ public class AuthRole extends BaseEntity implements Serializable {
     @ManyToMany
     @JoinTable(name = "auth_role_resource")
     private List<AuthResource> resources;
+    /**
+     * 资源ID集合
+     */
+    @Transient
+    private List<Long> resourceIdList;
 
     public String getCode() {
         return code;
@@ -90,5 +99,21 @@ public class AuthRole extends BaseEntity implements Serializable {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public List<Long> getResourceIdList() {
+        return resourceIdList;
+    }
+
+    public void setResourceIdList(List<Long> resourceIdList) {
+        this.resourceIdList = resourceIdList;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

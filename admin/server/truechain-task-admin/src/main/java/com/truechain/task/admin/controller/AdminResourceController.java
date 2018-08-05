@@ -1,9 +1,9 @@
 package com.truechain.task.admin.controller;
 
+import com.truechain.task.admin.service.ResourceService;
 import com.truechain.task.core.WrapMapper;
 import com.truechain.task.core.Wrapper;
 import com.truechain.task.model.entity.AuthResource;
-import com.truechain.task.admin.service.ResourceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class AdminResourceController extends BasicController {
      * 获取角色(roleId)所被授权的资源
      */
     @PostMapping("/getResourcesByRoleId")
-    public Wrapper getResourcesByRoleId(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestParam Integer roleId, @RequestParam Integer pageIndex, @RequestParam Integer pageSize) {
+    public Wrapper getResourcesByRoleId(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Integer roleId, @RequestParam Integer pageIndex, @RequestParam Integer pageSize) {
         Pageable pageable = new PageRequest(pageIndex - 1, pageSize);
         AuthResource authResource = new AuthResource();
         authResource.setRoleId(roleId);
@@ -40,7 +40,7 @@ public class AdminResourceController extends BasicController {
      * 获取角色(roleId)未被授权的资源
      */
     @PostMapping("/getResourcesExtendByRoleId")
-    public Wrapper getResourcesExtendByRoleId(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestParam Integer roleId, @RequestParam Integer pageIndex, @RequestParam Integer pageSize) {
+    public Wrapper getResourcesExtendByRoleId(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Integer roleId, @RequestParam Integer pageIndex, @RequestParam Integer pageSize) {
         Pageable pageable = new PageRequest(pageIndex - 1, pageSize);
         AuthResource authResource = new AuthResource();
         authResource.setRoleId(roleId);
@@ -61,17 +61,28 @@ public class AdminResourceController extends BasicController {
      * 获取全部菜单
      */
     @PostMapping("/getResourcePage")
-    public Wrapper getResourcePage(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestParam Integer pageIndex, @RequestParam Integer pageSize) {
+    public Wrapper getResourcePage(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam(required = false) String name, @RequestParam Integer pageIndex, @RequestParam Integer pageSize) {
         Pageable pageable = new PageRequest(pageIndex - 1, pageSize);
-        Page<AuthResource> resourcePage = resourceService.getResourcePageByCriteria(null, pageable);
+        AuthResource authResource = new AuthResource();
+        authResource.setName(name);
+        Page<AuthResource> resourcePage = resourceService.getResourcePageByCriteria(authResource, pageable);
         return WrapMapper.ok(resourcePage);
+    }
+
+    /**
+     * 查看权限详情
+     */
+    @PostMapping("/getResourceInfo")
+    public Wrapper getResourceInfo(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, Long resourceId) {
+        AuthResource authResource = resourceService.getResourceInfoById(resourceId);
+        return WrapMapper.ok(authResource);
     }
 
     /**
      * 添加菜单
      */
     @PostMapping("/addResource")
-    public Wrapper addResource(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestBody AuthResource resource) {
+    public Wrapper addResource(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody AuthResource resource) {
         resourceService.addResource(resource);
         return WrapMapper.ok();
     }
@@ -80,7 +91,7 @@ public class AdminResourceController extends BasicController {
      * 修改菜单
      */
     @PostMapping("/updateResource")
-    public Wrapper updateResource(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestBody AuthResource resource) {
+    public Wrapper updateResource(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody AuthResource resource) {
         resourceService.updateResource(resource);
         return WrapMapper.ok();
     }
@@ -89,7 +100,7 @@ public class AdminResourceController extends BasicController {
      * 删除菜单
      */
     @PostMapping("/deleteResource")
-    public Wrapper deleteResource(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestParam Integer resourceId) {
+    public Wrapper deleteResource(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long resourceId) {
         resourceService.deleteResource(resourceId);
         return WrapMapper.ok();
     }

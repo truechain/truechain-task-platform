@@ -183,17 +183,18 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void rewardEntryFromUser(Long taskUserId) {
+    public BsTaskUser rewardEntryFromUser(Long taskUserId) {
         BsTaskUser taskUser = taskUserRepository.findOne(taskUserId);
         Preconditions.checkArgument(null != taskUser, "数据有误");
         if (taskUser.getAuditStatus() == 0) {
             throw new BusinessException("数据尚未审核");
         }
-        if (taskUser.getAuditStatus() == 1) {
-            throw new BusinessException("奖励已经发放");
+        if (taskUser.getAuditStatus() == 2) {
+            throw new BusinessException("奖励已经发放，不可重复发放");
         }
         taskUser.setAuditStatus(2);
-        taskUserRepository.save(taskUser);
+        taskUser = taskUserRepository.save(taskUser);
+        return taskUser;
     }
 
     @Override

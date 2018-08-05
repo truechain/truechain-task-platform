@@ -27,7 +27,12 @@ public class AuthResource extends BaseEntity implements Serializable {
     /**
      * 上级ID
      */
-    private Integer parentId;
+    private Long parentId;
+    /**
+     * 上级名称
+     */
+    @Transient
+    private String parentName;
     /**
      * uri
      */
@@ -44,6 +49,10 @@ public class AuthResource extends BaseEntity implements Serializable {
      * 状态
      */
     private Short status;
+    /**
+     * 备注
+     */
+    private String remark;
     /**
      * 角色ID
      */
@@ -72,11 +81,11 @@ public class AuthResource extends BaseEntity implements Serializable {
         this.name = name;
     }
 
-    public Integer getParentId() {
+    public Long getParentId() {
         return parentId;
     }
 
-    public void setParentId(Integer parentId) {
+    public void setParentId(Long parentId) {
         this.parentId = parentId;
     }
 
@@ -126,5 +135,21 @@ public class AuthResource extends BaseEntity implements Serializable {
 
     public void setRoles(List<AuthRole> roles) {
         this.roles = roles;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public String getParentName() {
+        return parentName;
+    }
+
+    public void setParentName(String parentName) {
+        this.parentName = parentName;
     }
 }

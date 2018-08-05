@@ -6,6 +6,7 @@ import com.truechain.task.admin.model.dto.TaskInfoDTO;
 import com.truechain.task.admin.model.dto.UserDTO;
 import com.truechain.task.model.entity.BsRecommendTask;
 import com.truechain.task.model.entity.BsTask;
+import com.truechain.task.model.entity.BsTaskUser;
 import com.truechain.task.model.entity.SysUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -91,7 +92,7 @@ public interface TaskService {
      *
      * @param taskUserId
      */
-    void rewardEntryFromUser(Long taskUserId);
+    BsTaskUser rewardEntryFromUser(Long taskUserId);
 
     /**
      * 总任务数

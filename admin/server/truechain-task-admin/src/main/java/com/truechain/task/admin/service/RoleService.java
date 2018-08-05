@@ -8,17 +8,15 @@ import java.util.List;
 
 public interface RoleService {
 
-    void addRoleResource(Integer roleId, Long resourceId);
-
-    void deleteRoleResource(Integer roleId, Long resourceId);
-
     Page<AuthRole> getRolePageByCriteria(AuthRole role, Pageable pageable);
 
     List<AuthRole> getListRoleByCriteria(AuthRole role);
+
+    AuthRole getRoleInfo(Long roleId);
 
     void addRole(AuthRole role);
 
     void updateRole(AuthRole role);
 
-    void deleteRoleByRoleId(Integer roleId);
+    void deleteRoleByRoleId(Long roleId);
 }

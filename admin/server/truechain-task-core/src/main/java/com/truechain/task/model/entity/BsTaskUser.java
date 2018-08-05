@@ -25,7 +25,7 @@ public class BsTaskUser extends BaseEntity {
      */
     private int auditStatus;
     /**
-     * 审核结果
+     * 审核结果(0-未审核,1-已审核,2-已发放)
      */
     private String auditResult;
     /**
