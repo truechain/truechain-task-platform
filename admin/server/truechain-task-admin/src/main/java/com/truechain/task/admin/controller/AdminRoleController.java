@@ -1,5 +1,6 @@
 package com.truechain.task.admin.controller;
 
+import com.truechain.task.admin.model.viewPojo.RoleInfo;
 import com.truechain.task.admin.service.RoleService;
 import com.truechain.task.core.WrapMapper;
 import com.truechain.task.core.Wrapper;
@@ -44,7 +45,7 @@ public class AdminRoleController extends BasicController {
      */
     @PostMapping("/getRoleInfo")
     public Wrapper getRoleInfo(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long roleId) {
-        AuthRole role = roleService.getRoleInfo(roleId);
+        RoleInfo role = roleService.getRoleInfo(roleId);
         return WrapMapper.ok(role);
     }
 

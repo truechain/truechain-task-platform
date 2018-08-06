@@ -2,6 +2,8 @@ package com.truechain.task.admin.service.impl;
 
 import com.google.common.base.Preconditions;
 import com.querydsl.core.BooleanBuilder;
+import com.truechain.task.admin.model.viewPojo.RoleInfo;
+import com.truechain.task.admin.repository.AuthResourceRepository;
 import com.truechain.task.admin.repository.AuthRoleRepository;
 import com.truechain.task.admin.service.RoleService;
 import com.truechain.task.model.entity.AuthResource;
@@ -28,6 +30,9 @@ public class RoleServiceImpl implements RoleService {
 
     @Autowired
     private AuthRoleRepository roleRepository;
+
+    @Autowired
+    private AuthResourceRepository resourceRepository;
 
     @Override
     public Page<AuthRole> getRolePageByCriteria(AuthRole role, Pageable pageable) {
@@ -59,40 +64,43 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public AuthRole getRoleInfo(Long roleId) {
+    public RoleInfo getRoleInfo(Long roleId) {
+        RoleInfo roleInfo = new RoleInfo();
         AuthRole role = roleRepository.findOne(roleId);
-        return role;
+        Preconditions.checkArgument(role != null, "角色不存在");
+        roleInfo.setRole(role);
+        roleInfo.setResources(role.getResources());
+        return roleInfo;
     }
 
     @Override
     @Transactional
     public void addRole(AuthRole role) {
         List<Long> resourceIdList = role.getResourceIdList();
+        role.setResources(new ArrayList<>());
         for (Long resourceId : resourceIdList) {
-            AuthResource authResource = new AuthResource();
-            authResource.setId(resourceId);
-            role.getResources().add(authResource);
+            AuthResource resource = resourceRepository.findOne(resourceId);
+            Preconditions.checkArgument(resource != null, "权限不存在");
+            role.getResources().add(resource);
         }
         roleRepository.save(role);
     }
 
     @Override
+    @Transactional
     public void updateRole(AuthRole role) {
         AuthRole authRole = roleRepository.findOne(role.getId());
         Preconditions.checkArgument(authRole != null, "角色不存在");
         authRole.setName(role.getName());
         authRole.setCode(role.getCode());
         authRole.setStatus(role.getStatus());
-        if (!CollectionUtils.isEmpty(authRole.getResourceIdList())) {
-            authRole.getResourceIdList().clear();
-        }
-        authRole.setResourceIdList(new ArrayList<>());
+        authRole.setResources(new ArrayList<>());
         List<Long> resourceIdList = role.getResourceIdList();
-        if (role.getResourceIdList() != null) {
+        if (resourceIdList != null) {
             for (Long resourceId : resourceIdList) {
-                AuthResource authResource = new AuthResource();
-                authResource.setId(resourceId);
-                authRole.getResources().add(authResource);
+                AuthResource resource = resourceRepository.findOne(resourceId);
+                Preconditions.checkArgument(resource != null, "权限不存在");
+                authRole.getResources().add(resource);
             }
         }
         roleRepository.save(authRole);

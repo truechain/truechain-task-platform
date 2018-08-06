@@ -38,7 +38,7 @@ public class ResourceServiceImpl implements ResourceService {
         }
         Page<AuthResource> resourcePage = resourceRepository.findAll(builder, pageable);
         for (AuthResource authResource : resourcePage.getContent()) {
-            if (authResource.getParentId() != 0) {
+            if (authResource.getParentId() != null && authResource.getParentId() != 0) {
                 AuthResource parentResource = resourceRepository.findOne(authResource.getParentId());
                 if (parentResource != null) {
                     authResource.setParentName(parentResource.getName());
@@ -115,6 +115,9 @@ public class ResourceServiceImpl implements ResourceService {
     public void addResource(AuthResource resource) {
         resource.setStatus((short) 1);
         resource.setType((short) 1);
+        if (resource.getParentId() == null) {
+            resource.setParentId(0L);
+        }
         resourceRepository.save(resource);
     }
 

@@ -1,5 +1,6 @@
 package com.truechain.task.admin.service;
 
+import com.truechain.task.admin.model.viewPojo.RoleInfo;
 import com.truechain.task.model.entity.AuthRole;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +13,7 @@ public interface RoleService {
 
     List<AuthRole> getListRoleByCriteria(AuthRole role);
 
-    AuthRole getRoleInfo(Long roleId);
+    RoleInfo getRoleInfo(Long roleId);
 
     void addRole(AuthRole role);
 
