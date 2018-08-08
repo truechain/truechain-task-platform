@@ -62,6 +62,7 @@ public class ReportController extends BasicController {
      * @param agent
      * @return
      */
+    @ApiOperation(value = "数据统计")
     @PostMapping("/index")
     public Wrapper index(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestBody TimeRangeDTO timeRange ){
         //ReportIndexPojo
@@ -101,6 +102,7 @@ public class ReportController extends BasicController {
     /**
      * 获取用户概况数据
      */
+    @ApiOperation(value = "统计详情")
     @PostMapping("/getUserProfilePage")
     public Wrapper getUserProfilePage(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody UserDTO user) {
         Preconditions.checkArgument(user.getPageIndex() > 0, "分页信息错误");
@@ -174,7 +176,7 @@ public class ReportController extends BasicController {
     /**
      * 获取奖励统计数据
      */
-    @ApiOperation(value = "获取指定用户的任务状态清单", notes = "返回结构中{taskName:任务名称;taskState:任务状态(0-任务中,1-已经完成)}")
+    @ApiOperation(value = "奖励列表", notes = "返回结构中{taskName:任务名称;taskState:任务状态(0-任务中,1-已经完成)}")
     @PostMapping("/getRewardStats")
     public Wrapper getRewardStats(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestBody RewardViewDTO rewardViewDTO) {
         List<UserRewardHistoryPojo> rewardHistoryPojoList = Lists.newArrayList();
@@ -209,7 +211,7 @@ public class ReportController extends BasicController {
     /**
      * 获取推荐统计数据
      */
-    @ApiOperation(value = "获取指定用户的推荐任务清单", notes = "返回结构")
+    @ApiOperation(value = "推荐列表", notes = "返回结构")
     @PostMapping("/getRecommendStats")
     public Wrapper getRecommendStats(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody UserDTO user) {
         Preconditions.checkArgument(user.getPageIndex() > 0, "分页信息错误");
@@ -246,9 +248,9 @@ public class ReportController extends BasicController {
     }
 
     /**
-     * 获取任务统计数据
+     * 任务列表
      */
-    @ApiOperation(value = "获取指定用户的任务状态清单", notes = "返回结构中{taskName:任务名称;taskState:任务状态(0-任务中,1-已经完成);taskCategory:任务类型(0-个人，1-团队)}")
+    @ApiOperation(value = "任务列表", notes = "返回结构中{taskName:任务名称;taskState:任务状态(0-任务中,1-已经完成);taskCategory:任务类型(0-个人，1-团队)}")
     @PostMapping("/getTaskStats")
     public Wrapper getTaskStats(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody TaskDTO taskDTO) {
 
@@ -274,6 +276,7 @@ public class ReportController extends BasicController {
         return WrapMapper.ok(result);
     }
 
+    @ApiOperation(value = "统计详情-导出")
     @GetMapping("/export")
     public void export(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody UserDTO user) {
 
