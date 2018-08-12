@@ -66,6 +66,7 @@ public class ReportController extends BasicController {
     @PostMapping("/index")
     public Wrapper index(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestBody TimeRangeDTO timeRange ){
         //ReportIndexPojo
+//        List<UserRewardHistoryPojo> rewardHistoryPojoList = Lists.newArrayList();
         ReportIndexPojo reportIndexPojo = new ReportIndexPojo();
         //通过审核用户数量
         long userCount = userService.countAuditPass(timeRange.getStartDate(),timeRange.getEndDate());
@@ -96,7 +97,7 @@ public class ReportController extends BasicController {
         //进行中任务数
         reportIndexPojo.setTaskDoingCount(reportIndexPojo.getTaskCount() - reportIndexPojo.getTaskDoneCount());
 
-        return WrapMapper.ok(reportIndexPojo);
+        return WrapMapper.ok(Lists.newArrayList(reportIndexPojo));
     }
 
     /**
