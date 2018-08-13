@@ -5,19 +5,14 @@ import com.querydsl.core.BooleanBuilder;
 import com.truechain.task.admin.model.dto.UserDTO;
 import com.truechain.task.admin.repository.SysUserRepository;
 import com.truechain.task.admin.service.UserService;
-import com.truechain.task.model.entity.BsTask;
-import com.truechain.task.model.entity.QBsTask;
 import com.truechain.task.model.entity.QSysUser;
 import com.truechain.task.model.entity.SysUser;
 import com.truechain.task.model.enums.AuditStatusEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -75,7 +70,7 @@ public class UserServiceImpl implements UserService {
     public void auditUser(Long userId, String level, String rewardNum) {
         SysUser sysUser = userRepository.findOne(userId);
         Preconditions.checkArgument(null != sysUser, "该用户不存在");
-        Preconditions.checkArgument(AuditStatusEnum.UNAUDITED.equals(sysUser.getAuditStatus()), "用户已通过审核");
+        Preconditions.checkArgument(AuditStatusEnum.UNAUDITED.getCode() == sysUser.getAuditStatus(), "用户已通过审核");
         sysUser.setAuditStatus(AuditStatusEnum.AUDITED.getCode());
         sysUser.setLevel(level);
         userRepository.save(sysUser);
@@ -86,7 +81,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.count();
     }
 
-    public long countAuditPass(String beginDate,String endDate){
+    public long countAuditPass(String beginDate, String endDate) {
         BooleanBuilder builder = new BooleanBuilder();
         QSysUser qSysUser = QSysUser.sysUser;
 
