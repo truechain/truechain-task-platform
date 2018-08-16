@@ -14,6 +14,9 @@ public class ReportIndexPojo implements Serializable {
     private double ttrValue;
     private double rmbValue;
 
+    private String startDate;
+    private String endDate;
+
     public ReportIndexPojo() {
     }
 
@@ -79,5 +82,21 @@ public class ReportIndexPojo implements Serializable {
 
     public void setRmbValue(double rmbValue) {
         this.rmbValue = rmbValue;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
     }
 }

@@ -65,9 +65,13 @@ public class ReportController extends BasicController {
     @ApiOperation(value = "数据统计")
     @PostMapping("/index")
     public Wrapper index(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestBody TimeRangeDTO timeRange ){
-        //ReportIndexPojo
+        final String startDate = timeRange.getStartDate();
+        final String endDate = timeRange.getEndDate();
 
         ReportIndexPojo reportIndexPojo = new ReportIndexPojo();
+
+        reportIndexPojo.setStartDate(startDate);
+        reportIndexPojo.setEndDate(endDate);
         //通过审核用户数量
         long userCount = userService.countAuditPass(timeRange.getStartDate(),timeRange.getEndDate());
         reportIndexPojo.setUserCount(userCount);
@@ -234,18 +238,6 @@ public class ReportController extends BasicController {
 
             rewardHistoryPojoList.add(userRecommendPagePojo);
         });
-//        List<BsTaskUser> bsTaskUserList = bsTaskUserService.getBsTaskUserByUserIds(Sets.newHashSet(userId));
-//        for (long i = 0; i < 8; i++) {
-//            UserRecommendPagePojo userRecommendPagePojo = new UserRecommendPagePojo();
-//            userRecommendPagePojo.setId(i);
-//            userRecommendPagePojo.setName("小" + i);
-//            userRecommendPagePojo.setWxName("wx_xiao" + i);
-//            userRecommendPagePojo.setWxNum("wx_num_xiao" + i);
-//            userRecommendPagePojo.setLevel("A");
-//            userRecommendPagePojo.setRecommendTime("2018-06-22 20:45:36");
-//
-//            rewardHistoryPojoList.add(userRecommendPagePojo);
-//        }
         return WrapMapper.ok(rewardHistoryPojoList);
     }
 
@@ -261,7 +253,7 @@ public class ReportController extends BasicController {
         Pageable pageable = new PageRequest(taskDTO.getPageIndex() - 1, taskDTO.getPageSize());
         Page<BsTaskUser> tasks = bsTaskUserService.getBsTaskUser(taskDTO, pageable);
 
-//        List<BsTaskUser> tasks = bsTaskUserService.getBsTaskUserByUserIds(Sets.newHashSet(userId));
+
         List<UserTaskStatePojo> result = Lists.newArrayList();
         for (BsTaskUser bsTaskUser : tasks) {
             UserTaskStatePojo userTaskStatePojo = new UserTaskStatePojo();
