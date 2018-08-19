@@ -22,6 +22,11 @@ public class AuthUser extends BaseEntity implements Serializable {
      */
     private String password;
     /**
+     * 确认密码
+     */
+    @Transient
+    private String comfirmPassword;
+    /**
      * 实际姓名
      */
     private String realName;
@@ -49,7 +54,7 @@ public class AuthUser extends BaseEntity implements Serializable {
      * 角色ID
      */
     @Transient
-    private List<Integer> roleIdList;
+    private List<Long> roleIdList;
     /**
      * 备注
      */
@@ -61,6 +66,11 @@ public class AuthUser extends BaseEntity implements Serializable {
     @ManyToMany
     @JoinTable(name = "auth_user_role")
     private List<AuthRole> roles;
+    /**
+     * 角色名称
+     */
+    @Transient
+    private String roleName;
 
     public String getUsername() {
         return username;
@@ -76,6 +86,14 @@ public class AuthUser extends BaseEntity implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getComfirmPassword() {
+        return comfirmPassword;
+    }
+
+    public void setComfirmPassword(String comfirmPassword) {
+        this.comfirmPassword = comfirmPassword;
     }
 
     public String getRealName() {
@@ -127,11 +145,11 @@ public class AuthUser extends BaseEntity implements Serializable {
         this.resource = resource;
     }
 
-    public List<Integer> getRoleIdList() {
+    public List<Long> getRoleIdList() {
         return roleIdList;
     }
 
-    public void setRoleIdList(List<Integer> roleIdList) {
+    public void setRoleIdList(List<Long> roleIdList) {
         this.roleIdList = roleIdList;
     }
 
@@ -149,5 +167,13 @@ public class AuthUser extends BaseEntity implements Serializable {
 
     public void setRoles(List<AuthRole> roles) {
         this.roles = roles;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
     }
 }

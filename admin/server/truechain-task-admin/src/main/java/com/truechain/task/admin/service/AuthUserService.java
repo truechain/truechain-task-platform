@@ -8,9 +8,24 @@ public interface AuthUserService {
 
     /**
      * 添加用户
+     *
      * @param user
      */
-    void addUser(AuthUser user);
+    void addAuthUser(AuthUser user);
+
+    /**
+     * 更新用户
+     *
+     * @param user
+     */
+    void updateAuthUser(AuthUser user);
+
+    /**
+     * 删除用户
+     *
+     * @param userId
+     */
+    void deleteAuthUser(Long userId);
 
     AuthUser getUserById(Long userId);
 

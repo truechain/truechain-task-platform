@@ -18,7 +18,7 @@ import java.io.IOException;
 
 public class BasicController {
 
-    private static final Logger logger = LoggerFactory.getLogger(BasicController.class);
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     protected StringRedisTemplate stringRedisTemplate;

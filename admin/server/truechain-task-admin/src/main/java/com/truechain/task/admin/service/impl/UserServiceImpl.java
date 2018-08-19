@@ -24,11 +24,15 @@ public class UserServiceImpl implements UserService {
     public Page<SysUser> getUserPage(UserDTO user, Pageable pageable) {
         BooleanBuilder builder = new BooleanBuilder();
         QSysUser qSysUser = QSysUser.sysUser;
-        if (null != user.getAuditStatus()) {
-            builder.and(qSysUser.auditStatus.eq(user.getAuditStatus()));
-        }
         if (StringUtils.isNotBlank(user.getLevel())) {
             builder.and(qSysUser.level.eq(user.getLevel()));
+        }
+        if (null != user.getAuditStatus()) {
+            if (user.getAuditStatus() == 1) {
+                builder.and(qSysUser.auditStatus.eq(user.getAuditStatus()));
+            } else if (user.getAuditStatus() == 0) {
+                builder.and(qSysUser.auditStatus.eq(AuditStatusEnum.UNCOMPLATE.getCode()).or(qSysUser.auditStatus.eq(AuditStatusEnum.UNAUDITED.getCode())));
+            }
         }
         if (StringUtils.isNotBlank(user.getStartDate())) {
             builder.and(qSysUser.createTime.gt(user.getStartDate()));
@@ -58,10 +62,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public SysUser getUser(Long userId) {
+        SysUser user = userRepository.findOne(userId);
+        Preconditions.checkArgument(user != null, "用户不存在");
+        return user;
+    }
+
+    @Override
     public SysUser updateUser(SysUser user) {
         SysUser sysUser = userRepository.findOne(user.getId());
         Preconditions.checkArgument(null != sysUser, "该用户不存在");
-        sysUser.setPersonName(user.getLevel());
+        sysUser.setLevel(user.getLevel());
         userRepository.save(sysUser);
         return sysUser;
     }

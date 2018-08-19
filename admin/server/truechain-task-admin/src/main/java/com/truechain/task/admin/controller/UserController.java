@@ -3,14 +3,24 @@ package com.truechain.task.admin.controller;
 import com.google.common.base.Preconditions;
 import com.truechain.task.admin.model.dto.UserDTO;
 import com.truechain.task.admin.service.UserService;
+import com.truechain.task.core.BusinessException;
 import com.truechain.task.core.WrapMapper;
 import com.truechain.task.core.Wrapper;
 import com.truechain.task.model.entity.SysUser;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 
 /**
  * 用户Controller
@@ -41,6 +51,34 @@ public class UserController extends BasicController {
     public Wrapper getUserInfo(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long userId) {
         SysUser user = userService.getUserInfo(userId);
         return WrapMapper.ok(user);
+    }
+
+    /**
+     * 下载文件
+     */
+    @GetMapping("/downLoadResume")
+    public void downLoadResume(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long userId, final HttpServletResponse response) {
+        SysUser user = userService.getUser(userId);
+        String resumePath = user.getResumeFilePath();
+        if (StringUtils.isBlank(resumePath)) {
+            throw new BusinessException("用户未上传简历文件");
+        }
+        File file = new File(resumePath);
+        try {
+            byte[] data = FileUtils.readFileToByteArray(file);
+            String fileName = resumePath.substring(resumePath.lastIndexOf("/"));
+            fileName = URLEncoder.encode(fileName, "UTF-8");
+            response.reset();
+            response.setHeader("Content-Disposition", "attachment; filename=" + fileName);
+            response.addHeader("Content-Length", "" + data.length);
+            response.setContentType("application/octet-stream;charset=UTF-8");
+            OutputStream outputStream = new BufferedOutputStream(response.getOutputStream());
+            outputStream.write(data);
+            outputStream.flush();
+            outputStream.close();
+        } catch (IOException e) {
+            logger.error("下载异常", e);
+        }
     }
 
     /**
