@@ -4,7 +4,6 @@ import com.truechain.task.admin.service.AuthUserService;
 import com.truechain.task.core.BusinessException;
 import com.truechain.task.core.WrapMapper;
 import com.truechain.task.core.Wrapper;
-import com.truechain.task.model.entity.AuthRole;
 import com.truechain.task.model.entity.AuthUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,6 +33,12 @@ public class AdminUserController extends BasicController {
      */
     @PostMapping("addUser")
     public Wrapper addUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody AuthUser user) {
+        if (StringUtils.isEmpty(user.getPassword())) {
+            throw new BusinessException("密码不能为空");
+        }
+        if (StringUtils.isEmpty(user.getUsername())) {
+            throw new BusinessException("登录账号不能为空");
+        }
         if (!user.getPassword().equals(user.getComfirmPassword())) {
             throw new BusinessException("两次密码不一致");
         }
@@ -45,7 +51,7 @@ public class AdminUserController extends BasicController {
      */
     @PostMapping("updateAuthUser")
     public Wrapper updateAuthUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody AuthUser user) {
-        if (!user.getPassword().equals(user.getComfirmPassword())) {
+        if (!StringUtils.isEmpty(user.getPassword()) && !user.getPassword().equals(user.getComfirmPassword())) {
             throw new BusinessException("两次密码不一致");
         }
         authUserService.updateAuthUser(user);
