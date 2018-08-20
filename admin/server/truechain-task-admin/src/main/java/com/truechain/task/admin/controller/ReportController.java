@@ -20,6 +20,7 @@ import com.truechain.task.model.entity.BsRecommendTask;
 import com.truechain.task.model.entity.BsTaskUser;
 import com.truechain.task.model.entity.SysUser;
 import io.swagger.annotations.ApiOperation;
+import joptsimple.internal.Strings;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
@@ -187,6 +188,7 @@ public class ReportController extends BasicController {
     public Wrapper getRewardStats(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestBody RewardViewDTO rewardViewDTO) {
         List<UserRewardHistoryPojo> rewardHistoryPojoList = Lists.newArrayList();
 
+        //完成任务方式获取奖励
         List<BsTaskUser> bsTaskUserList = bsTaskUserService.getBsTaskUserByUserIds(Sets.newHashSet(rewardViewDTO.getUserId()));
         for (BsTaskUser bsTaskUser : bsTaskUserList) {
             UserRewardHistoryPojo rewardHistoryPojo = new UserRewardHistoryPojo();
@@ -208,9 +210,19 @@ public class ReportController extends BasicController {
                 }
                 rewardHistoryPojo.setRewardNum(rewardValue);
 
-                rewardHistoryPojoList.add(rewardHistoryPojo);
+                if(Strings.isNullOrEmpty(rewardViewDTO.getRewordType())){
+                    //不按照rewardType过滤
+                    rewardHistoryPojoList.add(rewardHistoryPojo);
+                }else{
+                    if(rewardType == Integer.parseInt(rewardViewDTO.getRewordType())){
+                        rewardHistoryPojoList.add(rewardHistoryPojo);
+                    }
+                }
+
             }
         }
+        //TODO 推荐方式获取奖励
+
         return WrapMapper.ok(rewardHistoryPojoList);
     }
 
@@ -226,7 +238,7 @@ public class ReportController extends BasicController {
         List<UserRecommendPagePojo> rewardHistoryPojoList = Lists.newArrayList();
 
         Page<BsRecommendTask> bsRecommendTaskList = taskService.getBsRecommendTaskList(user,pageable);
-        List<UserRecommendPagePojo> result = Lists.newArrayList();
+
         bsRecommendTaskList.forEach(item->{
             UserRecommendPagePojo userRecommendPagePojo = new UserRecommendPagePojo();
             userRecommendPagePojo.setId(item.getId());
