@@ -33,7 +33,31 @@ public class AdminUserController extends BasicController {
      */
     @PostMapping("addUser")
     public Wrapper addUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody AuthUser user) {
-        authUserService.addUser(user);
+        if (!user.getPassword().equals(user.getComfirmPassword())) {
+            throw new BusinessException("两次密码不一致");
+        }
+        authUserService.addAuthUser(user);
+        return WrapMapper.ok();
+    }
+
+    /**
+     * 更新用户
+     */
+    @PostMapping("updateAuthUser")
+    public Wrapper updateAuthUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody AuthUser user) {
+        if (!user.getPassword().equals(user.getComfirmPassword())) {
+            throw new BusinessException("两次密码不一致");
+        }
+        authUserService.updateAuthUser(user);
+        return WrapMapper.ok();
+    }
+
+    /**
+     * 删除用户
+     */
+    @PostMapping("/deleteAuthUser")
+    public Wrapper deleteAuthUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long userId) {
+        authUserService.deleteAuthUser(userId);
         return WrapMapper.ok();
     }
 
@@ -41,30 +65,32 @@ public class AdminUserController extends BasicController {
      * 获取用户列表
      */
     @PostMapping("/getUserPage")
-    public Wrapper getUserPage(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam int pageIndex, @RequestParam int pageSize) {
+    public Wrapper getUserPage(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam(required = false) String userName, @RequestParam(required = false) String realName, @RequestParam(required = false) String phone, @RequestParam(required = false) String roleName,
+                               @RequestParam int pageIndex, @RequestParam int pageSize) {
         Pageable pageable = new PageRequest(pageIndex - 1, pageSize);
-        Page<AuthUser> userPage = authUserService.getUserPageByCriteria(null, pageable);
+        AuthUser authUser = new AuthUser();
+        authUser.setUsername(userName);
+        authUser.setRealName(realName);
+        authUser.setPhone(phone);
+        authUser.setRoleName(roleName);
+        Page<AuthUser> userPage = authUserService.getUserPageByCriteria(authUser, pageable);
         return WrapMapper.ok(userPage);
     }
 
     /**
-     * 获取对应用户角色
+     * 获取用户详情
      */
-    @GetMapping("/getUserRoleList")
-    public Wrapper getUserRoleList(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long userId) {
-        AuthUser user = authUserService.getUserById(userId);
-        if (null == user) {
-            throw new BusinessException("用户不存在");
-        }
-        List<AuthRole> roleList = user.getRoles();
-        return WrapMapper.ok(roleList);
+    @PostMapping("/getUserInfo")
+    public Wrapper getUserInfo(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long userId) {
+        AuthUser authUser = authUserService.getUserById(userId);
+        return WrapMapper.ok(authUser);
     }
 
     /**
      * 获取角色关联的(roleId)对应用户列表
      */
     @GetMapping("/getUserListByRoleId")
-    public Wrapper getUserListByRoleId(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam List<Integer> roleIdList, @RequestParam Integer pageIndex, @RequestParam Integer pageSize) {
+    public Wrapper getUserListByRoleId(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam List<Long> roleIdList, @RequestParam Integer pageIndex, @RequestParam Integer pageSize) {
         Pageable pageable = new PageRequest(pageIndex - 1, pageSize);
         AuthUser authUser = new AuthUser();
         authUser.setRoleIdList(roleIdList);
@@ -100,5 +126,6 @@ public class AdminUserController extends BasicController {
         authUserService.deleteUserRole(userId, roleId);
         return WrapMapper.ok();
     }
+
 
 }

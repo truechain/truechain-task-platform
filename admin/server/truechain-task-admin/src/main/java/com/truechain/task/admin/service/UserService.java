@@ -23,6 +23,14 @@ public interface UserService {
     SysUser getUserInfo(Long userId);
 
     /**
+     * 获取用户信息
+     *
+     * @param userId
+     * @return
+     */
+    SysUser getUser(Long userId);
+
+    /**
      * 修改用户
      *
      * @param user
@@ -36,7 +44,7 @@ public interface UserService {
      * @param level
      * @param rewardNum
      */
-    void auditUser(Long userId,String level, String rewardNum);
+    void auditUser(Long userId, String level, String rewardNum);
 
     /**
      * 获取兼职总人数
@@ -45,5 +53,5 @@ public interface UserService {
      */
     long countPartTimeTotalPeople();
 
-    long countAuditPass(String beginDate,String endDate);
+    long countAuditPass(String beginDate, String endDate);
 }
