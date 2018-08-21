@@ -19,6 +19,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 @Service
 public class AuthUserServiceImpl implements AuthUserService {
@@ -84,7 +85,9 @@ public class AuthUserServiceImpl implements AuthUserService {
         AuthUser authUser = authUserRepository.findOne(userId);
         Preconditions.checkArgument(authUser != null, "用户不存在");
         if (!CollectionUtils.isEmpty(authUser.getRoles())) {
-            authUser.setRoleName(authUser.getRoles().get(0).getName());
+            List<AuthRole> roleList = authUser.getRoles();
+            authUser.setRoleId(roleList.get(0).getId());
+            authUser.setRoleName(roleList.get(0).getName());
         }
         return authUser;
     }
