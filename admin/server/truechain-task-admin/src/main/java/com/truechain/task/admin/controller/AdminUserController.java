@@ -96,10 +96,10 @@ public class AdminUserController extends BasicController {
      * 获取角色关联的(roleId)对应用户列表
      */
     @GetMapping("/getUserListByRoleId")
-    public Wrapper getUserListByRoleId(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam List<Long> roleIdList, @RequestParam Integer pageIndex, @RequestParam Integer pageSize) {
+    public Wrapper getUserListByRoleId(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long roleId, @RequestParam Integer pageIndex, @RequestParam Integer pageSize) {
         Pageable pageable = new PageRequest(pageIndex - 1, pageSize);
         AuthUser authUser = new AuthUser();
-        authUser.setRoleIdList(roleIdList);
+        authUser.setRoleId(roleId);
         Page<AuthUser> userPage = authUserService.getUserPageByCriteria(authUser, pageable);
         return WrapMapper.ok(userPage);
     }

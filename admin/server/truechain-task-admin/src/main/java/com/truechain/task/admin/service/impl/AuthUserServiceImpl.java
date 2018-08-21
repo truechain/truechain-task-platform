@@ -39,13 +39,11 @@ public class AuthUserServiceImpl implements AuthUserService {
         if (count > 0) {
             throw new BusinessException("用户名已被占用");
         }
-        if (!CollectionUtils.isEmpty(user.getRoleIdList())) {
+        if (!StringUtils.isEmpty(user.getRoleId())) {
             user.setRoles(new ArrayList<>());
-            for (Long roleId : user.getRoleIdList()) {
-                AuthRole role = authRoleRepository.findOne(roleId);
-                Preconditions.checkArgument(role != null, "角色不存在");
-                user.getRoles().add(role);
-            }
+            AuthRole role = authRoleRepository.findOne(user.getRoleId());
+            Preconditions.checkArgument(role != null, "角色不存在");
+            user.getRoles().add(role);
         }
         authUserRepository.save(user);
     }
@@ -65,13 +63,11 @@ public class AuthUserServiceImpl implements AuthUserService {
         if (count > 0) {
             throw new BusinessException("用户名已被占用");
         }
-        if (!CollectionUtils.isEmpty(user.getRoleIdList())) {
-            authUser.setRoles(new ArrayList<>());
-            for (Long roleId : user.getRoleIdList()) {
-                AuthRole role = authRoleRepository.findOne(roleId);
-                Preconditions.checkArgument(role != null, "角色不存在");
-                authUser.getRoles().add(role);
-            }
+        if (!StringUtils.isEmpty(user.getRoleId())) {
+            user.setRoles(new ArrayList<>());
+            AuthRole role = authRoleRepository.findOne(user.getRoleId());
+            Preconditions.checkArgument(role != null, "角色不存在");
+            user.getRoles().add(role);
         }
         authUserRepository.save(authUser);
     }
