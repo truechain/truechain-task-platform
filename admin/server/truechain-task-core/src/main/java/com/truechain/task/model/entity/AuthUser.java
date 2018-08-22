@@ -47,6 +47,10 @@ public class AuthUser extends BaseEntity implements Serializable {
      */
     private Short status;
     /**
+     * 是否管理员
+     */
+    private Short isAdmin = 0;
+    /**
      * 来源
      */
     private Byte resource;
@@ -175,5 +179,13 @@ public class AuthUser extends BaseEntity implements Serializable {
 
     public void setRoleName(String roleName) {
         this.roleName = roleName;
+    }
+
+    public Short getIsAdmin() {
+        return isAdmin;
+    }
+
+    public void setIsAdmin(Short isAdmin) {
+        this.isAdmin = isAdmin;
     }
 }

@@ -53,6 +53,9 @@ public class AuthUserServiceImpl implements AuthUserService {
     public void updateAuthUser(AuthUser user) {
         AuthUser authUser = authUserRepository.findOne(user.getId());
         Preconditions.checkArgument(authUser != null, "用户不存在");
+        if (authUser.getIsAdmin() == 1) {
+            throw new BusinessException("系统管理员无法编辑");
+        }
         if (!StringUtils.isEmpty(user.getPassword())) {
             String password = user.getPassword();
             authUser.setPassword(MD5Util.generate(password));
@@ -77,6 +80,9 @@ public class AuthUserServiceImpl implements AuthUserService {
     public void deleteAuthUser(Long userId) {
         AuthUser authUser = authUserRepository.findOne(userId);
         Preconditions.checkArgument(authUser != null, "用户不存在");
+        if (authUser.getIsAdmin() == 1) {
+            throw new BusinessException("系统管理员无法删除");
+        }
         authUserRepository.delete(authUser);
     }
 
