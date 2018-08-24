@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: dev
+    active: test
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     hikari:

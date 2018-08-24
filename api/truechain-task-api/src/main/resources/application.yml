@@ -67,7 +67,7 @@ spring:
     password: true0614
 app:
   upload:
-    file-path: /home/work/data/test/upload/
+    file-path: /home/work/data/test/upload/resume/
   sms:
     smsUserName: TRUE888hy
     smsPassword: ADljCe
@@ -94,7 +94,7 @@ spring:
     password: true0614
 app:
   upload:
-    file-path: /home/work/data/upload/
+    file-path: /home/work/data/upload/resume/
   sms:
     smsUserName: TRUE888hy
     smsPassword: ADljCe
