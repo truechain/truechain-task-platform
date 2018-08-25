@@ -37,7 +37,7 @@ public class BsTaskUserServiceImpl implements BsTaskUserService {
         if (StringUtils.isNotBlank(task.getName())) {       //名称
             builder.and(qBsTaskUser.taskDetail.task.name.likeIgnoreCase("%" + task.getName() + "%"));
         }
-        if (null != task.getTaskStatus()) {                 //状态
+        if (null != task.getTaskStatus()) {                 //状态(0-任务中,1-已经完成)
             builder.and(qBsTaskUser.taskStatus.eq(task.getTaskStatus()));
         }
         if (StringUtils.isNotBlank(task.getLevel())) {          //等级

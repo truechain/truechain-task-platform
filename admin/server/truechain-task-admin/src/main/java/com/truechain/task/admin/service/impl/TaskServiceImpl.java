@@ -226,9 +226,9 @@ public class TaskServiceImpl implements TaskService {
         if (StringUtils.isNotBlank(user.getName())) {
             builder.and(qbsRecommendTask.recommendUser.personName.eq(user.getName()));
         }
-        if (null != user.getLevel()) {
-            builder.and(qbsRecommendTask.recommendUser.level.eq(user.getLevel()));
-        }
+//        if (StringUtils.isNotBlank(user.getLevel())) {
+//            builder.and(qbsRecommendTask.recommendUser.level.eq("'A'"));
+//        }
         if (StringUtils.isNotBlank(user.getWxNickName())) {
             builder.and(qbsRecommendTask.recommendUser.level.eq(user.getWxNickName()));
         }
