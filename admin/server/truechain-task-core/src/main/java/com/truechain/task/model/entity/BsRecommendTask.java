@@ -13,7 +13,7 @@ import javax.persistence.Table;
 public class BsRecommendTask extends BaseEntity {
 
     /**
-     * 举荐人
+     * 被推荐人
      */
     @OneToOne
     @JoinColumn(name = "userId")

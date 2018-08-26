@@ -220,17 +220,17 @@ public class TaskServiceImpl implements TaskService {
         BooleanBuilder builder = new BooleanBuilder();
         QBsRecommendTask qbsRecommendTask = QBsRecommendTask.bsRecommendTask;
         if (user.getId() != null && user.getId() > 0) {
-            builder.and(qbsRecommendTask.user.id.eq(user.getId()));
+            builder.and(qbsRecommendTask.recommendUser.id.eq(user.getId()));
         }
 
         if (StringUtils.isNotBlank(user.getName())) {
-            builder.and(qbsRecommendTask.recommendUser.personName.eq(user.getName()));
+            builder.and(qbsRecommendTask.user.personName.eq(user.getName()));
         }
 //        if (StringUtils.isNotBlank(user.getLevel())) {
 //            builder.and(qbsRecommendTask.recommendUser.level.eq("'A'"));
 //        }
         if (StringUtils.isNotBlank(user.getWxNickName())) {
-            builder.and(qbsRecommendTask.recommendUser.level.eq(user.getWxNickName()));
+            builder.and(qbsRecommendTask.user.level.eq(user.getWxNickName()));
         }
         if (StringUtils.isNotBlank(user.getStartDate())) {
             builder.and(qbsRecommendTask.createTime.gt(user.getStartDate()));
