@@ -45,6 +45,11 @@ public class AuthInterceptor implements HandlerInterceptor {
             return true;
         }
 
+        //下载的认证暂时关闭
+        if (uri.contains("/downLoadResume")) {
+            return true;
+        }
+
         //认证
         String token = request.getHeader(AppProperties.TOKEN_HEADER);
         String salt = request.getHeader(AppProperties.AGENT_HEADER);
