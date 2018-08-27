@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
             if (user.getAuditStatus() == 1) {
                 builder.and(qSysUser.auditStatus.eq(user.getAuditStatus()));
             } else if (user.getAuditStatus() == 0) {
-                builder.and(qSysUser.auditStatus.eq(AuditStatusEnum.UNCOMPLATE.getCode()).or(qSysUser.auditStatus.eq(AuditStatusEnum.UNAUDITED.getCode())));
+//                builder.and(qSysUser.auditStatus.eq(AuditStatusEnum.UNCOMPLATE.getCode()).or(qSysUser.auditStatus.eq(AuditStatusEnum.UNAUDITED.getCode())));
             }
         }
         if (StringUtils.isNotBlank(user.getStartDate())) {

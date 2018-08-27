@@ -70,6 +70,7 @@ public class ReportController extends BasicController {
         final String endDate = timeRange.getEndDate();
 
         ReportIndexPojo reportIndexPojo = new ReportIndexPojo();
+        reportIndexPojo.setId(0L);
 
         reportIndexPojo.setStartDate(startDate);
         reportIndexPojo.setEndDate(endDate);
