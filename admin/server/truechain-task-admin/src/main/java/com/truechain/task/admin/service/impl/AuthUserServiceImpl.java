@@ -19,6 +19,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 @Service
 public class AuthUserServiceImpl implements AuthUserService {
@@ -39,13 +40,11 @@ public class AuthUserServiceImpl implements AuthUserService {
         if (count > 0) {
             throw new BusinessException("用户名已被占用");
         }
-        if (!CollectionUtils.isEmpty(user.getRoleIdList())) {
+        if (!StringUtils.isEmpty(user.getRoleId())) {
             user.setRoles(new ArrayList<>());
-            for (Long roleId : user.getRoleIdList()) {
-                AuthRole role = authRoleRepository.findOne(roleId);
-                Preconditions.checkArgument(role != null, "角色不存在");
-                user.getRoles().add(role);
-            }
+            AuthRole role = authRoleRepository.findOne(user.getRoleId());
+            Preconditions.checkArgument(role != null, "角色不存在");
+            user.getRoles().add(role);
         }
         authUserRepository.save(user);
     }
@@ -54,6 +53,9 @@ public class AuthUserServiceImpl implements AuthUserService {
     public void updateAuthUser(AuthUser user) {
         AuthUser authUser = authUserRepository.findOne(user.getId());
         Preconditions.checkArgument(authUser != null, "用户不存在");
+        if (authUser.getIsAdmin() == 1) {
+            throw new BusinessException("系统管理员无法编辑");
+        }
         if (!StringUtils.isEmpty(user.getPassword())) {
             String password = user.getPassword();
             authUser.setPassword(MD5Util.generate(password));
@@ -65,13 +67,11 @@ public class AuthUserServiceImpl implements AuthUserService {
         if (count > 0) {
             throw new BusinessException("用户名已被占用");
         }
-        if (!CollectionUtils.isEmpty(user.getRoleIdList())) {
-            authUser.setRoles(new ArrayList<>());
-            for (Long roleId : user.getRoleIdList()) {
-                AuthRole role = authRoleRepository.findOne(roleId);
-                Preconditions.checkArgument(role != null, "角色不存在");
-                authUser.getRoles().add(role);
-            }
+        if (!StringUtils.isEmpty(user.getRoleId())) {
+            user.setRoles(new ArrayList<>());
+            AuthRole role = authRoleRepository.findOne(user.getRoleId());
+            Preconditions.checkArgument(role != null, "角色不存在");
+            user.getRoles().add(role);
         }
         authUserRepository.save(authUser);
     }
@@ -80,6 +80,9 @@ public class AuthUserServiceImpl implements AuthUserService {
     public void deleteAuthUser(Long userId) {
         AuthUser authUser = authUserRepository.findOne(userId);
         Preconditions.checkArgument(authUser != null, "用户不存在");
+        if (authUser.getIsAdmin() == 1) {
+            throw new BusinessException("系统管理员无法删除");
+        }
         authUserRepository.delete(authUser);
     }
 
@@ -88,7 +91,9 @@ public class AuthUserServiceImpl implements AuthUserService {
         AuthUser authUser = authUserRepository.findOne(userId);
         Preconditions.checkArgument(authUser != null, "用户不存在");
         if (!CollectionUtils.isEmpty(authUser.getRoles())) {
-            authUser.setRoleName(authUser.getRoles().get(0).getName());
+            List<AuthRole> roleList = authUser.getRoles();
+            authUser.setRoleId(roleList.get(0).getId());
+            authUser.setRoleName(roleList.get(0).getName());
         }
         return authUser;
     }

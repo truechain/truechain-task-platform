@@ -96,7 +96,7 @@ public class UserServiceImpl implements UserService {
         BooleanBuilder builder = new BooleanBuilder();
         QSysUser qSysUser = QSysUser.sysUser;
 
-        builder.and(qSysUser.auditStatus.eq(0));
+        builder.and(qSysUser.auditStatus.eq(1));            //审核状态(-1-未审核,0-未完善个人信息,1-已审核)
         if (StringUtils.isNotBlank(beginDate)) {
             builder.and(qSysUser.updateTime.gt(beginDate));
         }

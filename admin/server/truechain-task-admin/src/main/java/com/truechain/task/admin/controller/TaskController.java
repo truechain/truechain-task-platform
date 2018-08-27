@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 
 /**
@@ -82,7 +83,7 @@ public class TaskController extends BasicController {
             throw new BusinessException("请选择文件");
         }
         String fileName = file.getOriginalFilename();
-        File uploadFile = new File(AppProperties.TASK_ICON_PATH + fileName);
+        File uploadFile = new File(AppProperties.TASK_ICON_PATH + UUID.randomUUID().toString().replace("-", "") + fileName);
         try {
             FileUtils.writeByteArrayToFile(uploadFile, file.getBytes());
         } catch (IOException e) {

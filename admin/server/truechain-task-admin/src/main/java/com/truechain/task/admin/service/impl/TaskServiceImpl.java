@@ -121,9 +121,9 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public BsTask addTask(TaskInfoDTO taskInfoDTO) {
         BsTask task = taskInfoDTO.getTask();
-        task.setAuditStatus(0);
         long peopleNum = taskInfoDTO.getTaskDetailList().stream().mapToInt(x -> x.getPeopleNum()).sum();
         task.setPeopleNum((int) peopleNum);
+        task.setAuditStatus(0);
         task = taskRepository.save(task);
         for (BsTaskDetail taskDetail : taskInfoDTO.getTaskDetailList()) {
             taskDetail.setTask(task);
@@ -175,11 +175,20 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional
     public void auditEntryFormUser(Long taskUserId) {
         BsTaskUser taskUser = taskUserRepository.findOne(taskUserId);
         Preconditions.checkArgument(null != taskUser, "数据有误");
         taskUser.setAuditStatus(1);
         taskUserRepository.save(taskUser);
+        BsTaskDetail bsTaskDetail = taskUser.getTaskDetail();
+        BsTask bsTask = bsTaskDetail.getTask();
+        QBsTaskUser qBsTaskUser = QBsTaskUser.bsTaskUser;
+        long count = taskUserRepository.count(qBsTaskUser.taskDetail.eq(bsTaskDetail).and(qBsTaskUser.auditStatus.eq(1)));
+        if (count == bsTask.getPeopleNum()) {
+            bsTask.setAuditStatus(1);
+            taskRepository.save(bsTask);
+        }
     }
 
     @Override
@@ -211,17 +220,17 @@ public class TaskServiceImpl implements TaskService {
         BooleanBuilder builder = new BooleanBuilder();
         QBsRecommendTask qbsRecommendTask = QBsRecommendTask.bsRecommendTask;
         if (user.getId() != null && user.getId() > 0) {
-            builder.and(qbsRecommendTask.user.id.eq(user.getId()));
+            builder.and(qbsRecommendTask.recommendUser.id.eq(user.getId()));
         }
 
         if (StringUtils.isNotBlank(user.getName())) {
-            builder.and(qbsRecommendTask.recommendUser.personName.eq(user.getName()));
+            builder.and(qbsRecommendTask.user.personName.eq(user.getName()));
         }
-        if (null != user.getLevel()) {
-            builder.and(qbsRecommendTask.recommendUser.level.eq(user.getLevel()));
-        }
+//        if (StringUtils.isNotBlank(user.getLevel())) {
+//            builder.and(qbsRecommendTask.recommendUser.level.eq("'A'"));
+//        }
         if (StringUtils.isNotBlank(user.getWxNickName())) {
-            builder.and(qbsRecommendTask.recommendUser.level.eq(user.getWxNickName()));
+            builder.and(qbsRecommendTask.user.level.eq(user.getWxNickName()));
         }
         if (StringUtils.isNotBlank(user.getStartDate())) {
             builder.and(qbsRecommendTask.createTime.gt(user.getStartDate()));

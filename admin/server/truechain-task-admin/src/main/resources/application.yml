@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: prod
+    active: test
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     hikari:
@@ -42,7 +42,7 @@ spring:
   redis:
     host: 127.0.0.1
     port: 6379
-    password: 123456
+    password:
 app:
   upload:
     file-path: D://

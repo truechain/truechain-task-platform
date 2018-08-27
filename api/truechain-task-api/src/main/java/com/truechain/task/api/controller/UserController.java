@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 用户Controller
@@ -70,7 +71,7 @@ public class UserController extends BasicController {
                                   @RequestParam String trueChainAddress, @RequestParam("file") MultipartFile file) {
         Preconditions.checkArgument(!file.isEmpty(), "简历不能为空");
         String fileName = file.getOriginalFilename();
-        File uploadFile = new File(AppProperties.UPLOAD_FILE_PATH + fileName);
+        File uploadFile = new File(AppProperties.UPLOAD_FILE_PATH + UUID.randomUUID().toString().replace("-", "") + fileName);
         try {
             FileUtils.writeByteArrayToFile(uploadFile, file.getBytes());
         } catch (IOException e) {

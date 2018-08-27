@@ -7,7 +7,7 @@ public class RewardViewDTO extends TimeRangeDTO implements Serializable {
     private static final long serialVersionUID = 1L;
     private Long userId;
     private String channel;
-    private String rewordType;
+    private String rewardType;
 
     public RewardViewDTO() {
     }
@@ -20,12 +20,12 @@ public class RewardViewDTO extends TimeRangeDTO implements Serializable {
         this.channel = channel;
     }
 
-    public String getRewordType() {
-        return rewordType;
+    public String getRewardType() {
+        return rewardType;
     }
 
-    public void setRewordType(String rewordType) {
-        this.rewordType = rewordType;
+    public void setRewardType(String rewordType) {
+        this.rewardType = rewordType;
     }
 
     public Long getUserId() {

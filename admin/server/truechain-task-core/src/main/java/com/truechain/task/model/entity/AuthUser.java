@@ -47,6 +47,10 @@ public class AuthUser extends BaseEntity implements Serializable {
      */
     private Short status;
     /**
+     * 是否管理员
+     */
+    private Short isAdmin = 0;
+    /**
      * 来源
      */
     private Byte resource;
@@ -54,7 +58,7 @@ public class AuthUser extends BaseEntity implements Serializable {
      * 角色ID
      */
     @Transient
-    private List<Long> roleIdList;
+    private Long roleId;
     /**
      * 备注
      */
@@ -145,12 +149,12 @@ public class AuthUser extends BaseEntity implements Serializable {
         this.resource = resource;
     }
 
-    public List<Long> getRoleIdList() {
-        return roleIdList;
+    public Long getRoleId() {
+        return roleId;
     }
 
-    public void setRoleIdList(List<Long> roleIdList) {
-        this.roleIdList = roleIdList;
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
     }
 
     public String getRemark() {
@@ -175,5 +179,13 @@ public class AuthUser extends BaseEntity implements Serializable {
 
     public void setRoleName(String roleName) {
         this.roleName = roleName;
+    }
+
+    public Short getIsAdmin() {
+        return isAdmin;
+    }
+
+    public void setIsAdmin(Short isAdmin) {
+        this.isAdmin = isAdmin;
     }
 }

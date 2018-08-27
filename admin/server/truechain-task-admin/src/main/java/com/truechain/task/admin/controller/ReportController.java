@@ -190,36 +190,37 @@ public class ReportController extends BasicController {
         List<UserRewardHistoryPojo> rewardHistoryPojoList = Lists.newArrayList();
 
         //完成任务方式获取奖励
-        List<BsTaskUser> bsTaskUserList = bsTaskUserService.getBsTaskUserByUserIds(Sets.newHashSet(rewardViewDTO.getUserId()));
-        for (BsTaskUser bsTaskUser : bsTaskUserList) {
-            UserRewardHistoryPojo rewardHistoryPojo = new UserRewardHistoryPojo();
-            rewardHistoryPojo.setId(bsTaskUser.getId());
-            if (bsTaskUser.getTaskStatus() == 1) {
-                rewardHistoryPojo.setEventName("完成任务");
-                rewardHistoryPojo.setGotTime(bsTaskUser.getUpdateTime());
-                double rewardValue = bsTaskUser.getRewardNum() != null ? NumberUtils.toDouble(bsTaskUser.getRewardNum().toString(), 0) : 0;
-                //奖励类型(1-true,2-ttr,3-rmp)
-                final int rewardType = bsTaskUser.getTaskDetail().getTask().getRewardType();
-                if (rewardType == 1) {
-                    rewardHistoryPojo.setRewardType("true");
-                }
-                if (rewardType == 2) {
-                    rewardHistoryPojo.setRewardType("ttr");
-                }
-                if (rewardType == 3) {
-                    rewardHistoryPojo.setRewardType("rmb");
-                }
-                rewardHistoryPojo.setRewardNum(rewardValue);
+        if(Strings.isNullOrEmpty(rewardViewDTO.getChannel()) || "完成任务".equals(rewardViewDTO.getChannel())) {
+            List<BsTaskUser> bsTaskUserList = bsTaskUserService.getBsTaskUserByUserIds(Sets.newHashSet(rewardViewDTO.getUserId()));
+            for (BsTaskUser bsTaskUser : bsTaskUserList) {
+                UserRewardHistoryPojo rewardHistoryPojo = new UserRewardHistoryPojo();
+                rewardHistoryPojo.setId(bsTaskUser.getId());
+                if (bsTaskUser.getTaskStatus() == 1) {
+                    rewardHistoryPojo.setEventName("完成任务");
+                    rewardHistoryPojo.setGotTime(bsTaskUser.getUpdateTime());
+                    double rewardValue = bsTaskUser.getRewardNum() != null ? NumberUtils.toDouble(bsTaskUser.getRewardNum().toString(), 0) : 0;
+                    //奖励类型(1-true,2-ttr,3-rmp)
+                    final int rewardType = bsTaskUser.getTaskDetail().getTask().getRewardType();
+                    if (rewardType == 1) {
+                        rewardHistoryPojo.setRewardType("true");
+                    }
+                    if (rewardType == 2) {
+                        rewardHistoryPojo.setRewardType("ttr");
+                    }
+                    if (rewardType == 3) {
+                        rewardHistoryPojo.setRewardType("rmb");
+                    }
+                    rewardHistoryPojo.setRewardNum(rewardValue);
 
-                if(Strings.isNullOrEmpty(rewardViewDTO.getRewordType())){
-                    //不按照rewardType过滤
-                    rewardHistoryPojoList.add(rewardHistoryPojo);
-                }else{
-                    if(rewardType == Integer.parseInt(rewardViewDTO.getRewordType())){
+                    if (Strings.isNullOrEmpty(rewardViewDTO.getRewardType())) {
+                        //不按照rewardType过滤
                         rewardHistoryPojoList.add(rewardHistoryPojo);
+                    } else {
+                        if (rewardType == Integer.parseInt(rewardViewDTO.getRewardType())) {
+                            rewardHistoryPojoList.add(rewardHistoryPojo);
+                        }
                     }
                 }
-
             }
         }
         //TODO 推荐方式获取奖励
@@ -241,6 +242,7 @@ public class ReportController extends BasicController {
         Page<BsRecommendTask> bsRecommendTaskList = taskService.getBsRecommendTaskList(user,pageable);
 
         bsRecommendTaskList.forEach(item->{
+
             UserRecommendPagePojo userRecommendPagePojo = new UserRecommendPagePojo();
             userRecommendPagePojo.setId(item.getId());
             userRecommendPagePojo.setName(item.getUser().getPersonName());
@@ -248,8 +250,12 @@ public class ReportController extends BasicController {
             userRecommendPagePojo.setWxNum(item.getUser().getWxNum());
             userRecommendPagePojo.setLevel(item.getUser().getLevel());
             userRecommendPagePojo.setRecommendTime(item.getCreateTime());
-
-            rewardHistoryPojoList.add(userRecommendPagePojo);
+            if(!Strings.isNullOrEmpty(user.getLevel()) && userRecommendPagePojo.getLevel().equals(user.getLevel())){
+                rewardHistoryPojoList.add(userRecommendPagePojo);
+            }
+            if(Strings.isNullOrEmpty(user.getLevel())){
+                rewardHistoryPojoList.add(userRecommendPagePojo);
+            }
         });
         return WrapMapper.ok(rewardHistoryPojoList);
     }

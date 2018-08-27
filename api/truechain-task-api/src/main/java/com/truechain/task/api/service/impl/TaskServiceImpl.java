@@ -14,6 +14,7 @@ import com.truechain.task.api.service.TaskService;
 import com.truechain.task.core.BusinessException;
 import com.truechain.task.model.entity.*;
 import com.truechain.task.model.enums.AuditStatusEnum;
+import com.truechain.task.model.enums.TaskStatusEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -46,6 +47,7 @@ public class TaskServiceImpl extends BasicService implements TaskService {
     public Page<BsTask> getTaskPage(BsTask task, int pageIndex, int pageSize) {
         QBsTask qTask = QBsTask.bsTask;
         BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qTask.taskStatus.eq(TaskStatusEnum.ENABLE.getCode()));
         if (StringUtils.isNotBlank(task.getName())) {
             builder.and(qTask.name.like("%" + task.getName() + "%"));
         }

@@ -57,7 +57,7 @@ public class UserController extends BasicController {
      * 下载文件
      */
     @GetMapping("/downLoadResume")
-    public void downLoadResume(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long userId, final HttpServletResponse response) {
+    public void downLoadResume(@RequestParam Long userId, final HttpServletResponse response) {
         SysUser user = userService.getUser(userId);
         String resumePath = user.getResumeFilePath();
         if (StringUtils.isBlank(resumePath)) {
