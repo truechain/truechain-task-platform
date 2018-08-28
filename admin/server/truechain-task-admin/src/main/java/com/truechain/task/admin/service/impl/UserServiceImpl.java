@@ -14,6 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -83,6 +85,7 @@ public class UserServiceImpl implements UserService {
         Preconditions.checkArgument(null != sysUser, "该用户不存在");
         Preconditions.checkArgument(AuditStatusEnum.UNAUDITED.getCode() == sysUser.getAuditStatus(), "用户已通过审核");
         sysUser.setAuditStatus(AuditStatusEnum.AUDITED.getCode());
+        sysUser.setAuditPassTime(new Date().toString());
         sysUser.setLevel(level);
         userRepository.save(sysUser);
     }
