@@ -18,6 +18,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class BsUserAccountDetailServiceImpl implements BsUserAccountDetailService {
 
@@ -100,5 +102,13 @@ public class BsUserAccountDetailServiceImpl implements BsUserAccountDetailServic
 
         Page<BsUserAccountDetail> taskPage = bsUserAccountDetailRepository.findAll(builder, pageable);
         return taskPage;
+    }
+
+    public List<BsUserAccountDetail> getBsUserAccountDetail(Long taskId, Long userId){
+        BooleanBuilder builder = new BooleanBuilder();
+        QBsUserAccountDetail qBsUserAccountDetail = QBsUserAccountDetail.bsUserAccountDetail;
+        builder.and(qBsUserAccountDetail.task.id.eq(taskId)).and(qBsUserAccountDetail.userAccount.user.id.eq(userId));
+        List<BsUserAccountDetail> list = (List<BsUserAccountDetail>) bsUserAccountDetailRepository.findAll(builder);
+        return list;
     }
 }

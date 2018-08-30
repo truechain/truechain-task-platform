@@ -46,6 +46,7 @@ public class HomeController extends BasicController {
      */
     @GetMapping("/countComplateTask")
     public Wrapper countComplateTask(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent) {
-        return WrapMapper.ok(243);
+        long count = taskService.countComplateTask();
+        return WrapMapper.ok(count);
     }
 }

@@ -60,13 +60,13 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isNotBlank(user.getLevel())) {
             builder.and(qSysUser.level.eq(user.getLevel()));
         }
-        if (null != user.getAuditStatus()) {
-            if (user.getAuditStatus() == 1) {
-                builder.and(qSysUser.auditStatus.eq(user.getAuditStatus()));
-            } else if (user.getAuditStatus() == 0) {
-//                builder.and(qSysUser.auditStatus.eq(AuditStatusEnum.UNCOMPLATE.getCode()).or(qSysUser.auditStatus.eq(AuditStatusEnum.UNAUDITED.getCode())));
-            }
-        }
+//        if (null != user.getAuditStatus()) {
+//            if (user.getAuditStatus() == 1) {
+                builder.and(qSysUser.auditStatus.eq(1));
+//            } else if (user.getAuditStatus() == 0) {
+////                builder.and(qSysUser.auditStatus.eq(AuditStatusEnum.UNCOMPLATE.getCode()).or(qSysUser.auditStatus.eq(AuditStatusEnum.UNAUDITED.getCode())));
+//            }
+//        }
         if (StringUtils.isNotBlank(user.getStartDate())) {
             builder.and(qSysUser.auditPassTime.gt(user.getStartDate()));
         }

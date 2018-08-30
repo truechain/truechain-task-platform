@@ -7,6 +7,7 @@ import com.truechain.task.admin.repository.*;
 import com.truechain.task.admin.service.TaskService;
 import com.truechain.task.core.BusinessException;
 import com.truechain.task.model.entity.*;
+import com.truechain.task.model.entity.QBsTask;
 import com.truechain.task.model.enums.TaskStatusEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -250,7 +251,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public long countComplateTask() {
-        throw new UnsupportedOperationException();
+        QBsTask qbsTask = QBsTask.bsTask;
+        return taskRepository.count(qbsTask.taskStatus.eq(1));
     }
 
     public Page<BsRecommendTask> getBsRecommendTaskList(UserDTO user, Pageable pageable) {

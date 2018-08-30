@@ -94,26 +94,6 @@ public class ReportController extends BasicController {
         });
         //进行中任务数
         reportIndexPojo.setTaskDoingCount(reportIndexPojo.getTaskCount() - reportIndexPojo.getTaskDoneCount());
-//        long taskCount = bsTaskUserService.getBsTaskUserCount(taskDTO);
-//        reportIndexPojo.setTaskCount(taskCount);
-
-//        taskDTO.setTaskStatus(0);       //完成
-//        Pageable pageable = new PageRequest(1, Integer.MAX_VALUE);
-//        Page<BsTaskUser> page = bsTaskUserService.getBsTaskUser(taskDTO,pageable);
-//        //完成任务数
-//        reportIndexPojo.setTaskDoneCount(page.getTotalElements());
-////        page.forEach(bsTaskUser->{
-////            if(bsTaskUser.getTaskDetail().getTask().getRewardType() == 1){
-////                reportIndexPojo.setTrueValue(reportIndexPojo.getTrueValue() + bsTaskUser.getRewardNum());
-////            }
-////            if(bsTaskUser.getTaskDetail().getTask().getRewardType() == 2){
-////                reportIndexPojo.setTtrValue(reportIndexPojo.getTtrValue() + bsTaskUser.getRewardNum());
-////            }
-////            if(bsTaskUser.getTaskDetail().getTask().getRewardType() == 3){
-////                reportIndexPojo.setRmbValue(reportIndexPojo.getRmbValue() + bsTaskUser.getRewardNum());
-////            }
-////        });
-
 
         Page<BsUserAccountDetail> bsUserAccountDetails = bsUserAccountDetailServiceImpl.getBsUserAccountDetail(timeRange,pageable);
         bsUserAccountDetails.forEach(bsUserAccountDetail -> {
@@ -182,19 +162,25 @@ public class ReportController extends BasicController {
                 if (bsTaskUser.getTaskStatus() == 1) {              //1-任务已经完成
                     userProfilePagePojo.setTaskDoneCount(userProfilePagePojo.getTaskDoneCount() + 1);
                     //奖励价值
-                    double rewardValue = bsTaskUser.getRewardNum() != null ? NumberUtils.toDouble(bsTaskUser.getRewardNum().toString(), 0) : 0;
-                    //奖励类型(1-true,2-ttr,3-rmp)
-                    final int rewardType = bsTaskUser.getTaskDetail().getTask().getRewardType();
-                    if (rewardType == 1) {
+                    List<BsUserAccountDetail> rewardList= bsUserAccountDetailServiceImpl.getBsUserAccountDetail(bsTaskUser.getTaskDetail().getTask().getId(),bsTaskUser.getUser().getId());
+                    if(rewardList.size() > 0){
+//                        double rewardValue = bsTaskUser.getRewardNum() != null ? NumberUtils.toDouble(bsTaskUser.getRewardNum().toString(), 0) : 0;
+//                        final int rewardType = bsTaskUser.getTaskDetail().getTask().getRewardType();
+                        BsUserAccountDetail bsUserAccountDetail = rewardList.get(0);
+                        double rewardValue = bsUserAccountDetail.getRewardNum() != null ? NumberUtils.toDouble(bsTaskUser.getRewardNum().toString(), 0) : 0;
+                        //奖励类型(1-true,2-ttr,3-rmp)
+                        final int rewardType = bsUserAccountDetail.getRewardType();
+                        if (rewardType == 1) {
+                            userProfilePagePojo.setTrueValue(userProfilePagePojo.getTrueValue() + rewardValue);
+                        }
+                        if (rewardType == 2) {
+                            userProfilePagePojo.setTtrValue(userProfilePagePojo.getTtrValue() + rewardValue);
+                        }
+                        if (rewardType == 3) {
+                            userProfilePagePojo.setRmbValue(userProfilePagePojo.getRmbValue() + rewardValue);
+                        }
                         userProfilePagePojo.setTrueValue(userProfilePagePojo.getTrueValue() + rewardValue);
                     }
-                    if (rewardType == 2) {
-                        userProfilePagePojo.setTtrValue(userProfilePagePojo.getTtrValue() + rewardValue);
-                    }
-                    if (rewardType == 3) {
-                        userProfilePagePojo.setRmbValue(userProfilePagePojo.getRmbValue() + rewardValue);
-                    }
-                    userProfilePagePojo.setTrueValue(userProfilePagePojo.getTrueValue() + rewardValue);
                 }
                 if (bsTaskUser.getTaskStatus() == 0) {              //0-任务正在进行
                     userProfilePagePojo.setTaskDoingCount(userProfilePagePojo.getTaskDoingCount() + 1);
