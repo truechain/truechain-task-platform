@@ -5,6 +5,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.truechain.task.admin.model.dto.UserDTO;
 import com.truechain.task.admin.repository.SysUserRepository;
 import com.truechain.task.admin.service.UserService;
+import com.truechain.task.model.entity.BsUserAccount;
 import com.truechain.task.model.entity.QSysUser;
 import com.truechain.task.model.entity.SysUser;
 import com.truechain.task.model.enums.AuditStatusEnum;
@@ -85,6 +86,7 @@ public class UserServiceImpl implements UserService {
         sysUser.setAuditStatus(AuditStatusEnum.AUDITED.getCode());
         sysUser.setLevel(level);
         userRepository.save(sysUser);
+        // TODO: 2018/8/30 此处推荐奖励尚未入库
     }
 
     @Override

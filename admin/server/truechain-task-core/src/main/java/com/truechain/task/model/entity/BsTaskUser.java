@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 
 @Table(name = "BsTaskUser")
 @Entity
@@ -40,7 +41,7 @@ public class BsTaskUser extends BaseEntity {
      * 个人奖励
      */
     /*@JsonProperty("reward")*/
-    private Double rewardNum;
+    private BigDecimal rewardNum;
 
     /**
      * 任务
@@ -73,11 +74,11 @@ public class BsTaskUser extends BaseEntity {
         this.auditResult = auditResult;
     }
 
-    public Double getRewardNum() {
+    public BigDecimal getRewardNum() {
         return rewardNum;
     }
 
-    public void setRewardNum(Double rewardNum) {
+    public void setRewardNum(BigDecimal rewardNum) {
         this.rewardNum = rewardNum;
     }
 

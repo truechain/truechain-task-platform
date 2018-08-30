@@ -1,6 +1,7 @@
 package com.truechain.task.api.model.dto;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 public class RecommendTaskDTO implements Serializable {
 
@@ -12,7 +13,7 @@ public class RecommendTaskDTO implements Serializable {
     /**
      * 奖励
      */
-    private Double rewardNum;
+    private BigDecimal rewardNum;
     /**
      * 时间
      */
@@ -26,11 +27,11 @@ public class RecommendTaskDTO implements Serializable {
         this.personName = personName;
     }
 
-    public Double getRewardNum() {
+    public BigDecimal getRewardNum() {
         return rewardNum;
     }
 
-    public void setRewardNum(Double rewardNum) {
+    public void setRewardNum(BigDecimal rewardNum) {
         this.rewardNum = rewardNum;
     }
 

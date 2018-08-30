@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Set;
 
 /**
@@ -29,7 +30,7 @@ public class BsTaskDetail extends BaseEntity {
      * 奖励
      */
     /*@JsonProperty("reward")*/
-    private Double rewardNum;
+    private BigDecimal rewardNum;
     /**
      * 任务
      */
@@ -75,11 +76,11 @@ public class BsTaskDetail extends BaseEntity {
         this.peopleNum = peopleNum;
     }
 
-    public Double getRewardNum() {
+    public BigDecimal getRewardNum() {
         return rewardNum;
     }
 
-    public void setRewardNum(Double rewardNum) {
+    public void setRewardNum(BigDecimal rewardNum) {
         this.rewardNum = rewardNum;
     }
 

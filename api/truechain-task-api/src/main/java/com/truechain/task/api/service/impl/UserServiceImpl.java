@@ -6,6 +6,7 @@ import com.truechain.task.api.model.dto.UserAccountDTO;
 import com.truechain.task.api.model.dto.UserInfoDTO;
 import com.truechain.task.api.repository.BsRecommendTaskRepository;
 import com.truechain.task.api.repository.BsUserAccountDetailRepository;
+import com.truechain.task.api.repository.BsUserAccountRepository;
 import com.truechain.task.api.repository.SysUserRepository;
 import com.truechain.task.api.service.UserService;
 import com.truechain.task.core.BusinessException;
@@ -17,6 +18,7 @@ import com.truechain.task.model.enums.AuditStatusEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +29,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private SysUserRepository userRepository;
+
+    @Autowired
+    private BsUserAccountRepository userAccountRepository;
 
     @Autowired
     private BsUserAccountDetailRepository userAccountDetailRepository;
@@ -69,6 +74,12 @@ public class UserServiceImpl implements UserService {
         sysUser.setResumeFilePath(user.getResumeFilePath());
         sysUser.setAuditStatus(AuditStatusEnum.UNAUDITED.getCode());
         sysUser = userRepository.save(sysUser);
+        BsUserAccount userAccount = new BsUserAccount();
+        userAccount.setUser(sysUser);
+        userAccount.setGitReward(BigDecimal.ZERO);
+        userAccount.setTrueReward(BigDecimal.ZERO);
+        userAccount.setGitReward(BigDecimal.ZERO);
+        userAccountRepository.save(userAccount);
         return sysUser;
     }
 
@@ -87,9 +98,9 @@ public class UserServiceImpl implements UserService {
         userAccountDTO.setTtrReward("0");
         BsUserAccount userAccount = sysUser.getUserAccount();
         if (userAccount != null) {
-            userAccountDTO.setGitReward(userAccount.getGitReward());
-            userAccountDTO.setTrueReward(userAccount.getTrueReward());
-            userAccountDTO.setTtrReward(userAccount.getTtrReward());
+            userAccountDTO.setGitReward(userAccount.getGitReward().toString());
+            userAccountDTO.setTrueReward(userAccount.getTrueReward().toString());
+            userAccountDTO.setTtrReward(userAccount.getTtrReward().toString());
             QBsUserAccountDetail accountDetail = QBsUserAccountDetail.bsUserAccountDetail;
             Iterable<BsUserAccountDetail> userAccountDetailIterable = userAccountDetailRepository.findAll(accountDetail.userAccount.eq(userAccount).and(accountDetail.rewardType.eq(rewardType)));
             Set<BsUserAccountDetail> userAccountDetailList = new HashSet<>();

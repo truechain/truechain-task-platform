@@ -1,5 +1,7 @@
 package com.truechain.task.admin.model.dto;
 
+import java.math.BigDecimal;
+
 public class TaskEntryFromInfoDTO {
 
     public TaskEntryFromInfoDTO() {
@@ -24,7 +26,7 @@ public class TaskEntryFromInfoDTO {
     /**
      * 奖励
      */
-    private Double rewardNum;
+    private BigDecimal rewardNum;
     /**
      * 参与人名称
      */
@@ -74,11 +76,11 @@ public class TaskEntryFromInfoDTO {
         this.auditStatus = auditStatus;
     }
 
-    public Double getRewardNum() {
+    public BigDecimal getRewardNum() {
         return rewardNum;
     }
 
-    public void setRewardNum(Double rewardNum) {
+    public void setRewardNum(BigDecimal rewardNum) {
         this.rewardNum = rewardNum;
     }
 

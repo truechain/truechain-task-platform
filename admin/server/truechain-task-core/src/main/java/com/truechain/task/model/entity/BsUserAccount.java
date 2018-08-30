@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Set;
 
 @Entity
@@ -21,15 +22,15 @@ public class BsUserAccount extends BaseEntity {
     /**
      * true奖励
      */
-    private String trueReward;
+    private BigDecimal trueReward;
     /**
      * ttr奖励
      */
-    private String ttrReward;
+    private BigDecimal ttrReward;
     /**
      * 红包奖励
      */
-    private String gitReward;
+    private BigDecimal gitReward;
     /**
      * 账户明细
      */
@@ -45,27 +46,27 @@ public class BsUserAccount extends BaseEntity {
         this.user = user;
     }
 
-    public String getTrueReward() {
+    public BigDecimal getTrueReward() {
         return trueReward;
     }
 
-    public void setTrueReward(String trueReward) {
+    public void setTrueReward(BigDecimal trueReward) {
         this.trueReward = trueReward;
     }
 
-    public String getTtrReward() {
+    public BigDecimal getTtrReward() {
         return ttrReward;
     }
 
-    public void setTtrReward(String ttrReward) {
+    public void setTtrReward(BigDecimal ttrReward) {
         this.ttrReward = ttrReward;
     }
 
-    public String getGitReward() {
+    public BigDecimal getGitReward() {
         return gitReward;
     }
 
-    public void setGitReward(String gitReward) {
+    public void setGitReward(BigDecimal gitReward) {
         this.gitReward = gitReward;
     }
 

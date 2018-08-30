@@ -3,10 +3,7 @@ package com.truechain.task.admin.service.impl;
 import com.google.common.base.Preconditions;
 import com.querydsl.core.BooleanBuilder;
 import com.truechain.task.admin.model.dto.*;
-import com.truechain.task.admin.repository.BsRecommendTaskRepository;
-import com.truechain.task.admin.repository.BsTaskDetailRepository;
-import com.truechain.task.admin.repository.BsTaskRepository;
-import com.truechain.task.admin.repository.BsTaskUserRepository;
+import com.truechain.task.admin.repository.*;
 import com.truechain.task.admin.service.TaskService;
 import com.truechain.task.core.BusinessException;
 import com.truechain.task.model.entity.*;
@@ -18,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -37,6 +35,12 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private BsRecommendTaskRepository bsRecommendTaskRepository;
+
+    @Autowired
+    private BsUserAccountRepository userAccountRepository;
+
+    @Autowired
+    private BsUserAccountDetailRepository userAccountDetailRepository;
 
     @Override
     public Page<BsTask> getTaskPage(TaskDTO task, Pageable pageable) {
@@ -121,6 +125,10 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public BsTask addTask(TaskInfoDTO taskInfoDTO) {
         BsTask task = taskInfoDTO.getTask();
+        double totalRewardNum = taskInfoDTO.getTaskDetailList().stream().mapToDouble(x -> x.getPeopleNum() * x.getRewardNum().doubleValue()).sum();
+        if (task.getRewardNum().doubleValue() != totalRewardNum) {
+            throw new BusinessException("任务奖励总和和明细项不匹配");
+        }
         long peopleNum = taskInfoDTO.getTaskDetailList().stream().mapToInt(x -> x.getPeopleNum()).sum();
         task.setPeopleNum((int) peopleNum);
         task.setAuditStatus(0);
@@ -192,6 +200,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional
     public BsTaskUser rewardEntryFromUser(Long taskUserId) {
         BsTaskUser taskUser = taskUserRepository.findOne(taskUserId);
         Preconditions.checkArgument(null != taskUser, "数据有误");
@@ -203,6 +212,34 @@ public class TaskServiceImpl implements TaskService {
         }
         taskUser.setAuditStatus(2);
         taskUser = taskUserRepository.save(taskUser);
+        //发放奖励
+        SysUser user = taskUser.getUser();
+        BsUserAccount userAccount = userAccountRepository.getByUser(user);
+        Preconditions.checkArgument(null != userAccount, "用户账户不存在");
+        BsTaskDetail taskDetail = taskUser.getTaskDetail();
+        BsTask task = taskDetail.getTask();
+        BigDecimal rewardNum = null;
+        switch (task.getRewardType()) {
+            case 1:
+                rewardNum = userAccount.getTrueReward().add(taskDetail.getRewardNum());
+                userAccount.setTrueReward(rewardNum);
+                break;
+            case 2:
+                rewardNum = userAccount.getTtrReward().add(taskDetail.getRewardNum());
+                userAccount.setTtrReward(rewardNum);
+                break;
+            case 3:
+                rewardNum = userAccount.getGitReward().add(taskDetail.getRewardNum());
+                userAccount.setGitReward(rewardNum);
+                break;
+        }
+        userAccountRepository.save(userAccount);
+        BsUserAccountDetail userAccountDetail = new BsUserAccountDetail();
+        userAccountDetail.setUserAccount(userAccount);
+        userAccountDetail.setTask(task);
+        userAccountDetail.setRewardType(task.getRewardType());
+        userAccountDetail.setRewardNum(taskDetail.getRewardNum());
+        userAccountDetailRepository.save(userAccountDetail);
         return taskUser;
     }
 

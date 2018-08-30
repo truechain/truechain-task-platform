@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import java.math.BigDecimal;
 import java.util.Set;
 
 /**
@@ -45,7 +46,7 @@ public class BsTask extends BaseEntity {
     /**
      * 奖励数量
      */
-    private Double rewardNum;
+    private BigDecimal rewardNum;
     /**
      * 人数限制
      */
@@ -131,11 +132,11 @@ public class BsTask extends BaseEntity {
         this.rewardType = rewardType;
     }
 
-    public Double getRewardNum() {
+    public BigDecimal getRewardNum() {
         return rewardNum;
     }
 
-    public void setRewardNum(Double rewardNum) {
+    public void setRewardNum(BigDecimal rewardNum) {
         this.rewardNum = rewardNum;
     }
 
