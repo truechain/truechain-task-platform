@@ -110,14 +110,14 @@ public class ReportController extends BasicController {
 
         Page<BsUserAccountDetail> bsUserAccountDetails = bsUserAccountDetailServiceImpl.getBsUserAccountDetail(timeRange,pageable);
         bsUserAccountDetails.forEach(bsUserAccountDetail -> {
-                    if(bsUserAccountDetail.getRewardType() == 1){
-                        reportIndexPojo.setTrueValue(reportIndexPojo.getTrueValue() + bsUserAccountDetail.getRewardNum());
+                    if(bsUserAccountDetail.getRewardType() == 1 && bsUserAccountDetail.getRewardNum() != null){
+                        reportIndexPojo.setTrueValue(reportIndexPojo.getTrueValue() + bsUserAccountDetail.getRewardNum().doubleValue());
                     }
-                    if(bsUserAccountDetail.getRewardType() == 2){
-                        reportIndexPojo.setTtrValue(reportIndexPojo.getTtrValue() + bsUserAccountDetail.getRewardNum());
+                    if(bsUserAccountDetail.getRewardType() == 2 && bsUserAccountDetail.getRewardNum() != null){
+                        reportIndexPojo.setTtrValue(reportIndexPojo.getTtrValue() + bsUserAccountDetail.getRewardNum().doubleValue());
                     }
-                    if(bsUserAccountDetail.getRewardType() == 3){
-                        reportIndexPojo.setRmbValue(reportIndexPojo.getRmbValue() + bsUserAccountDetail.getRewardNum());
+                    if(bsUserAccountDetail.getRewardType() == 3 &&  bsUserAccountDetail.getRewardNum() != null){
+                        reportIndexPojo.setRmbValue(reportIndexPojo.getRmbValue() + bsUserAccountDetail.getRewardNum().doubleValue());
                     }
                 });
 
@@ -235,7 +235,10 @@ public class ReportController extends BasicController {
             if (rewardType == 3) {
                 rewardHistoryPojo.setRewardType("rmb");
             }
-            rewardHistoryPojo.setRewardNum(bsUserAccountDetail.getRewardNum());
+            if( bsUserAccountDetail.getRewardNum() != null){
+                rewardHistoryPojo.setRewardNum(bsUserAccountDetail.getRewardNum().doubleValue());
+            }
+
             rewardHistoryPojoList.add(rewardHistoryPojo);
         }
     );
