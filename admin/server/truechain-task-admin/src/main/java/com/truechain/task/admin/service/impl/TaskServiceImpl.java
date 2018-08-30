@@ -256,6 +256,7 @@ public class TaskServiceImpl implements TaskService {
     public Page<BsRecommendTask> getBsRecommendTaskList(UserDTO user, Pageable pageable) {
         BooleanBuilder builder = new BooleanBuilder();
         QBsRecommendTask qbsRecommendTask = QBsRecommendTask.bsRecommendTask;
+        builder.and(qbsRecommendTask.recommendUser.auditStatus.eq(1));      //1审核通过
         if (user.getId() != null && user.getId() > 0) {
             builder.and(qbsRecommendTask.recommendUser.id.eq(user.getId()));
         }

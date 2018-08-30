@@ -60,6 +60,10 @@ public class SysUser extends BaseEntity {
      */
     private int auditStatus;
     /**
+     * 审核状态
+     */
+    private String auditPassTime;
+    /**
      * 账户
      */
     @JsonIgnore
@@ -176,4 +180,11 @@ public class SysUser extends BaseEntity {
         this.taskUserSet = taskUserSet;
     }
 
+    public String getAuditPassTime() {
+        return auditPassTime;
+    }
+
+    public void setAuditPassTime(String auditPassTime) {
+        this.auditPassTime = auditPassTime;
+    }
 }

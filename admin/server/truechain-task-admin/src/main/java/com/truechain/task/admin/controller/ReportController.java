@@ -14,10 +14,12 @@ import com.truechain.task.admin.service.BsRecommendTaskService;
 import com.truechain.task.admin.service.BsTaskUserService;
 import com.truechain.task.admin.service.TaskService;
 import com.truechain.task.admin.service.UserService;
+import com.truechain.task.admin.service.impl.BsUserAccountDetailServiceImpl;
 import com.truechain.task.core.WrapMapper;
 import com.truechain.task.core.Wrapper;
 import com.truechain.task.model.entity.BsRecommendTask;
 import com.truechain.task.model.entity.BsTaskUser;
+import com.truechain.task.model.entity.BsUserAccountDetail;
 import com.truechain.task.model.entity.SysUser;
 import io.swagger.annotations.ApiOperation;
 import joptsimple.internal.Strings;
@@ -55,6 +57,9 @@ public class ReportController extends BasicController {
     @Autowired
     private BsRecommendTaskService bsRecommendTaskService;
 
+    @Autowired
+    private BsUserAccountDetailServiceImpl bsUserAccountDetailServiceImpl;
+
 
 
     /**
@@ -70,6 +75,7 @@ public class ReportController extends BasicController {
         final String endDate = timeRange.getEndDate();
 
         ReportIndexPojo reportIndexPojo = new ReportIndexPojo();
+        reportIndexPojo.setId(0L);
 
         reportIndexPojo.setStartDate(startDate);
         reportIndexPojo.setEndDate(endDate);
@@ -88,19 +94,32 @@ public class ReportController extends BasicController {
         Page<BsTaskUser> page = bsTaskUserService.getBsTaskUser(taskDTO,pageable);
         //完成任务数
         reportIndexPojo.setTaskDoneCount(page.getTotalElements());
-        page.forEach(bsTaskUser->{
-            if(bsTaskUser.getTaskDetail().getTask().getRewardType() == 1){
-                reportIndexPojo.setTrueValue(reportIndexPojo.getTrueValue() + bsTaskUser.getRewardNum());
-            }
-            if(bsTaskUser.getTaskDetail().getTask().getRewardType() == 2){
-                reportIndexPojo.setTtrValue(reportIndexPojo.getTtrValue() + bsTaskUser.getRewardNum());
-            }
-            if(bsTaskUser.getTaskDetail().getTask().getRewardType() == 3){
-                reportIndexPojo.setRmbValue(reportIndexPojo.getRmbValue() + bsTaskUser.getRewardNum());
-            }
-        });
+//        page.forEach(bsTaskUser->{
+//            if(bsTaskUser.getTaskDetail().getTask().getRewardType() == 1){
+//                reportIndexPojo.setTrueValue(reportIndexPojo.getTrueValue() + bsTaskUser.getRewardNum());
+//            }
+//            if(bsTaskUser.getTaskDetail().getTask().getRewardType() == 2){
+//                reportIndexPojo.setTtrValue(reportIndexPojo.getTtrValue() + bsTaskUser.getRewardNum());
+//            }
+//            if(bsTaskUser.getTaskDetail().getTask().getRewardType() == 3){
+//                reportIndexPojo.setRmbValue(reportIndexPojo.getRmbValue() + bsTaskUser.getRewardNum());
+//            }
+//        });
         //进行中任务数
         reportIndexPojo.setTaskDoingCount(reportIndexPojo.getTaskCount() - reportIndexPojo.getTaskDoneCount());
+
+        Page<BsUserAccountDetail> bsUserAccountDetails = bsUserAccountDetailServiceImpl.getBsUserAccountDetail(timeRange,pageable);
+        bsUserAccountDetails.forEach(bsUserAccountDetail -> {
+                    if(bsUserAccountDetail.getRewardType() == 1){
+                        reportIndexPojo.setTrueValue(reportIndexPojo.getTrueValue() + bsUserAccountDetail.getRewardNum());
+                    }
+                    if(bsUserAccountDetail.getRewardType() == 2){
+                        reportIndexPojo.setTtrValue(reportIndexPojo.getTtrValue() + bsUserAccountDetail.getRewardNum());
+                    }
+                    if(bsUserAccountDetail.getRewardType() == 3){
+                        reportIndexPojo.setRmbValue(reportIndexPojo.getRmbValue() + bsUserAccountDetail.getRewardNum());
+                    }
+                });
 
         List<ReportIndexPojo> rewardHistoryPojoList = Lists.newArrayList(reportIndexPojo);
         return WrapMapper.ok(rewardHistoryPojoList);
@@ -134,7 +153,7 @@ public class ReportController extends BasicController {
             UserProfilePagePojo userProfilePagePojo = new UserProfilePagePojo(source);
             if(recommendTasks.containsKey(userProfilePagePojo.getId())){
                 BsRecommendTask bsRecommendTask = recommendTasks.get(userProfilePagePojo.getId());
-                userProfilePagePojo.setRecommendPerson(bsRecommendTask.getUser().getPersonName());
+                userProfilePagePojo.setRecommendPerson(bsRecommendTask.getRecommendUser().getPersonName());
             }
             if(recommendCounts.containsKey(userProfilePagePojo.getId())){
                 Integer bsRecommendCount = recommendCounts.get(userProfilePagePojo.getId());
@@ -187,43 +206,39 @@ public class ReportController extends BasicController {
     @PostMapping("/getRewardStats")
     public Wrapper getRewardStats(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestBody RewardViewDTO rewardViewDTO) {
         List<UserRewardHistoryPojo> rewardHistoryPojoList = Lists.newArrayList();
+        Pageable pageable = new PageRequest(1, Integer.MAX_VALUE);
 
-        //完成任务方式获取奖励
-        if(Strings.isNullOrEmpty(rewardViewDTO.getChannel()) || "完成任务".equals(rewardViewDTO.getChannel())) {
-            List<BsTaskUser> bsTaskUserList = bsTaskUserService.getBsTaskUserByUserIds(Sets.newHashSet(rewardViewDTO.getUserId()));
-            for (BsTaskUser bsTaskUser : bsTaskUserList) {
-                UserRewardHistoryPojo rewardHistoryPojo = new UserRewardHistoryPojo();
-                rewardHistoryPojo.setId(bsTaskUser.getId());
-                if (bsTaskUser.getTaskStatus() == 1) {
-                    rewardHistoryPojo.setEventName("完成任务");
-                    rewardHistoryPojo.setGotTime(bsTaskUser.getUpdateTime());
-                    double rewardValue = bsTaskUser.getRewardNum() != null ? NumberUtils.toDouble(bsTaskUser.getRewardNum().toString(), 0) : 0;
-                    //奖励类型(1-true,2-ttr,3-rmp)
-                    final int rewardType = bsTaskUser.getTaskDetail().getTask().getRewardType();
-                    if (rewardType == 1) {
-                        rewardHistoryPojo.setRewardType("true");
-                    }
-                    if (rewardType == 2) {
-                        rewardHistoryPojo.setRewardType("ttr");
-                    }
-                    if (rewardType == 3) {
-                        rewardHistoryPojo.setRewardType("rmb");
-                    }
-                    rewardHistoryPojo.setRewardNum(rewardValue);
+        Page<BsUserAccountDetail> page = bsUserAccountDetailServiceImpl.getBsUserAccountDetail(rewardViewDTO,pageable);
+        page.forEach(bsUserAccountDetail -> {
+            UserRewardHistoryPojo rewardHistoryPojo = new UserRewardHistoryPojo();
+            rewardHistoryPojo.setId(bsUserAccountDetail.getId());
 
-                    if (Strings.isNullOrEmpty(rewardViewDTO.getRewardType())) {
-                        //不按照rewardType过滤
-                        rewardHistoryPojoList.add(rewardHistoryPojo);
-                    } else {
-                        if (rewardType == Integer.parseInt(rewardViewDTO.getRewardType())) {
-                            rewardHistoryPojoList.add(rewardHistoryPojo);
-                        }
-                    }
-                }
+            int rewardResource = bsUserAccountDetail.getRewardResource();
+            if(rewardResource == 1){
+                rewardHistoryPojo.setEventName("推荐");
             }
+            if(rewardResource == 2){
+                rewardHistoryPojo.setEventName("完成任务");
+            }
+            if(rewardResource == 3){
+                rewardHistoryPojo.setEventName("评级");
+            }
+            rewardHistoryPojo.setGotTime(bsUserAccountDetail.getUpdateTime());
+            //奖励类型(1-true,2-ttr,3-rmp)
+            final int rewardType = bsUserAccountDetail.getRewardType();
+            if (rewardType == 1) {
+                rewardHistoryPojo.setRewardType("true");
+            }
+            if (rewardType == 2) {
+                rewardHistoryPojo.setRewardType("ttr");
+            }
+            if (rewardType == 3) {
+                rewardHistoryPojo.setRewardType("rmb");
+            }
+            rewardHistoryPojo.setRewardNum(bsUserAccountDetail.getRewardNum());
+            rewardHistoryPojoList.add(rewardHistoryPojo);
         }
-        //TODO 推荐方式获取奖励
-
+    );
         return WrapMapper.ok(rewardHistoryPojoList);
     }
 
@@ -238,17 +253,16 @@ public class ReportController extends BasicController {
         Pageable pageable = new PageRequest(user.getPageIndex() - 1, user.getPageSize());
         List<UserRecommendPagePojo> rewardHistoryPojoList = Lists.newArrayList();
 
-        Page<BsRecommendTask> bsRecommendTaskList = taskService.getBsRecommendTaskList(user,pageable);
+        Page<BsUserAccountDetail> page = bsUserAccountDetailServiceImpl.getRecommendTask(user,pageable);
 
-        bsRecommendTaskList.forEach(item->{
-
+        page.forEach(item->{
             UserRecommendPagePojo userRecommendPagePojo = new UserRecommendPagePojo();
             userRecommendPagePojo.setId(item.getId());
-            userRecommendPagePojo.setName(item.getUser().getPersonName());
-            userRecommendPagePojo.setWxName(item.getUser().getWxNickName());
-            userRecommendPagePojo.setWxNum(item.getUser().getWxNum());
-            userRecommendPagePojo.setLevel(item.getUser().getLevel());
-            userRecommendPagePojo.setRecommendTime(item.getCreateTime());
+            userRecommendPagePojo.setName(item.getRecommendTask().getUser().getPersonName());
+            userRecommendPagePojo.setWxName(item.getRecommendTask().getUser().getWxNickName());
+            userRecommendPagePojo.setWxNum(item.getRecommendTask().getUser().getWxNum());
+            userRecommendPagePojo.setLevel(item.getRecommendTask().getUser().getLevel());
+            userRecommendPagePojo.setRecommendTime(item.getUpdateTime());
             if(!Strings.isNullOrEmpty(user.getLevel()) && userRecommendPagePojo.getLevel().equals(user.getLevel())){
                 rewardHistoryPojoList.add(userRecommendPagePojo);
             }

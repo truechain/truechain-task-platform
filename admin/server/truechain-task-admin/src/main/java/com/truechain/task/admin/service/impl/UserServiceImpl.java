@@ -15,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -32,7 +34,7 @@ public class UserServiceImpl implements UserService {
             if (user.getAuditStatus() == 1) {
                 builder.and(qSysUser.auditStatus.eq(user.getAuditStatus()));
             } else if (user.getAuditStatus() == 0) {
-                builder.and(qSysUser.auditStatus.eq(AuditStatusEnum.UNCOMPLATE.getCode()).or(qSysUser.auditStatus.eq(AuditStatusEnum.UNAUDITED.getCode())));
+//                builder.and(qSysUser.auditStatus.eq(AuditStatusEnum.UNCOMPLATE.getCode()).or(qSysUser.auditStatus.eq(AuditStatusEnum.UNAUDITED.getCode())));
             }
         }
         if (StringUtils.isNotBlank(user.getStartDate())) {
@@ -84,6 +86,7 @@ public class UserServiceImpl implements UserService {
         Preconditions.checkArgument(null != sysUser, "该用户不存在");
         Preconditions.checkArgument(AuditStatusEnum.UNAUDITED.getCode() == sysUser.getAuditStatus(), "用户已通过审核");
         sysUser.setAuditStatus(AuditStatusEnum.AUDITED.getCode());
+        sysUser.setAuditPassTime(new Date().toString());
         sysUser.setLevel(level);
         userRepository.save(sysUser);
         // TODO: 2018/8/30 此处推荐奖励尚未入库

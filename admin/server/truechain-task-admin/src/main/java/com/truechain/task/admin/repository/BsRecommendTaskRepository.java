@@ -11,16 +11,16 @@ import java.util.List;
 public interface BsRecommendTaskRepository extends JpaRepository<BsRecommendTask, Long>, QueryDslPredicateExecutor<BsRecommendTask> {
 
     /**
-     * 获取推荐制定用户的人
+     * 被推荐人 找 推荐人
      * @return
      */
-    @Query("select u from BsRecommendTask u where u.recommendUser.id in ?1")
+    @Query("select u from BsRecommendTask u where u.user.id in ?1")
     List<BsRecommendTask> getMyRecommendUser(Collection<Long> ids);
 
     /**
-     * 获取指定用户推荐的人总数
+     * 推荐人 找 自己的被推荐人总数
      * @return
      */
-    @Query("select u.user.id,count(u.id) from BsRecommendTask u where u.user.id in ?1 group by u.user.id")
+    @Query("select u.recommendUser.id,count(u.recommendUser) from BsRecommendTask u where u.recommendUser.id in ?1 group by u.recommendUser.id")
     List<Object> getMyRecommendCount(Collection<Long> ids);
 }
