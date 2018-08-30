@@ -16,6 +16,14 @@ public interface UserService {
     Page<SysUser> getUserPage(UserDTO user, Pageable pageable);
 
     /**
+     * 获取已经审核用户记录
+     * @param user
+     * @param pageable
+     * @return
+     */
+    Page<SysUser> getAuditedUserPage(UserDTO user, Pageable pageable);
+
+    /**
      * 获取用户详情
      *
      * @param userId

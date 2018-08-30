@@ -17,10 +17,7 @@ import com.truechain.task.admin.service.UserService;
 import com.truechain.task.admin.service.impl.BsUserAccountDetailServiceImpl;
 import com.truechain.task.core.WrapMapper;
 import com.truechain.task.core.Wrapper;
-import com.truechain.task.model.entity.BsRecommendTask;
-import com.truechain.task.model.entity.BsTaskUser;
-import com.truechain.task.model.entity.BsUserAccountDetail;
-import com.truechain.task.model.entity.SysUser;
+import com.truechain.task.model.entity.*;
 import io.swagger.annotations.ApiOperation;
 import joptsimple.internal.Strings;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -86,27 +83,37 @@ public class ReportController extends BasicController {
         TaskDTO taskDTO = new TaskDTO();
         taskDTO.setStartDateTime(timeRange.getStartDate());
         taskDTO.setEndDateTime(timeRange.getEndDate());
-        long taskCount = bsTaskUserService.getBsTaskUserCount(taskDTO);
-        reportIndexPojo.setTaskCount(taskCount);
-
-        taskDTO.setTaskStatus(0);       //完成
-        Pageable pageable = new PageRequest(1, Integer.MAX_VALUE);
-        Page<BsTaskUser> page = bsTaskUserService.getBsTaskUser(taskDTO,pageable);
-        //完成任务数
-        reportIndexPojo.setTaskDoneCount(page.getTotalElements());
-//        page.forEach(bsTaskUser->{
-//            if(bsTaskUser.getTaskDetail().getTask().getRewardType() == 1){
-//                reportIndexPojo.setTrueValue(reportIndexPojo.getTrueValue() + bsTaskUser.getRewardNum());
-//            }
-//            if(bsTaskUser.getTaskDetail().getTask().getRewardType() == 2){
-//                reportIndexPojo.setTtrValue(reportIndexPojo.getTtrValue() + bsTaskUser.getRewardNum());
-//            }
-//            if(bsTaskUser.getTaskDetail().getTask().getRewardType() == 3){
-//                reportIndexPojo.setRmbValue(reportIndexPojo.getRmbValue() + bsTaskUser.getRewardNum());
-//            }
-//        });
+        Pageable pageable = new PageRequest(0, Integer.MAX_VALUE);
+        Page<BsTask> taskPage = taskService.getTaskPage(taskDTO,pageable);
+        reportIndexPojo.setTaskCount(taskPage.getTotalElements());
+        //完成任务数目
+        taskPage.forEach(bsTask->{
+            if(bsTask.getTaskStatus() != null && bsTask.getTaskStatus().intValue() == 1){
+                reportIndexPojo.setTaskDoneCount(reportIndexPojo.getTaskDoneCount() + 1);
+            }
+        });
         //进行中任务数
         reportIndexPojo.setTaskDoingCount(reportIndexPojo.getTaskCount() - reportIndexPojo.getTaskDoneCount());
+//        long taskCount = bsTaskUserService.getBsTaskUserCount(taskDTO);
+//        reportIndexPojo.setTaskCount(taskCount);
+
+//        taskDTO.setTaskStatus(0);       //完成
+//        Pageable pageable = new PageRequest(1, Integer.MAX_VALUE);
+//        Page<BsTaskUser> page = bsTaskUserService.getBsTaskUser(taskDTO,pageable);
+//        //完成任务数
+//        reportIndexPojo.setTaskDoneCount(page.getTotalElements());
+////        page.forEach(bsTaskUser->{
+////            if(bsTaskUser.getTaskDetail().getTask().getRewardType() == 1){
+////                reportIndexPojo.setTrueValue(reportIndexPojo.getTrueValue() + bsTaskUser.getRewardNum());
+////            }
+////            if(bsTaskUser.getTaskDetail().getTask().getRewardType() == 2){
+////                reportIndexPojo.setTtrValue(reportIndexPojo.getTtrValue() + bsTaskUser.getRewardNum());
+////            }
+////            if(bsTaskUser.getTaskDetail().getTask().getRewardType() == 3){
+////                reportIndexPojo.setRmbValue(reportIndexPojo.getRmbValue() + bsTaskUser.getRewardNum());
+////            }
+////        });
+
 
         Page<BsUserAccountDetail> bsUserAccountDetails = bsUserAccountDetailServiceImpl.getBsUserAccountDetail(timeRange,pageable);
         bsUserAccountDetails.forEach(bsUserAccountDetail -> {
@@ -134,7 +141,7 @@ public class ReportController extends BasicController {
         Preconditions.checkArgument(user.getPageIndex() > 0, "分页信息错误");
         Preconditions.checkArgument(user.getPageSize() > 1, "分页信息错误");
         Pageable pageable = new PageRequest(user.getPageIndex() - 1, user.getPageSize());
-        Page<SysUser> userPage = userService.getUserPage(user, pageable);
+        Page<SysUser> userPage = userService.getAuditedUserPage(user, pageable);
         Page<UserProfilePagePojo> result = convert(userPage);
         return WrapMapper.ok(result);
     }
@@ -206,7 +213,7 @@ public class ReportController extends BasicController {
     @PostMapping("/getRewardStats")
     public Wrapper getRewardStats(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestBody RewardViewDTO rewardViewDTO) {
         List<UserRewardHistoryPojo> rewardHistoryPojoList = Lists.newArrayList();
-        Pageable pageable = new PageRequest(1, Integer.MAX_VALUE);
+        Pageable pageable = new PageRequest(0, Integer.MAX_VALUE);
 
         Page<BsUserAccountDetail> page = bsUserAccountDetailServiceImpl.getBsUserAccountDetail(rewardViewDTO,pageable);
         page.forEach(bsUserAccountDetail -> {
@@ -250,29 +257,47 @@ public class ReportController extends BasicController {
      */
     @ApiOperation(value = "推荐列表", notes = "返回结构")
     @PostMapping("/getRecommendStats")
-    public Wrapper getRecommendStats(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody UserDTO user) {
-        Preconditions.checkArgument(user.getPageIndex() > 0, "分页信息错误");
-        Preconditions.checkArgument(user.getPageSize() > 1, "分页信息错误");
-        Pageable pageable = new PageRequest(user.getPageIndex() - 1, user.getPageSize());
+    public Wrapper getRecommendStats(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody UserDTO userDTO) {
+        Preconditions.checkArgument(userDTO.getPageIndex() > 0, "分页信息错误");
+        Preconditions.checkArgument(userDTO.getPageSize() > 1, "分页信息错误");
+        Pageable pageable = new PageRequest(userDTO.getPageIndex() - 1, userDTO.getPageSize());
         List<UserRecommendPagePojo> rewardHistoryPojoList = Lists.newArrayList();
 
-        Page<BsUserAccountDetail> page = bsUserAccountDetailServiceImpl.getRecommendTask(user,pageable);
+        Page<BsRecommendTask> page = bsRecommendTaskService.getRecommendTask(userDTO,pageable);
+//        Page<BsUserAccountDetail> page = bsUserAccountDetailServiceImpl.getRecommendTask(user,pageable);
 
         page.forEach(item->{
             UserRecommendPagePojo userRecommendPagePojo = new UserRecommendPagePojo();
             userRecommendPagePojo.setId(item.getId());
-            userRecommendPagePojo.setName(item.getRecommendTask().getUser().getPersonName());
-            userRecommendPagePojo.setWxName(item.getRecommendTask().getUser().getWxNickName());
-            userRecommendPagePojo.setWxNum(item.getRecommendTask().getUser().getWxNum());
-            userRecommendPagePojo.setLevel(item.getRecommendTask().getUser().getLevel());
+            userRecommendPagePojo.setName(item.getUser().getPersonName());
+            userRecommendPagePojo.setWxName(item.getUser().getWxNickName());
+            userRecommendPagePojo.setWxNum(item.getUser().getWxNum());
+            userRecommendPagePojo.setLevel(item.getUser().getLevel());
             userRecommendPagePojo.setRecommendTime(item.getUpdateTime());
-            if(!Strings.isNullOrEmpty(user.getLevel()) && userRecommendPagePojo.getLevel().equals(user.getLevel())){
-                rewardHistoryPojoList.add(userRecommendPagePojo);
-            }
-            if(Strings.isNullOrEmpty(user.getLevel())){
-                rewardHistoryPojoList.add(userRecommendPagePojo);
-            }
+//            if(!Strings.isNullOrEmpty(user.getLevel()) && userRecommendPagePojo.getLevel().equals(user.getLevel())){
+//                rewardHistoryPojoList.add(userRecommendPagePojo);
+//            }
+//            if(Strings.isNullOrEmpty(user.getLevel())){
+//                rewardHistoryPojoList.add(userRecommendPagePojo);
+//            }
+            rewardHistoryPojoList.add(userRecommendPagePojo);
         });
+//
+//        page.forEach(item->{
+//            UserRecommendPagePojo userRecommendPagePojo = new UserRecommendPagePojo();
+//            userRecommendPagePojo.setId(item.getId());
+//            userRecommendPagePojo.setName(item.getRecommendTask().getUser().getPersonName());
+//            userRecommendPagePojo.setWxName(item.getRecommendTask().getUser().getWxNickName());
+//            userRecommendPagePojo.setWxNum(item.getRecommendTask().getUser().getWxNum());
+//            userRecommendPagePojo.setLevel(item.getRecommendTask().getUser().getLevel());
+//            userRecommendPagePojo.setRecommendTime(item.getUpdateTime());
+//            if(!Strings.isNullOrEmpty(user.getLevel()) && userRecommendPagePojo.getLevel().equals(user.getLevel())){
+//                rewardHistoryPojoList.add(userRecommendPagePojo);
+//            }
+//            if(Strings.isNullOrEmpty(user.getLevel())){
+//                rewardHistoryPojoList.add(userRecommendPagePojo);
+//            }
+//        });
         return WrapMapper.ok(rewardHistoryPojoList);
     }
 
@@ -312,7 +337,7 @@ public class ReportController extends BasicController {
         Preconditions.checkArgument(user.getPageIndex() > 0, "分页信息错误");
         Preconditions.checkArgument(user.getPageSize() > 1, "分页信息错误");
         Pageable pageable = new PageRequest(user.getPageIndex() - 1, user.getPageSize());
-        Page<SysUser> userPage = userService.getUserPage(user, pageable);
+        Page<SysUser> userPage = userService.getAuditedUserPage(user, pageable);
 
         Page<UserProfilePagePojo> userProfilePagePojos = convert(userPage);
         response.setContentType("application/binary;charset=UTF-8");

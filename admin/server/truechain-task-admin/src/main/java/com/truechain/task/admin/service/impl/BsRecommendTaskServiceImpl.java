@@ -1,10 +1,18 @@
 package com.truechain.task.admin.service.impl;
 
 import com.google.common.collect.Maps;
+import com.querydsl.core.BooleanBuilder;
+import com.truechain.task.admin.model.dto.UserDTO;
 import com.truechain.task.admin.repository.BsRecommendTaskRepository;
 import com.truechain.task.admin.service.BsRecommendTaskService;
 import com.truechain.task.model.entity.BsRecommendTask;
+import com.truechain.task.model.entity.BsUserAccountDetail;
+import com.truechain.task.model.entity.QBsRecommendTask;
+import com.truechain.task.model.entity.QBsUserAccountDetail;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -38,5 +46,31 @@ public class BsRecommendTaskServiceImpl implements BsRecommendTaskService {
             result.put(id,count);
         });
         return result;
+    }
+
+    @Override
+    public Page<BsRecommendTask> getRecommendTask(UserDTO userDTO, Pageable pageable) {
+        BooleanBuilder builder = new BooleanBuilder();
+        QBsRecommendTask qBsRecommendTask = QBsRecommendTask.bsRecommendTask;
+        if (userDTO.getId() != null) {
+            builder.and(qBsRecommendTask.recommendUser.id.eq(userDTO.getId()));                 //推荐人id
+        }
+        if (StringUtils.isNotBlank(userDTO.getStartDate())) {
+            builder.and(qBsRecommendTask.updateTime.gt(userDTO.getStartDate()));
+        }
+        if (StringUtils.isNotBlank(userDTO.getEndDate())) {
+            builder.and(qBsRecommendTask.updateTime.lt(userDTO.getEndDate()));
+        }
+        if (StringUtils.isNotBlank(userDTO.getName())) {       //被推荐人名称
+            builder.and(qBsRecommendTask.user.personName.likeIgnoreCase("%" + userDTO.getName() + "%"));
+        }
+        if (StringUtils.isNotBlank(userDTO.getName())) {       //被推荐人wx名称
+            builder.and(qBsRecommendTask.user.wxNickName.likeIgnoreCase("%" + userDTO.getWxNickName() + "%"));
+        }
+        if (StringUtils.isNotBlank(userDTO.getLevel())) {       //被推荐人level
+            builder.and(qBsRecommendTask.user.level.eq(userDTO.getLevel()));
+        }
+        Page<BsRecommendTask> taskPage = bsRecommendTaskRepository.findAll(builder, pageable);
+        return taskPage;
     }
 }

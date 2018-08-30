@@ -54,6 +54,36 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Page<SysUser> getAuditedUserPage(UserDTO user, Pageable pageable) {
+        BooleanBuilder builder = new BooleanBuilder();
+        QSysUser qSysUser = QSysUser.sysUser;
+        if (StringUtils.isNotBlank(user.getLevel())) {
+            builder.and(qSysUser.level.eq(user.getLevel()));
+        }
+        if (null != user.getAuditStatus()) {
+            if (user.getAuditStatus() == 1) {
+                builder.and(qSysUser.auditStatus.eq(user.getAuditStatus()));
+            } else if (user.getAuditStatus() == 0) {
+//                builder.and(qSysUser.auditStatus.eq(AuditStatusEnum.UNCOMPLATE.getCode()).or(qSysUser.auditStatus.eq(AuditStatusEnum.UNAUDITED.getCode())));
+            }
+        }
+        if (StringUtils.isNotBlank(user.getStartDate())) {
+            builder.and(qSysUser.auditPassTime.gt(user.getStartDate()));
+        }
+        if (StringUtils.isNotBlank(user.getEndDate())) {
+            builder.and(qSysUser.auditPassTime.lt(user.getEndDate()));
+        }
+        if (StringUtils.isNotBlank(user.getName())) {
+            builder.and(qSysUser.personName.like(user.getName() + "%"));
+        }
+        if (StringUtils.isNotBlank(user.getWxNickName())) {
+            builder.and(qSysUser.wxNickName.like(user.getWxNickName() + "%"));
+        }
+        Page<SysUser> userPage = userRepository.findAll(builder, pageable);
+        return userPage;
+    }
+
+    @Override
     public SysUser getUserInfo(Long userId) {
         SysUser user = userRepository.findOne(userId);
         String resumeFilePath = user.getResumeFilePath();

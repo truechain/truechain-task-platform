@@ -1,6 +1,10 @@
 package com.truechain.task.admin.service;
 
+import com.truechain.task.admin.model.dto.UserDTO;
 import com.truechain.task.model.entity.BsRecommendTask;
+import com.truechain.task.model.entity.BsUserAccountDetail;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Collection;
 import java.util.List;
@@ -21,4 +25,12 @@ public interface BsRecommendTaskService {
      * @return
      */
     Map<Long,Integer> getMyRecommendCount(Collection<Long> ids);
+
+    /**
+     * 获取指定推荐人的被推荐人清单
+     * @param userDTO
+     * @param pageable
+     * @return
+     */
+    Page<BsRecommendTask> getRecommendTask(UserDTO userDTO, Pageable pageable);
 }

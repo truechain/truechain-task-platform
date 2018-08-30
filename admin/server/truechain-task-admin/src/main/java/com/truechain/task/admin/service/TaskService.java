@@ -25,7 +25,6 @@ public interface TaskService {
      */
     Page<BsTask> getTaskPage(TaskDTO task, Pageable pageable);
 
-
     /**
      * 获取任务详情
      *
