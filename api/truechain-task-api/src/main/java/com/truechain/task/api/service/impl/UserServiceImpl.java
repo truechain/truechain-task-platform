@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
         userAccount.setUser(sysUser);
         userAccount.setGitReward(BigDecimal.ZERO);
         userAccount.setTrueReward(BigDecimal.ZERO);
-        userAccount.setGitReward(BigDecimal.ZERO);
+        userAccount.setTtrReward(BigDecimal.ZERO);
         userAccountRepository.save(userAccount);
         return sysUser;
     }

@@ -3,18 +3,21 @@ package com.truechain.task.admin.service.impl;
 import com.google.common.base.Preconditions;
 import com.querydsl.core.BooleanBuilder;
 import com.truechain.task.admin.model.dto.UserDTO;
+import com.truechain.task.admin.repository.BsRecommendTaskRepository;
+import com.truechain.task.admin.repository.BsUserAccountDetailRepository;
+import com.truechain.task.admin.repository.BsUserAccountRepository;
 import com.truechain.task.admin.repository.SysUserRepository;
 import com.truechain.task.admin.service.UserService;
-import com.truechain.task.model.entity.BsUserAccount;
-import com.truechain.task.model.entity.QSysUser;
-import com.truechain.task.model.entity.SysUser;
+import com.truechain.task.model.entity.*;
 import com.truechain.task.model.enums.AuditStatusEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Service
@@ -22,6 +25,15 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private SysUserRepository userRepository;
+
+    @Autowired
+    private BsUserAccountRepository userAccountRepository;
+
+    @Autowired
+    private BsUserAccountDetailRepository userAccountDetailRepository;
+
+    @Autowired
+    private BsRecommendTaskRepository recommendTaskRepository;
 
     @Override
     public Page<SysUser> getUserPage(UserDTO user, Pageable pageable) {
@@ -34,7 +46,7 @@ public class UserServiceImpl implements UserService {
             if (user.getAuditStatus() == 1) {
                 builder.and(qSysUser.auditStatus.eq(user.getAuditStatus()));
             } else if (user.getAuditStatus() == 0) {
-//                builder.and(qSysUser.auditStatus.eq(AuditStatusEnum.UNCOMPLATE.getCode()).or(qSysUser.auditStatus.eq(AuditStatusEnum.UNAUDITED.getCode())));
+                builder.and(qSysUser.auditStatus.eq(AuditStatusEnum.UNCOMPLATE.getCode()).or(qSysUser.auditStatus.eq(AuditStatusEnum.UNAUDITED.getCode())));
             }
         }
         if (StringUtils.isNotBlank(user.getStartDate())) {
@@ -62,7 +74,7 @@ public class UserServiceImpl implements UserService {
         }
 //        if (null != user.getAuditStatus()) {
 //            if (user.getAuditStatus() == 1) {
-                builder.and(qSysUser.auditStatus.eq(1));
+        builder.and(qSysUser.auditStatus.eq(1));
 //            } else if (user.getAuditStatus() == 0) {
 ////                builder.and(qSysUser.auditStatus.eq(AuditStatusEnum.UNCOMPLATE.getCode()).or(qSysUser.auditStatus.eq(AuditStatusEnum.UNAUDITED.getCode())));
 //            }
@@ -111,6 +123,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void auditUser(Long userId, String level, String rewardNum) {
         SysUser sysUser = userRepository.findOne(userId);
         Preconditions.checkArgument(null != sysUser, "该用户不存在");
@@ -119,7 +132,19 @@ public class UserServiceImpl implements UserService {
         sysUser.setAuditPassTime(new Date().toString());
         sysUser.setLevel(level);
         userRepository.save(sysUser);
-        // TODO: 2018/8/30 此处推荐奖励尚未入库
+        BsRecommendTask recommendTask = recommendTaskRepository.getByUser(sysUser);
+        Preconditions.checkArgument(null != recommendTask, "用户推荐信息未完善");
+        //发放奖励
+        BsUserAccount userAccount = userAccountRepository.getByUser(sysUser);
+        Preconditions.checkArgument(null != userAccount, "用户账户不存在");
+        userAccount.setTrueReward(userAccount.getTrueReward().add(new BigDecimal(rewardNum)));
+        userAccountRepository.save(userAccount);
+        BsUserAccountDetail userAccountDetail = new BsUserAccountDetail();
+        userAccountDetail.setUserAccount(userAccount);
+        userAccountDetail.setRewardType(3);
+        userAccountDetail.setRecommendTask(recommendTask);
+        userAccountDetail.setRewardNum(new BigDecimal(rewardNum));
+        userAccountDetailRepository.save(userAccountDetail);
     }
 
     @Override

@@ -92,7 +92,7 @@ public class TaskController extends BasicController {
         Map<String, String> result = new HashMap<>();
         String path = uploadFile.getPath();
         result.put("path", path);
-        String showPath = "http://phptrain.cn/taskicon/" + fileName;
+        String showPath = "http://phptrain.cn/taskicon/" + uploadFile.getName();
         result.put("showPath", showPath);
         return WrapMapper.ok(result);
     }

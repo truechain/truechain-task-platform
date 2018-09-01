@@ -23,11 +23,11 @@ public class BaseEntity implements Serializable {
 
     private String createTime = DateUtil.getDate();
 
-    private String updateId = DateUtil.getDate();
+    private String updateId;
 
     private String updateUser;
 
-    private String updateTime;
+    private String updateTime = DateUtil.getDate();
 
     public Long getId() {
         return id;

@@ -7,12 +7,13 @@ import com.truechain.task.admin.repository.*;
 import com.truechain.task.admin.service.TaskService;
 import com.truechain.task.core.BusinessException;
 import com.truechain.task.model.entity.*;
-import com.truechain.task.model.entity.QBsTask;
 import com.truechain.task.model.enums.TaskStatusEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,6 +72,7 @@ public class TaskServiceImpl implements TaskService {
         if (StringUtils.isNotBlank(task.getPublisherName())) {
             builder.and(qTask.createUser.like("%" + task.getPublisherName() + "%"));
         }
+        pageable = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), Sort.Direction.DESC, "createTime");
         Page<BsTask> taskPage = taskRepository.findAll(builder, pageable);
         return taskPage;
     }
@@ -118,6 +120,9 @@ public class TaskServiceImpl implements TaskService {
             taskEntryFromDTO.setStation(x.getTaskDetail().getStation());
             taskEntryFromDTOList.add(taskEntryFromDTO);
         });
+        if (taskEntryFromDTOList.size() != task.getPeopleNum()) {
+            taskEntryFrom.setTotalAuditStatus(0);
+        }
         taskEntryFrom.setTaskEntryFromInfoList(taskEntryFromDTOList);
         return taskEntryFrom;
     }
@@ -145,14 +150,28 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public BsTask updateTask(TaskInfoDTO taskInfoDTO) {
         BsTask task = taskInfoDTO.getTask();
+        double totalRewardNum = taskInfoDTO.getTaskDetailList().stream().mapToDouble(x -> x.getPeopleNum() * x.getRewardNum().doubleValue()).sum();
+        if (task.getRewardNum().doubleValue() != totalRewardNum) {
+            throw new BusinessException("任务奖励总和和明细项不匹配");
+        }
         BsTask bsTask = taskRepository.findOne(task.getId());
         Preconditions.checkArgument(null != bsTask, "该任务不存在");
-        Preconditions.checkArgument(1 == bsTask.getTaskStatus(), "任务不是启用状态");
         QBsTaskDetail qBsTaskDetail = QBsTaskDetail.bsTaskDetail;
         long count = taskDetailRepository.count(qBsTaskDetail.task.eq(task).and(qBsTaskDetail.taskUserSet.isNotEmpty()));
         Preconditions.checkArgument(count <= 0, "任务已经有人在执行");
         long peopleNum = taskInfoDTO.getTaskDetailList().stream().mapToInt(x -> x.getPeopleNum()).sum();
-        task.setPeopleNum((int) peopleNum);
+
+        bsTask.setPeopleNum((int) peopleNum);
+        bsTask.setName(task.getName());
+        bsTask.setLevel(task.getLevel());
+        bsTask.setTaskStatus(task.getTaskStatus());
+        bsTask.setCategory(task.getCategory());
+        bsTask.setStartDateTime(task.getStartDateTime());
+        bsTask.setEndDateTime(task.getEndDateTime());
+        bsTask.setRewardType(task.getRewardType());
+        bsTask.setRewardNum(task.getRewardNum());
+        bsTask.setPushAddress(task.getPushAddress());
+        bsTask.setDescription(task.getDescription());
         bsTask = taskRepository.save(bsTask);
         taskDetailRepository.deleteByTask(bsTask);
         for (BsTaskDetail taskDetail : taskInfoDTO.getTaskDetailList()) {
@@ -188,6 +207,7 @@ public class TaskServiceImpl implements TaskService {
     public void auditEntryFormUser(Long taskUserId) {
         BsTaskUser taskUser = taskUserRepository.findOne(taskUserId);
         Preconditions.checkArgument(null != taskUser, "数据有误");
+        Preconditions.checkArgument(1 == taskUser.getTaskStatus(), "用户尚未提交任务");
         taskUser.setAuditStatus(1);
         taskUserRepository.save(taskUser);
         BsTaskDetail bsTaskDetail = taskUser.getTaskDetail();
