@@ -272,7 +272,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public long countComplateTask() {
         QBsTask qbsTask = QBsTask.bsTask;
-        return taskRepository.count(qbsTask.taskStatus.eq(1));
+        return taskRepository.count(qbsTask.auditStatus.eq(1));
     }
 
     public Page<BsRecommendTask> getBsRecommendTaskList(UserDTO user, Pageable pageable) {
