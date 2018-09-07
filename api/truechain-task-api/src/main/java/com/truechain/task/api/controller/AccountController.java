@@ -16,6 +16,8 @@ import com.truechain.task.util.CommonUtil;
 import com.truechain.task.util.SMSHttpRequest;
 import com.truechain.task.util.ValidateUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +30,8 @@ import java.util.concurrent.TimeUnit;
 @RestController
 @RequestMapping(value = "/unauth/account")
 public class AccountController extends BasicController {
+
+    private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
 
     @Autowired
     private UserService userService;
@@ -49,8 +53,9 @@ public class AccountController extends BasicController {
      */
     @PostMapping("/register")
     public Wrapper register(@RequestParam String mobile, @RequestParam String verifyCode) {
-        /*String verifyRedisKey = "verify_register_" + mobile;
+        String verifyRedisKey = "verify_login_" + mobile;
         String realVerifyCode = stringRedisTemplate.opsForValue().get(verifyRedisKey);
+        logger.info("realVerifyCode = " + realVerifyCode);
         if (StringUtils.isBlank(realVerifyCode)) {
             throw new BusinessException("验证码已过期");
         }
@@ -62,8 +67,8 @@ public class AccountController extends BasicController {
         user.setAuditStatus(AuditStatusEnum.UNCOMPLATE.getCode());
         userService.addUser(user);
         redisTemplate.delete(verifyRedisKey);
-        return WrapMapper.ok();*/
-        throw new UnsupportedOperationException();
+        return WrapMapper.ok();
+//        throw new UnsupportedOperationException();
     }
 
     /**
