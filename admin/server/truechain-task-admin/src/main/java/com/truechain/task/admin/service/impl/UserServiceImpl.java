@@ -132,19 +132,19 @@ public class UserServiceImpl implements UserService {
         sysUser.setAuditPassTime(new Date().toString());
         sysUser.setLevel(level);
         userRepository.save(sysUser);
-        BsRecommendTask recommendTask = recommendTaskRepository.getByUser(sysUser);
-        Preconditions.checkArgument(null != recommendTask, "用户推荐信息未完善");
-        //发放奖励
-        BsUserAccount userAccount = userAccountRepository.getByUser(sysUser);
-        Preconditions.checkArgument(null != userAccount, "用户账户不存在");
-        userAccount.setTrueReward(userAccount.getTrueReward().add(new BigDecimal(rewardNum)));
-        userAccountRepository.save(userAccount);
-        BsUserAccountDetail userAccountDetail = new BsUserAccountDetail();
-        userAccountDetail.setUserAccount(userAccount);
-        userAccountDetail.setRewardType(3);
-        userAccountDetail.setRecommendTask(recommendTask);
-        userAccountDetail.setRewardNum(new BigDecimal(rewardNum));
-        userAccountDetailRepository.save(userAccountDetail);
+//        BsRecommendTask recommendTask = recommendTaskRepository.getByUser(sysUser);
+//        Preconditions.checkArgument(null != recommendTask, "用户推荐信息未完善");
+//        //发放奖励
+//        BsUserAccount userAccount = userAccountRepository.getByUser(sysUser);
+//        Preconditions.checkArgument(null != userAccount, "用户账户不存在");
+//        userAccount.setTrueReward(userAccount.getTrueReward().add(new BigDecimal(rewardNum)));
+//        userAccountRepository.save(userAccount);
+//        BsUserAccountDetail userAccountDetail = new BsUserAccountDetail();
+//        userAccountDetail.setUserAccount(userAccount);
+//        userAccountDetail.setRewardType(3);
+//        userAccountDetail.setRecommendTask(recommendTask);
+//        userAccountDetail.setRewardNum(new BigDecimal(rewardNum));
+//        userAccountDetailRepository.save(userAccountDetail);
     }
 
     @Override
