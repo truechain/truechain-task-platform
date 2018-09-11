@@ -100,7 +100,7 @@ public class TaskServiceImpl implements TaskService {
         TaskEntryFromDTO taskEntryFrom = new TaskEntryFromDTO();
         taskEntryFrom.setTaskName(task.getName());
         taskEntryFrom.setRewardType(task.getRewardType());
-        taskEntryFrom.setTotalAuditStatus(1);
+        taskEntryFrom.setTotalAuditStatus(task.getAuditStatus());                   //任务审核状态
         QBsTaskUser qBsTaskUser = QBsTaskUser.bsTaskUser;
         Iterable<BsTaskUser> taskUserIterable = taskUserRepository.findAll(qBsTaskUser.taskDetail.task.eq(task));
         List<TaskEntryFromInfoDTO> taskEntryFromDTOList = new ArrayList<>();
@@ -111,18 +111,18 @@ public class TaskServiceImpl implements TaskService {
             taskEntryFromDTO.setPersonName(user.getPersonName());
             taskEntryFromDTO.setWxNickName(user.getWxNickName());
             taskEntryFromDTO.setAuditStatus(x.getAuditStatus());
-            if (taskEntryFromDTO.getAuditStatus() == 0 && taskEntryFrom.getTotalAuditStatus() != 0) {
-                taskEntryFrom.setTotalAuditStatus(0);
-            }
+//            if (taskEntryFromDTO.getAuditStatus() == 0 && taskEntryFrom.getTotalAuditStatus() != 0) {                       //TODO 当最后一个任务被审核通过的时候BSTask.auditTask应该被设置为审核通过,此处逻辑可不保留
+//                taskEntryFrom.setTotalAuditStatus(0);
+//            }
             taskEntryFromDTO.setRewardNum(x.getRewardNum());
             taskEntryFromDTO.setPushAddress(x.getPushAddress());
             taskEntryFromDTO.setRemark(x.getRemark());
             taskEntryFromDTO.setStation(x.getTaskDetail().getStation());
             taskEntryFromDTOList.add(taskEntryFromDTO);
         });
-        if (taskEntryFromDTOList.size() != task.getPeopleNum()) {
-            taskEntryFrom.setTotalAuditStatus(0);
-        }
+//        if (taskEntryFromDTOList.size() != task.getPeopleNum()) {
+//            taskEntryFrom.setTotalAuditStatus(0);
+//        }
         taskEntryFrom.setTaskEntryFromInfoList(taskEntryFromDTOList);
         return taskEntryFrom;
     }
@@ -214,7 +214,7 @@ public class TaskServiceImpl implements TaskService {
         BsTask bsTask = bsTaskDetail.getTask();
         QBsTaskUser qBsTaskUser = QBsTaskUser.bsTaskUser;
         long count = taskUserRepository.count(qBsTaskUser.taskDetail.eq(bsTaskDetail).and(qBsTaskUser.auditStatus.eq(1)));
-        if (count == bsTask.getPeopleNum()) {
+        if (count == bsTask.getPeopleNum()) {                                                           //TODO 当最后一个任务被审核通过的时候BSTask.auditTask应该被设置为审核通过,此处逻辑应该保留
             bsTask.setAuditStatus(1);
             taskRepository.save(bsTask);
         }
