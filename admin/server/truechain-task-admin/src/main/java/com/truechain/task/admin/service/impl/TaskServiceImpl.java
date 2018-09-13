@@ -260,6 +260,7 @@ public class TaskServiceImpl implements TaskService {
         userAccountDetail.setTask(task);
         userAccountDetail.setRewardType(task.getRewardType());
         userAccountDetail.setRewardNum(taskDetail.getRewardNum());
+        userAccountDetail.setRewardResource(2);                      //1推荐2完成任务3评级
         userAccountDetailRepository.save(userAccountDetail);
         return taskUser;
     }

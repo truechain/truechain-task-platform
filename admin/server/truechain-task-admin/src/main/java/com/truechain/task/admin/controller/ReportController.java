@@ -157,8 +157,8 @@ public class ReportController extends BasicController {
         //获取用户任务情况{抢任务数目,完成,进行中}
         List<BsTaskUser> taskUsers = bsTaskUserService.getBsTaskUserByUserIds(userIdSet);
         for (BsTaskUser bsTaskUser : taskUsers) {
-            if (userProfilePagePojoMap.containsKey(bsTaskUser.getId())) {
-                UserProfilePagePojo userProfilePagePojo = userProfilePagePojoMap.get(bsTaskUser.getId());
+            if (userProfilePagePojoMap.containsKey(bsTaskUser.getUser().getId())) {
+                UserProfilePagePojo userProfilePagePojo = userProfilePagePojoMap.get(bsTaskUser.getUser().getId());
                 userProfilePagePojo.setTaskCount(userProfilePagePojo.getTaskCount() + 1);
                 if (bsTaskUser.getTaskStatus() == 1) {              //1-任务已经完成
                     userProfilePagePojo.setTaskDoneCount(userProfilePagePojo.getTaskDoneCount() + 1);
@@ -205,15 +205,17 @@ public class ReportController extends BasicController {
             UserRewardHistoryPojo rewardHistoryPojo = new UserRewardHistoryPojo();
             rewardHistoryPojo.setId(bsUserAccountDetail.getId());
 
-            int rewardResource = bsUserAccountDetail.getRewardResource();
-            if(rewardResource == 1){
-                rewardHistoryPojo.setEventName("推荐");
-            }
-            if(rewardResource == 2){
-                rewardHistoryPojo.setEventName("完成任务");
-            }
-            if(rewardResource == 3){
-                rewardHistoryPojo.setEventName("评级");
+            Integer rewardResource = bsUserAccountDetail.getRewardResource();
+            if(bsUserAccountDetail.getRewardResource() != null){
+                if(rewardResource.intValue() == 1){
+                    rewardHistoryPojo.setEventName("推荐");
+                }
+                if(rewardResource.intValue() == 2){
+                    rewardHistoryPojo.setEventName("完成任务");
+                }
+                if(rewardResource.intValue() == 3){
+                    rewardHistoryPojo.setEventName("评级");
+                }
             }
             rewardHistoryPojo.setGotTime(bsUserAccountDetail.getUpdateTime());
             //奖励类型(1-true,2-ttr,3-rmp)
