@@ -303,7 +303,7 @@ public class ReportController extends BasicController {
         for (BsTaskUser bsTaskUser : tasks) {
             UserTaskStatePojo userTaskStatePojo = new UserTaskStatePojo();
             userTaskStatePojo.setId(bsTaskUser.getTaskDetail().getId());
-            String taskName = Joiner.on("-").join(bsTaskUser.getTaskDetail().getTask().getName(), bsTaskUser.getTaskDetail().getStation());
+            String taskName = bsTaskUser.getTaskDetail().getTask().getName();
             userTaskStatePojo.setTaskName(taskName);
             userTaskStatePojo.setTaskLevel(bsTaskUser.getTaskDetail().getTask().getLevel());
             userTaskStatePojo.setTaskState(bsTaskUser.getTaskStatus());
