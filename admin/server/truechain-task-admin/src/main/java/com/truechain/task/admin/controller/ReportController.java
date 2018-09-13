@@ -30,6 +30,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletOutputStream;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
@@ -167,19 +168,17 @@ public class ReportController extends BasicController {
 //                        double rewardValue = bsTaskUser.getRewardNum() != null ? NumberUtils.toDouble(bsTaskUser.getRewardNum().toString(), 0) : 0;
 //                        final int rewardType = bsTaskUser.getTaskDetail().getTask().getRewardType();
                         BsUserAccountDetail bsUserAccountDetail = rewardList.get(0);
-                        double rewardValue = bsUserAccountDetail.getRewardNum() != null ? NumberUtils.toDouble(bsTaskUser.getRewardNum().toString(), 0) : 0;
                         //奖励类型(1-true,2-ttr,3-rmp)
                         final int rewardType = bsUserAccountDetail.getRewardType();
                         if (rewardType == 1) {
-                            userProfilePagePojo.setTrueValue(userProfilePagePojo.getTrueValue() + rewardValue);
+                            userProfilePagePojo.setTrueValue(userProfilePagePojo.getTrueValue() + bsUserAccountDetail.getRewardNum().doubleValue());
                         }
                         if (rewardType == 2) {
-                            userProfilePagePojo.setTtrValue(userProfilePagePojo.getTtrValue() + rewardValue);
+                            userProfilePagePojo.setTtrValue(userProfilePagePojo.getTtrValue() + bsUserAccountDetail.getRewardNum().doubleValue());
                         }
                         if (rewardType == 3) {
-                            userProfilePagePojo.setRmbValue(userProfilePagePojo.getRmbValue() + rewardValue);
+                            userProfilePagePojo.setRmbValue(userProfilePagePojo.getRmbValue() + bsUserAccountDetail.getRewardNum().doubleValue());
                         }
-                        userProfilePagePojo.setTrueValue(userProfilePagePojo.getTrueValue() + rewardValue);
                     }
                 }
                 if (bsTaskUser.getTaskStatus() == 0) {              //0-任务正在进行
