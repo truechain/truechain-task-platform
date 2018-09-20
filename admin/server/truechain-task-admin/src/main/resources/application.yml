@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: dev
+    active: prod
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     hikari:
@@ -36,12 +36,12 @@ server:
 spring:
   profiles: dev
   datasource:
-    url: jdbc:mysql://47.95.252.37:3308/task_platform?useUnicode=true&characterEncoding=utf-8&useSSL=false
-    username: root
-    password: true0614
+    url:
+    username:
+    password:
   redis:
     host: 127.0.0.1
-    port: 6379
+    port:
     password:
 app:
   upload:
@@ -56,27 +56,27 @@ server:
 spring:
   profiles: test
   datasource:
-    url: jdbc:mysql://47.95.252.37:3308/task_platform_test?useUnicode=true&characterEncoding=utf-8&useSSL=false
-    username: root
-    password: true0614
+    url:
+    username:
+    password:
   redis:
     host: 127.0.0.1
-    port: 6379
-    password: true0614
+    port:
+    password:
   jpa:
     hibernate:
       ddl-auto: none
 app:
   upload:
-    file-path: /home/work/data/test/upload/resume/
-    task-icon-path: /home/work/data/test/upload/taskicon/
+    file-path:
+    task-icon-path:
 springfox:
   documentation:
     swagger:
       v2:
-        host: www.phptrain.cn/testadmin
+        host:
 logging:
-  config: classpath:log/logback-test.xml
+  config:
 
 ---
 server:
@@ -84,24 +84,24 @@ server:
 spring:
   profiles: prod
   datasource:
-    url: jdbc:mysql://47.95.252.37:3308/task_platform_test?useUnicode=true&characterEncoding=utf-8&useSSL=false
-    username: root
-    password: true0614
+    url:
+    username:
+    password:
   redis:
     host: 127.0.0.1
-    port: 6379
-    password: true0614
+    port:
+    password:
   jpa:
     hibernate:
       ddl-auto: none
 app:
   upload:
-    file-path: /home/work/data/upload/resume/
-    task-icon-path: /home/work/data/upload/taskicon/
+    file-path:
+    task-icon-path:
 springfox:
   documentation:
     swagger:
       v2:
-        host: www.phptrain.cn/admin
+        host:
 logging:
   config: classpath:log/logback-prod.xml

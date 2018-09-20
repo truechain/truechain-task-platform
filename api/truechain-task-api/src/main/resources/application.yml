@@ -35,19 +35,19 @@ server:
 spring:
   profiles: dev
   datasource:
-    url: jdbc:mysql://47.95.252.37:3308/task_platform_test?useUnicode=true&characterEncoding=utf-8&useSSL=false
-    username: root
-    password: true0614
+    url:
+    username:
+    password:
   redis:
     host: 127.0.0.1
-    port: 6379
-    password: 123456
+    port:
+    password:
 app:
   upload:
     file-path: D://
   sms:
-    smsUserName: TRUE888hy
-    smsPassword: ADljCe
+    smsUserName:
+    smsPassword:
 logging:
   config: classpath:log/logback-dev.xml
 
@@ -58,24 +58,24 @@ server:
 spring:
   profiles: test
   datasource:
-    url: jdbc:mysql://47.95.252.37:3308/task_platform_test?useUnicode=true&characterEncoding=utf-8&useSSL=false
-    username: root
-    password: true0614
+    url:
+    username:
+    password:
   redis:
     host: 127.0.0.1
-    port: 6379
-    password: true0614
+    port:
+    password:
 app:
   upload:
-    file-path: /home/work/data/test/upload/resume/
+    file-path:
   sms:
-    smsUserName: TRUE888hy
-    smsPassword: ADljCe
+    smsUserName:
+    smsPassword:
 springfox:
   documentation:
     swagger:
       v2:
-        host: www.phptrain.cn/testapi
+        host:
 logging:
   config: classpath:log/logback-test.xml
 
@@ -85,23 +85,23 @@ server:
 spring:
   profiles: prod
   datasource:
-    url: jdbc:mysql://47.95.252.37:3308/task_platform?useUnicode=true&characterEncoding=utf-8&useSSL=false
-    username: root
-    password: true0614
+    url:
+    username:
+    password:
   redis:
     host: 127.0.0.1
-    port: 6379
-    password: true0614
+    port:
+    password:
 app:
   upload:
-    file-path: /home/work/data/upload/resume/
+    file-path:
   sms:
-    smsUserName: TRUE888hy
-    smsPassword: ADljCe
+    smsUserName:
+    smsPassword:
 springfox:
   documentation:
     swagger:
       v2:
-        host: www.phptrain.cn/api
+        host:
 logging:
   config: classpath:log/logback-prod.xml
