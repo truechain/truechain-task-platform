@@ -1,6 +1,7 @@
 package com.truechain.task.api.controller;
 
 import com.truechain.task.core.BusinessException;
+import com.truechain.task.core.NullException;
 import com.truechain.task.core.WrapMapper;
 import com.truechain.task.core.Wrapper;
 import org.slf4j.Logger;
@@ -43,5 +44,18 @@ public class GlobalHandler {
     public Wrapper exception(Exception e) {
         logger.info("全局异常信息{}", e.getMessage(), e);
         return WrapMapper.error("系统异常");
+    }
+
+    /**
+     * 空指针异常
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(NullException.class)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public Wrapper nullException(Exception e) {
+        logger.info("全局异常信息{}", e.getMessage(), e);
+        return WrapMapper.errorNull(e.getMessage());
     }
 }

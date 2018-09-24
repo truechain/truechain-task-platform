@@ -64,6 +64,14 @@ public class SysUser extends BaseEntity {
      */
     private String auditPassTime;
     /**
+     * 推荐人手机号
+     */
+    private String recommendUserMobile;
+    /**
+     * 推荐人ID
+     */
+    private long recommendUserId;
+    /**
      * 账户
      */
     @JsonIgnore
@@ -186,5 +194,21 @@ public class SysUser extends BaseEntity {
 
     public void setAuditPassTime(String auditPassTime) {
         this.auditPassTime = auditPassTime;
+    }
+
+    public String getRecommendUserMobile() {
+        return recommendUserMobile;
+    }
+
+    public void setRecommendUserMobile(String recommendUserMobile) {
+        this.recommendUserMobile = recommendUserMobile;
+    }
+
+    public long getRecommendUserId() {
+        return recommendUserId;
+    }
+
+    public void setRecommendUserId(long recommendUserId) {
+        this.recommendUserId = recommendUserId;
     }
 }

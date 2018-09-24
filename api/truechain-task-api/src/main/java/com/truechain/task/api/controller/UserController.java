@@ -7,9 +7,11 @@ import com.truechain.task.api.model.dto.SessionPOJO;
 import com.truechain.task.api.model.dto.UserInfoDTO;
 import com.truechain.task.api.service.UserService;
 import com.truechain.task.core.BusinessException;
+import com.truechain.task.core.NullException;
 import com.truechain.task.core.WrapMapper;
 import com.truechain.task.core.Wrapper;
 import com.truechain.task.model.entity.SysUser;
+import com.truechain.task.util.ValidateUtil;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -68,7 +70,7 @@ public class UserController extends BasicController {
      */
     @PostMapping("/updateUserInfo")
     public Wrapper updateUserInfo(@RequestParam Long userId, @RequestParam String name, @RequestParam String wxNickName, @RequestParam(required = false) String wxNum, @RequestParam(required = false) String openId,
-                                  @RequestParam String trueChainAddress, @RequestParam("file") MultipartFile file) {
+                                  @RequestParam String trueChainAddress, @RequestParam("file") MultipartFile file, @RequestParam(required = false) String referrerPhone) {
         Preconditions.checkArgument(!file.isEmpty(), "简历不能为空");
         String fileName = file.getOriginalFilename();
         File uploadFile = new File(AppProperties.UPLOAD_FILE_PATH + UUID.randomUUID().toString().replace("-", "") + fileName);
@@ -77,6 +79,8 @@ public class UserController extends BasicController {
         } catch (IOException e) {
             throw new BusinessException("文件上传异常");
         }
+
+
         SysUser user = new SysUser();
         user.setId(userId);
         user.setPersonName(name);
@@ -85,6 +89,17 @@ public class UserController extends BasicController {
         user.setOpenId(openId);
         user.setTrueChainAddress(trueChainAddress);
         user.setResumeFilePath(uploadFile.getPath());
+
+        if (referrerPhone != null) {
+            Preconditions.checkArgument(ValidateUtil.isMobile(referrerPhone), "手机号不合法");
+            SysUser referrerUser = userService.getUserByMobile(referrerPhone);
+            if (referrerUser == null) {
+                throw new BusinessException("没有找到该推荐人");
+            }
+            user.setRecommendUserId(referrerUser.getId());
+            user.setRecommendUserMobile(referrerPhone);
+        }
+
         userService.updateUser(user);
         return WrapMapper.ok();
     }

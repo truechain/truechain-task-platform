@@ -7,6 +7,7 @@ import com.truechain.task.api.security.SessionPOJOService;
 import com.truechain.task.api.service.DeclareService;
 import com.truechain.task.api.service.UserService;
 import com.truechain.task.core.BusinessException;
+import com.truechain.task.core.NullException;
 import com.truechain.task.core.WrapMapper;
 import com.truechain.task.core.Wrapper;
 import com.truechain.task.model.entity.SysDeclare;
@@ -62,6 +63,7 @@ public class AccountController extends BasicController {
         if (!realVerifyCode.equals(verifyCode)) {
             throw new BusinessException("验证码不正确");
         }
+
         SysUser user = new SysUser();
         user.setMobile(mobile);
         user.setAuditStatus(AuditStatusEnum.UNCOMPLATE.getCode());
@@ -85,6 +87,7 @@ public class AccountController extends BasicController {
         if (!realVerifyCode.equals(verifyCode)) {
             throw new BusinessException("验证码不正确");
         }
+
         SysUser user = userService.getUserByMobile(mobile);
         if (null == user) {
             user = new SysUser();

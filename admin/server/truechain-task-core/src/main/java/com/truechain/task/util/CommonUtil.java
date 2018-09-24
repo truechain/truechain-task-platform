@@ -1,5 +1,6 @@
 package com.truechain.task.util;
 
+import java.sql.Wrapper;
 import java.util.Random;
 
 public class CommonUtil {
@@ -20,4 +21,5 @@ public class CommonUtil {
         }
         return sb.toString();
     }
+
 }

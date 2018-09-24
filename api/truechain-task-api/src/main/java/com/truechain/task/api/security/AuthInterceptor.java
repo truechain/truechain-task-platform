@@ -1,6 +1,7 @@
 package com.truechain.task.api.security;
 
 import com.truechain.task.api.config.AppProperties;
+import com.truechain.task.core.NullException;
 import com.truechain.task.core.WrapMapper;
 import com.truechain.task.core.Wrapper;
 import com.truechain.task.util.JwtUtil;

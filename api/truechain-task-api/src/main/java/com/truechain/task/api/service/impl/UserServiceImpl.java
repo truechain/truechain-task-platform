@@ -10,6 +10,7 @@ import com.truechain.task.api.repository.BsUserAccountRepository;
 import com.truechain.task.api.repository.SysUserRepository;
 import com.truechain.task.api.service.UserService;
 import com.truechain.task.core.BusinessException;
+import com.truechain.task.core.NullException;
 import com.truechain.task.model.entity.BsUserAccount;
 import com.truechain.task.model.entity.BsUserAccountDetail;
 import com.truechain.task.model.entity.QBsUserAccountDetail;
@@ -42,7 +43,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public SysUser getUserByOpenId(String openId) {
         SysUser sysUser = userRepository.findByOpenId(openId);
-        Preconditions.checkArgument(null != sysUser, "该用户不存在");
+//        Preconditions.checkArgument(null != sysUser, "该用户不存在");
+        if (sysUser == null) {
+            throw new NullException("该用户不存在");
+        }
         return sysUser;
     }
 
@@ -65,7 +69,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public SysUser updateUser(SysUser user) {
         SysUser sysUser = userRepository.findOne(user.getId());
-        Preconditions.checkArgument(null != sysUser, "用户不存在");
+//        Preconditions.checkArgument(null != sysUser, "用户不存在");
+        if (sysUser == null) {
+            throw new NullException("用户不存在");
+        }
         sysUser.setPersonName(user.getPersonName());
         sysUser.setWxNickName(user.getWxNickName());
         sysUser.setWxNum(user.getWxNum());
@@ -73,6 +80,8 @@ public class UserServiceImpl implements UserService {
         sysUser.setTrueChainAddress(user.getTrueChainAddress());
         sysUser.setResumeFilePath(user.getResumeFilePath());
         sysUser.setAuditStatus(AuditStatusEnum.UNAUDITED.getCode());
+        sysUser.setRecommendUserId(user.getRecommendUserId());
+        sysUser.setRecommendUserMobile(user.getRecommendUserMobile());
         sysUser = userRepository.save(sysUser);
         BsUserAccount userAccount = new BsUserAccount();
         userAccount.setUser(sysUser);
@@ -87,7 +96,10 @@ public class UserServiceImpl implements UserService {
     public UserInfoDTO getUserInfo(long userId, Integer rewardType) {
         UserInfoDTO userInfoDTO = new UserInfoDTO();
         SysUser sysUser = userRepository.findOne(userId);
-        Preconditions.checkArgument(null != sysUser, "该用户不存在");
+//        Preconditions.checkArgument(null != sysUser, "该用户不存在");
+        if (sysUser == null) {
+            throw new NullException("用户不存在");
+        }
         userInfoDTO.setUser(sysUser);
         QBsUserAccountDetail qUserAccountDetail = QBsUserAccountDetail.bsUserAccountDetail;
         long count = userAccountDetailRepository.count(qUserAccountDetail.recommendTask.user.eq(sysUser));
@@ -114,14 +126,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public SysUser getByUserId(Long userId) {
         SysUser sysUser = userRepository.findOne(userId);
-        Preconditions.checkArgument(null != sysUser, "该用户不存在");
+//        Preconditions.checkArgument(null != sysUser, "该用户不存在");
+        if (sysUser == null) {
+            throw new NullException("用户不存在");
+        }
         return sysUser;
     }
 
     @Override
     public List<RecommendTaskDTO> getRecommendUserList(long userId) {
         SysUser user = userRepository.findOne(userId);
-        Preconditions.checkArgument(null != user, "用户不存在");
+//        Preconditions.checkArgument(null != user, "用户不存在");
+        if (user == null) {
+            throw new NullException("用户不存在");
+        }
         QBsUserAccountDetail qUserAccountDetail = QBsUserAccountDetail.bsUserAccountDetail;
         Iterable<BsUserAccountDetail> userAccountDetailIterable = userAccountDetailRepository.findAll(qUserAccountDetail.recommendTask.user.eq(user));
         List<RecommendTaskDTO> recommendTaskDTOList = new ArrayList<>();

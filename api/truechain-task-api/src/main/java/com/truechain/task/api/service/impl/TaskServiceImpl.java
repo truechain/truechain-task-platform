@@ -12,6 +12,7 @@ import com.truechain.task.api.repository.BsTaskUserRepository;
 import com.truechain.task.api.repository.SysUserRepository;
 import com.truechain.task.api.service.TaskService;
 import com.truechain.task.core.BusinessException;
+import com.truechain.task.core.NullException;
 import com.truechain.task.model.entity.*;
 import com.truechain.task.model.enums.AuditStatusEnum;
 import com.truechain.task.model.enums.TaskStatusEnum;
@@ -88,7 +89,10 @@ public class TaskServiceImpl extends BasicService implements TaskService {
             }
             if (null != userId && taskDTO.getIsHold() == 0) {
                 SysUser user = userRepository.findOne(userId);
-                Preconditions.checkArgument(null != user, "用户不存在");
+//                Preconditions.checkArgument(null != user, "用户不存在");
+                if (user == null) {
+                    throw new NullException("用户不存在");
+                }
                 taskDTO.setUserLevel(user.getLevel());
                 taskDTO.setIsLevelEnough(1);
                 QBsTaskDetail qtaskDetail = QBsTaskDetail.bsTaskDetail;
@@ -115,7 +119,10 @@ public class TaskServiceImpl extends BasicService implements TaskService {
     public TaskTotalDTO getUserTaskList(Long userId, Integer taskStatus) {
         TaskTotalDTO taskTotalDTO = new TaskTotalDTO();
         SysUser user = userRepository.findOne(userId);
-        Preconditions.checkArgument(user != null, "用户不存在");
+//        Preconditions.checkArgument(user != null, "用户不存在");
+        if (user == null) {
+            throw new NullException("用户不存在");
+        }
         QBsTaskUser qTaskUser = QBsTaskUser.bsTaskUser;
         long count = taskUserRepository.count(qTaskUser.user.eq(user));
         taskTotalDTO.setTaskTotal(count);
@@ -154,7 +161,10 @@ public class TaskServiceImpl extends BasicService implements TaskService {
     public UserTaskInfoDTO getUserTaskInfo(Long userId, Long taskDetailId) {
         UserTaskInfoDTO userTaskInfoDTO = new UserTaskInfoDTO();
         SysUser user = userRepository.findOne(userId);
-        Preconditions.checkArgument(user != null, "用户不存在");
+//        Preconditions.checkArgument(user != null, "用户不存在");
+        if (user == null) {
+            throw new NullException("用户不存在");
+        }
         BsTaskDetail taskDetail = taskDetailRepository.findOne(taskDetailId);
         Preconditions.checkArgument(taskDetail != null, "任务不存在");
         BsTask task = taskDetail.getTask();
@@ -170,7 +180,10 @@ public class TaskServiceImpl extends BasicService implements TaskService {
     @Override
     public void holdTask(Long taskDetailId, Long userId) {
         SysUser user = userRepository.findOne(userId);
-        Preconditions.checkArgument(null != user, "用户不存在");
+//        Preconditions.checkArgument(null != user, "用户不存在");
+        if (user == null) {
+            throw new NullException("用户不存在");
+        }
         Preconditions.checkArgument(user.getAuditStatus() == AuditStatusEnum.AUDITED.getCode(), "当前资料审核中暂时无法接取该任务");
         BsTaskDetail taskDetail = taskDetailRepository.findOne(taskDetailId);
         Preconditions.checkArgument(null != taskDetail, "任务不存在");

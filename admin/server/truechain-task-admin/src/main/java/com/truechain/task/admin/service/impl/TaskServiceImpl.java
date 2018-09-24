@@ -27,6 +27,9 @@ import java.util.Set;
 public class TaskServiceImpl implements TaskService {
 
     @Autowired
+    private SysUserRepository userRepository;
+
+    @Autowired
     private BsTaskRepository taskRepository;
 
     @Autowired
@@ -262,6 +265,29 @@ public class TaskServiceImpl implements TaskService {
         userAccountDetail.setRewardNum(taskDetail.getRewardNum());
         userAccountDetail.setRewardResource(2);                      //1推荐2完成任务3评级
         userAccountDetailRepository.save(userAccountDetail);
+
+        //任务推荐人奖励
+        if (task.getRewardType() == 1) {
+            long recommendUserId = user.getRecommendUserId();
+            if (recommendUserId != 0) {
+                SysUser reUser = userRepository.findOne(recommendUserId);
+                if (reUser != null) {
+                    BsUserAccount reUserAccount = userAccountRepository.getByUser(reUser);
+                    Preconditions.checkArgument(null != reUserAccount, "推荐人不存在");
+                    BigDecimal reReward = taskDetail.getRewardNum().divide(new BigDecimal(10));
+                    reUserAccount.getTrueReward().add(reReward);
+                    userAccountRepository.save(reUserAccount);
+                    BsUserAccountDetail reUserAccountDetail = new BsUserAccountDetail();
+                    reUserAccountDetail.setUserAccount(reUserAccount);
+                    reUserAccountDetail.setTask(task);
+                    reUserAccountDetail.setRewardType(task.getRewardType());
+                    reUserAccountDetail.setRewardNum(reReward);
+                    reUserAccountDetail.setRewardResource(1);                      //1推荐2完成任务3评级
+                    userAccountDetailRepository.save(reUserAccountDetail);
+                }
+            }
+        }
+
         return taskUser;
     }
 

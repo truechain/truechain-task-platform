@@ -35,7 +35,7 @@ public class BasicController {
 
     @ModelAttribute
     public void initParam(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        logger.info("请求URI：{}，请求参数：{}", request.getRequestURI(),
+            logger.info("请求URI：{}，请求参数：{}", request.getRequestURI(),
                 new JSONObject(request.getParameterMap()));
         this.request = request;
         this.response = response;

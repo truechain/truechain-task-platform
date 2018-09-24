@@ -2,7 +2,7 @@ package com.truechain.task.model.enums;
 
 public enum GlobalStatusEnum {
 
-    SUCCESS(200, "成功"), FAIL(500, "系统异常");
+    SUCCESS(200, "成功"), NULL(403, "用户不存在"), FAIL(500, "系统异常");
 
     private int code;
 

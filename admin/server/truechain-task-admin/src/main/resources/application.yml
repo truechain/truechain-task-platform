@@ -36,13 +36,13 @@ server:
 spring:
   profiles: dev
   datasource:
-    url:
-    username:
-    password:
+      url: jdbc:mysql://47.95.252.37:3308/task_platform_test?useUnicode=true&characterEncoding=utf-8&useSSL=false
+      username: root
+      password: true0614
   redis:
-    host: 127.0.0.1
-    port:
-    password:
+      host: 127.0.0.1
+      port: 6379
+      password: 123
 app:
   upload:
     file-path: D://
@@ -56,27 +56,27 @@ server:
 spring:
   profiles: test
   datasource:
-    url:
-    username:
-    password:
+    url: jdbc:mysql://47.95.252.37:3308/task_platform_test?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: root
+    password: true0614
   redis:
     host: 127.0.0.1
-    port:
-    password:
+    port: 6379
+    password: true0614
   jpa:
     hibernate:
       ddl-auto: none
 app:
   upload:
-    file-path:
-    task-icon-path:
+    file-path: /home/work/data/test/upload/resume/
+    task-icon-path: /home/work/data/test/upload/taskicon/
 springfox:
   documentation:
     swagger:
       v2:
-        host:
+        host: www.phptrain.cn/testadmin
 logging:
-  config:
+  config: classpath:log/logback-test.xml
 
 ---
 server:
@@ -84,24 +84,24 @@ server:
 spring:
   profiles: prod
   datasource:
-    url:
-    username:
-    password:
+    url: jdbc:mysql://47.95.252.37:3308/task_platform?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: root
+    password: true0614
   redis:
     host: 127.0.0.1
-    port:
-    password:
+    port: 6379
+    password: true0614
   jpa:
     hibernate:
       ddl-auto: none
 app:
   upload:
-    file-path:
-    task-icon-path:
+    file-path: /home/work/data/upload/resume/
+    task-icon-path: /home/work/data/upload/taskicon/
 springfox:
   documentation:
     swagger:
       v2:
-        host:
+        host: www.phptrain.cn/admin
 logging:
   config: classpath:log/logback-prod.xml
