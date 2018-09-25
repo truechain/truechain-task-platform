@@ -147,16 +147,29 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new NullException("用户不存在");
         }
-        QBsUserAccountDetail qUserAccountDetail = QBsUserAccountDetail.bsUserAccountDetail;
-        Iterable<BsUserAccountDetail> userAccountDetailIterable = userAccountDetailRepository.findAll(qUserAccountDetail.userAccount.user.eq(user));
+        List<SysUser> sysUserList = userRepository.findByRecommendUserId(user.getId());
         List<RecommendTaskDTO> recommendTaskDTOList = new ArrayList<>();
-        userAccountDetailIterable.forEach(x -> {
+        for (int i = 0; i < sysUserList.size(); i++) {
+            SysUser sysUser = sysUserList.get(i);
+            if (sysUser.getAuditStatus() != AuditStatusEnum.AUDITED.getCode()) {
+                continue;
+            }
             RecommendTaskDTO recommendTaskDTO = new RecommendTaskDTO();
-            recommendTaskDTO.setPersonName(x.getUserAccount().getUser().getPersonName());
-            recommendTaskDTO.setRewardNum(x.getRewardNum());
-            recommendTaskDTO.setCreateTime(x.getCreateTime());
+            recommendTaskDTO.setPersonName(sysUser.getPersonName());
+            recommendTaskDTO.setRewardNum(sysUser.getLevel());
+            recommendTaskDTO.setCreateTime(sysUser.getUpdateTime());
             recommendTaskDTOList.add(recommendTaskDTO);
-        });
+        }
+//        QBsUserAccountDetail qUserAccountDetail = QBsUserAccountDetail.bsUserAccountDetail;
+//        Iterable<BsUserAccountDetail> userAccountDetailIterable = userAccountDetailRepository.findAll(qUserAccountDetail.userAccount.user.eq(user));
+//        List<RecommendTaskDTO> recommendTaskDTOList = new ArrayList<>();
+//        userAccountDetailIterable.forEach(x -> {
+//            RecommendTaskDTO recommendTaskDTO = new RecommendTaskDTO();
+//            recommendTaskDTO.setPersonName(x.getUserAccount().getUser().getPersonName());
+//            recommendTaskDTO.setRewardNum(x.getRewardNum());
+//            recommendTaskDTO.setCreateTime(x.getCreateTime());
+//            recommendTaskDTOList.add(recommendTaskDTO);
+//        });
         return recommendTaskDTOList;
     }
 }

@@ -11,9 +11,9 @@ public class RecommendTaskDTO implements Serializable {
      */
     private String personName;
     /**
-     * 奖励
+     * 审核级别
      */
-    private BigDecimal rewardNum;
+    private String rewardNum;
     /**
      * 时间
      */
@@ -27,11 +27,11 @@ public class RecommendTaskDTO implements Serializable {
         this.personName = personName;
     }
 
-    public BigDecimal getRewardNum() {
+    public String getRewardNum() {
         return rewardNum;
     }
 
-    public void setRewardNum(BigDecimal rewardNum) {
+    public void setRewardNum(String rewardNum) {
         this.rewardNum = rewardNum;
     }
 

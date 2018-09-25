@@ -76,6 +76,16 @@ public class TaskServiceImpl extends BasicService implements TaskService {
     public TaskDTO getTaskInfo(Long taskId, Long userId) {
         TaskDTO taskDTO = new TaskDTO();
         BsTask task = taskRepository.findOne(taskId);
+
+        String[] startTimeArray = task.getStartDateTime().split("T");
+        if (startTimeArray.length > 0) {
+            task.setStartDateTime(startTimeArray[0]);
+        }
+        String[] endTimeArray = task.getEndDateTime().split("T");
+        if (endTimeArray.length > 0) {
+            task.setEndDateTime(endTimeArray[0]);
+        }
+
         taskDTO.setTask(task);
         taskDTO.setIsHold(0);
         taskDTO.setIsFull(0);

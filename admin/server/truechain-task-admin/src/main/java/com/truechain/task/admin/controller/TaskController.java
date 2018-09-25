@@ -118,6 +118,16 @@ public class TaskController extends BasicController {
             Preconditions.checkArgument(null != taskDetail.getPeopleNum(), "人数不能为空");
             Preconditions.checkArgument(null != taskDetail.getRewardNum(), "奖励不能为空");
         }
+
+        BsTask bsTask = taskInfoDTO.getTask();
+        String[] startTime = bsTask.getStartDateTime().split("T");
+        if (startTime.length > 0) {
+            bsTask.setStartDateTime(startTime[0]);
+        }
+        String[] endTime = bsTask.getEndDateTime().split("T");
+        if (endTime.length > 0) {
+            bsTask.setEndDateTime(endTime[0]);
+        }
         taskService.addTask(taskInfoDTO);
         return WrapMapper.ok();
     }
