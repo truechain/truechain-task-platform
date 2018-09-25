@@ -225,7 +225,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
-    public BsTaskUser rewardEntryFromUser(Long taskUserId) {
+    public BsTaskUser rewardEntryFromUser(Long taskUserId, Double userReward, Double recommendUserReward) {
         BsTaskUser taskUser = taskUserRepository.findOne(taskUserId);
         Preconditions.checkArgument(null != taskUser, "数据有误");
         if (taskUser.getAuditStatus() == 0) {
@@ -242,18 +242,28 @@ public class TaskServiceImpl implements TaskService {
         Preconditions.checkArgument(null != userAccount, "用户账户不存在");
         BsTaskDetail taskDetail = taskUser.getTaskDetail();
         BsTask task = taskDetail.getTask();
+
+        BigDecimal userRewardNum = taskDetail.getRewardNum();
+        if (userReward != null) {
+            userRewardNum = new BigDecimal(userReward);
+        }
+        BigDecimal recommendUserRewardNum = userRewardNum.divide(new BigDecimal(10));
+        if (recommendUserReward != null) {
+            recommendUserRewardNum = new BigDecimal(recommendUserReward);
+        }
+        
         BigDecimal rewardNum = null;
         switch (task.getRewardType()) {
             case 1:
-                rewardNum = userAccount.getTrueReward().add(taskDetail.getRewardNum());
+                rewardNum = userAccount.getTrueReward().add(userRewardNum);
                 userAccount.setTrueReward(rewardNum);
                 break;
             case 2:
-                rewardNum = userAccount.getTtrReward().add(taskDetail.getRewardNum());
+                rewardNum = userAccount.getTtrReward().add(userRewardNum);
                 userAccount.setTtrReward(rewardNum);
                 break;
             case 3:
-                rewardNum = userAccount.getGitReward().add(taskDetail.getRewardNum());
+                rewardNum = userAccount.getGitReward().add(userRewardNum);
                 userAccount.setGitReward(rewardNum);
                 break;
         }
@@ -262,7 +272,7 @@ public class TaskServiceImpl implements TaskService {
         userAccountDetail.setUserAccount(userAccount);
         userAccountDetail.setTask(task);
         userAccountDetail.setRewardType(task.getRewardType());
-        userAccountDetail.setRewardNum(taskDetail.getRewardNum());
+        userAccountDetail.setRewardNum(userRewardNum);
         userAccountDetail.setRewardResource(2);                      //1推荐2完成任务3评级
         userAccountDetailRepository.save(userAccountDetail);
 
@@ -274,15 +284,14 @@ public class TaskServiceImpl implements TaskService {
                 if (reUser != null) {
                     BsUserAccount reUserAccount = userAccountRepository.getByUser(reUser);
                     Preconditions.checkArgument(null != reUserAccount, "推荐人不存在");
-                    BigDecimal reReward = taskDetail.getRewardNum().divide(new BigDecimal(10));
-                    reUserAccount.getTrueReward().add(reReward);
+                    reUserAccount.getTrueReward().add(recommendUserRewardNum);
                     userAccountRepository.save(reUserAccount);
                     BsUserAccountDetail reUserAccountDetail = new BsUserAccountDetail();
                     reUserAccountDetail.setUserAccount(reUserAccount);
                     reUserAccountDetail.setTask(task);
                     reUserAccountDetail.setRewardType(task.getRewardType());
-                    reUserAccountDetail.setRewardNum(reReward);
-                    reUserAccountDetail.setRewardResource(1);                      //1推荐2完成任务3评级
+                    reUserAccountDetail.setRewardNum(recommendUserRewardNum);
+                    reUserAccountDetail.setRewardResource(1);    //1推荐2完成任务3评级
                     userAccountDetailRepository.save(reUserAccountDetail);
                 }
             }

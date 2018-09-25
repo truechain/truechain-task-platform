@@ -14,5 +14,7 @@ public interface SysUserRepository extends JpaRepository<SysUser, Long>, QueryDs
 
     SysUser findByMobile(String mobile);
 
+    List<SysUser> findByRecommendUserId(long recommendUserId);
+
     long countByMobile(String mobile);
 }

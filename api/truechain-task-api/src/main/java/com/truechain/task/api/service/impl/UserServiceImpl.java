@@ -1,6 +1,7 @@
 package com.truechain.task.api.service.impl;
 
 import com.google.common.base.Preconditions;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.truechain.task.api.model.dto.RecommendTaskDTO;
 import com.truechain.task.api.model.dto.UserAccountDTO;
 import com.truechain.task.api.model.dto.UserInfoDTO;
@@ -11,10 +12,7 @@ import com.truechain.task.api.repository.SysUserRepository;
 import com.truechain.task.api.service.UserService;
 import com.truechain.task.core.BusinessException;
 import com.truechain.task.core.NullException;
-import com.truechain.task.model.entity.BsUserAccount;
-import com.truechain.task.model.entity.BsUserAccountDetail;
-import com.truechain.task.model.entity.QBsUserAccountDetail;
-import com.truechain.task.model.entity.SysUser;
+import com.truechain.task.model.entity.*;
 import com.truechain.task.model.enums.AuditStatusEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -101,8 +99,17 @@ public class UserServiceImpl implements UserService {
             throw new NullException("用户不存在");
         }
         userInfoDTO.setUser(sysUser);
-        QBsUserAccountDetail qUserAccountDetail = QBsUserAccountDetail.bsUserAccountDetail;
-        long count = userAccountDetailRepository.count(qUserAccountDetail.recommendTask.user.eq(sysUser));
+//        QBsUserAccountDetail qUserAccountDetail = QBsUserAccountDetail.bsUserAccountDetail;
+//        long count = userAccountDetailRepository.count(qUserAccountDetail.recommendTask.user.eq(sysUser));
+        List<SysUser> recommendUserIds = userRepository.findByRecommendUserId(sysUser.getId());
+        long count = 0;
+        for (int i = 0; i < recommendUserIds.size(); i++) {
+            SysUser user = recommendUserIds.get(i);
+            //只记录审核通过的玩家
+            if (user.getAuditStatus() == AuditStatusEnum.AUDITED.getCode()) {
+                count++;
+            }
+        }
         userInfoDTO.setRecommendPeople(count);
         UserAccountDTO userAccountDTO = new UserAccountDTO();
         userAccountDTO.setGitReward("0");
@@ -141,11 +148,11 @@ public class UserServiceImpl implements UserService {
             throw new NullException("用户不存在");
         }
         QBsUserAccountDetail qUserAccountDetail = QBsUserAccountDetail.bsUserAccountDetail;
-        Iterable<BsUserAccountDetail> userAccountDetailIterable = userAccountDetailRepository.findAll(qUserAccountDetail.recommendTask.user.eq(user));
+        Iterable<BsUserAccountDetail> userAccountDetailIterable = userAccountDetailRepository.findAll(qUserAccountDetail.userAccount.user.eq(user));
         List<RecommendTaskDTO> recommendTaskDTOList = new ArrayList<>();
         userAccountDetailIterable.forEach(x -> {
             RecommendTaskDTO recommendTaskDTO = new RecommendTaskDTO();
-            recommendTaskDTO.setPersonName(x.getRecommendTask().getRecommendUser().getPersonName());
+            recommendTaskDTO.setPersonName(x.getUserAccount().getUser().getPersonName());
             recommendTaskDTO.setRewardNum(x.getRewardNum());
             recommendTaskDTO.setCreateTime(x.getCreateTime());
             recommendTaskDTOList.add(recommendTaskDTO);

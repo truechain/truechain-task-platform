@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.DoubleBinaryOperator;
 
 
 /**
@@ -186,8 +187,9 @@ public class TaskController extends BasicController {
      * 发放奖励
      */
     @PostMapping("/rewardEntryFromUser")
-    public Wrapper rewardEntryFromUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long taskUserId) {
-        BsTaskUser bsTaskUser = taskService.rewardEntryFromUser(taskUserId);
+    public Wrapper rewardEntryFromUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,
+                                       @RequestParam Long taskUserId, @RequestParam(required = false) Double userReward, @RequestParam(required = false) Double recommendUserReward) {
+        BsTaskUser bsTaskUser = taskService.rewardEntryFromUser(taskUserId, userReward, recommendUserReward);
         return WrapMapper.ok(bsTaskUser);
     }
 }

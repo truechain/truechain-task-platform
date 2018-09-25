@@ -5,9 +5,9 @@ import com.truechain.task.api.config.AppProperties;
 import com.truechain.task.api.model.dto.RecommendTaskDTO;
 import com.truechain.task.api.model.dto.SessionPOJO;
 import com.truechain.task.api.model.dto.UserInfoDTO;
+import com.truechain.task.api.repository.BsRecommendTaskRepository;
 import com.truechain.task.api.service.UserService;
 import com.truechain.task.core.BusinessException;
-import com.truechain.task.core.NullException;
 import com.truechain.task.core.WrapMapper;
 import com.truechain.task.core.Wrapper;
 import com.truechain.task.model.entity.SysUser;
@@ -79,7 +79,6 @@ public class UserController extends BasicController {
         } catch (IOException e) {
             throw new BusinessException("文件上传异常");
         }
-
 
         SysUser user = new SysUser();
         user.setId(userId);
