@@ -18,10 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -99,8 +96,6 @@ public class UserServiceImpl implements UserService {
             throw new NullException("用户不存在");
         }
         userInfoDTO.setUser(sysUser);
-//        QBsUserAccountDetail qUserAccountDetail = QBsUserAccountDetail.bsUserAccountDetail;
-//        long count = userAccountDetailRepository.count(qUserAccountDetail.recommendTask.user.eq(sysUser));
         List<SysUser> recommendUserIds = userRepository.findByRecommendUserId(sysUser.getId());
         long count = 0;
         for (int i = 0; i < recommendUserIds.size(); i++) {
@@ -122,8 +117,22 @@ public class UserServiceImpl implements UserService {
             userAccountDTO.setTtrReward(userAccount.getTtrReward().toString());
             QBsUserAccountDetail accountDetail = QBsUserAccountDetail.bsUserAccountDetail;
             Iterable<BsUserAccountDetail> userAccountDetailIterable = userAccountDetailRepository.findAll(accountDetail.userAccount.eq(userAccount).and(accountDetail.rewardType.eq(rewardType)));
-            Set<BsUserAccountDetail> userAccountDetailList = new HashSet<>();
+            List<BsUserAccountDetail> userAccountDetailList = new ArrayList<>();
             userAccountDetailIterable.forEach(x -> userAccountDetailList.add(x));
+            Collections.sort(userAccountDetailList, new Comparator<BsUserAccountDetail>() {
+                @Override
+                public int compare(BsUserAccountDetail o1, BsUserAccountDetail o2) {
+                    long id1 = o1.getId();
+                    long id2 = o2.getId();
+                    if (id1 == id2) {
+                        return 0;
+                    } else if (id1 > id2) {
+                        return -1;
+                    } else {
+                        return 1;
+                    }
+                }
+            });
             userAccountDTO.setAccountDetails(userAccountDetailList);
         }
         userInfoDTO.setUserAccount(userAccountDTO);

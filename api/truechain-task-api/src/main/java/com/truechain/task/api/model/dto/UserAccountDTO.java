@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.truechain.task.model.entity.BsUserAccountDetail;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -26,7 +27,7 @@ public class UserAccountDTO implements Serializable {
     /**
      * 账户明细
      */
-    private Set<BsUserAccountDetail> accountDetails;
+    private List<BsUserAccountDetail> accountDetails;
 
     public String getTrueReward() {
         return trueReward;
@@ -52,11 +53,11 @@ public class UserAccountDTO implements Serializable {
         this.gitReward = gitReward;
     }
 
-    public Set<BsUserAccountDetail> getAccountDetails() {
+    public List<BsUserAccountDetail> getAccountDetails() {
         return accountDetails;
     }
 
-    public void setAccountDetails(Set<BsUserAccountDetail> accountDetails) {
+    public void setAccountDetails(List<BsUserAccountDetail> accountDetails) {
         this.accountDetails = accountDetails;
     }
 }

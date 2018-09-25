@@ -284,7 +284,7 @@ public class TaskServiceImpl implements TaskService {
                 if (reUser != null) {
                     BsUserAccount reUserAccount = userAccountRepository.getByUser(reUser);
                     Preconditions.checkArgument(null != reUserAccount, "推荐人不存在");
-                    reUserAccount.getTrueReward().add(recommendUserRewardNum);
+                    reUserAccount.setTrueReward(reUserAccount.getTrueReward().add(recommendUserRewardNum));
                     userAccountRepository.save(reUserAccount);
                     BsUserAccountDetail reUserAccountDetail = new BsUserAccountDetail();
                     reUserAccountDetail.setUserAccount(reUserAccount);
