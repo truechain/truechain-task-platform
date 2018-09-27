@@ -121,6 +121,8 @@ public class TaskServiceImpl implements TaskService {
             taskEntryFromDTO.setPushAddress(x.getPushAddress());
             taskEntryFromDTO.setRemark(x.getRemark());
             taskEntryFromDTO.setStation(x.getTaskDetail().getStation());
+            String recommendUserMobile = x.getUser().getRecommendUserMobile();
+            taskEntryFromDTO.setRecommendUser(recommendUserMobile);
             taskEntryFromDTOList.add(taskEntryFromDTO);
         });
 //        if (taskEntryFromDTOList.size() != task.getPeopleNum()) {
