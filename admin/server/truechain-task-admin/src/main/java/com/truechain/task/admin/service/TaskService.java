@@ -1,9 +1,6 @@
 package com.truechain.task.admin.service;
 
-import com.truechain.task.admin.model.dto.TaskDTO;
-import com.truechain.task.admin.model.dto.TaskEntryFromDTO;
-import com.truechain.task.admin.model.dto.TaskInfoDTO;
-import com.truechain.task.admin.model.dto.UserDTO;
+import com.truechain.task.admin.model.dto.*;
 import com.truechain.task.model.entity.BsRecommendTask;
 import com.truechain.task.model.entity.BsTask;
 import com.truechain.task.model.entity.BsTaskUser;
@@ -83,7 +80,7 @@ public interface TaskService {
      *
      * @param taskUserId
      */
-    void auditEntryFormUser(Long taskUserId);
+    AuditEntryFormUserDTO auditEntryFormUser(Long taskUserId);
 
     /**
      * 发放奖励

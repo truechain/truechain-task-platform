@@ -198,7 +198,15 @@ public class TaskServiceImpl extends BasicService implements TaskService {
         BsTaskDetail taskDetail = taskDetailRepository.findOne(taskDetailId);
         Preconditions.checkArgument(null != taskDetail, "任务不存在");
         BsTask bsTask = taskDetail.getTask();
-        Preconditions.checkArgument(user.getLevel().compareTo(bsTask.getLevel()) <= 0, "您的等级不够，请选择符合您开发等级的任务");
+
+        //判断S级任务
+        if (!user.getLevel().equalsIgnoreCase("s")) {
+            if (bsTask.getLevel().equalsIgnoreCase("s")) {
+                throw new BusinessException("您的等级不够，请选择符合您开发等级的任务");
+            }
+            Preconditions.checkArgument(user.getLevel().compareTo(bsTask.getLevel()) <= 0, "您的等级不够，请选择符合您开发等级的任务");
+        }
+
         QBsTaskUser qtaskUser = QBsTaskUser.bsTaskUser;
         long count = taskUserRepository.count(qtaskUser.user.eq(user).and(qtaskUser.taskDetail.eq(taskDetail)));
         if (count > 0) {

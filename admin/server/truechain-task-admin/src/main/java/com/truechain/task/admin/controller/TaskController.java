@@ -2,6 +2,7 @@ package com.truechain.task.admin.controller;
 
 import com.google.common.base.Preconditions;
 import com.truechain.task.admin.config.AppProperties;
+import com.truechain.task.admin.model.dto.AuditEntryFormUserDTO;
 import com.truechain.task.admin.model.dto.TaskDTO;
 import com.truechain.task.admin.model.dto.TaskEntryFromDTO;
 import com.truechain.task.admin.model.dto.TaskInfoDTO;
@@ -189,8 +190,8 @@ public class TaskController extends BasicController {
      */
     @PostMapping("/auditEntryFormUser")
     public Wrapper auditEntryFormUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long taskUserId) {
-        taskService.auditEntryFormUser(taskUserId);
-        return WrapMapper.ok();
+        AuditEntryFormUserDTO result = taskService.auditEntryFormUser(taskUserId);
+        return WrapMapper.ok(result);
     }
 
     /**

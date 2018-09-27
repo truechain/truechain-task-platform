@@ -209,7 +209,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
-    public void auditEntryFormUser(Long taskUserId) {
+    public AuditEntryFormUserDTO auditEntryFormUser(Long taskUserId) {
         BsTaskUser taskUser = taskUserRepository.findOne(taskUserId);
         Preconditions.checkArgument(null != taskUser, "数据有误");
         Preconditions.checkArgument(1 == taskUser.getTaskStatus(), "用户尚未提交任务");
@@ -223,6 +223,13 @@ public class TaskServiceImpl implements TaskService {
             bsTask.setAuditStatus(1);
             taskRepository.save(bsTask);
         }
+        AuditEntryFormUserDTO auditUserInfo = new AuditEntryFormUserDTO();
+        auditUserInfo.setTaskName(bsTask.getName());
+        SysUser user = taskUser.getUser();
+        auditUserInfo.setRewardNum(bsTaskDetail.getRewardNum());
+        auditUserInfo.setPersonName(user.getPersonName());
+        auditUserInfo.setPushAddress(user.getTrueChainAddress());
+        return auditUserInfo;
     }
 
     @Override
