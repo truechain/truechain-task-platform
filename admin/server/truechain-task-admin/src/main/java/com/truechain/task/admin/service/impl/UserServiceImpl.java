@@ -2,6 +2,7 @@ package com.truechain.task.admin.service.impl;
 
 import com.google.common.base.Preconditions;
 import com.querydsl.core.BooleanBuilder;
+import com.truechain.task.admin.config.AppProperties;
 import com.truechain.task.admin.model.dto.UserDTO;
 import com.truechain.task.admin.repository.BsRecommendTaskRepository;
 import com.truechain.task.admin.repository.BsUserAccountDetailRepository;
@@ -101,7 +102,7 @@ public class UserServiceImpl implements UserService {
         String resumeFilePath = user.getResumeFilePath();
         if (StringUtils.isNotBlank(resumeFilePath)) {
             resumeFilePath = resumeFilePath.substring(resumeFilePath.lastIndexOf("/"));
-            user.setResumeFilePath("http://phptrain.cn/resume" + resumeFilePath);
+            user.setResumeFilePath(AppProperties.RESUME_URL + resumeFilePath);
         }
         return user;
     }

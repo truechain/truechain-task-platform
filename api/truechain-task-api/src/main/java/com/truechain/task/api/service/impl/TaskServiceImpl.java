@@ -16,6 +16,7 @@ import com.truechain.task.core.NullException;
 import com.truechain.task.model.entity.*;
 import com.truechain.task.model.enums.AuditStatusEnum;
 import com.truechain.task.model.enums.TaskStatusEnum;
+import com.truechain.task.util.JsonUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,6 +26,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
@@ -85,7 +89,13 @@ public class TaskServiceImpl extends BasicService implements TaskService {
         if (endTimeArray.length > 0) {
             task.setEndDateTime(endTimeArray[0]);
         }
-
+        String description = null;
+        try {
+            description = URLDecoder.decode(task.getDescription(), "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        task.setDescription(description);
         taskDTO.setTask(task);
         taskDTO.setIsHold(0);
         taskDTO.setIsFull(0);

@@ -94,7 +94,7 @@ public class TaskController extends BasicController {
         Map<String, String> result = new HashMap<>();
         String path = uploadFile.getPath();
         result.put("path", path);
-        String showPath = "http://phptrain.cn/taskicon/" + uploadFile.getName();
+        String showPath = AppProperties.TASK_ICON_URL + "/" + uploadFile.getName();
         result.put("showPath", showPath);
         return WrapMapper.ok(result);
     }

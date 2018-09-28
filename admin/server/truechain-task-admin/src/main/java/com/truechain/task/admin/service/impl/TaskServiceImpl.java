@@ -2,12 +2,14 @@ package com.truechain.task.admin.service.impl;
 
 import com.google.common.base.Preconditions;
 import com.querydsl.core.BooleanBuilder;
+import com.truechain.task.admin.config.AppProperties;
 import com.truechain.task.admin.model.dto.*;
 import com.truechain.task.admin.repository.*;
 import com.truechain.task.admin.service.TaskService;
 import com.truechain.task.core.BusinessException;
 import com.truechain.task.model.entity.*;
 import com.truechain.task.model.enums.TaskStatusEnum;
+import com.truechain.task.util.JsonUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,7 +19,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -88,8 +93,15 @@ public class TaskServiceImpl implements TaskService {
         String iconPath = task.getIconPath();
         if (StringUtils.isNotBlank(iconPath)) {
             iconPath = iconPath.substring(iconPath.lastIndexOf("/"));
-            task.setIconPath("http://phptrain.cn/taskicon" + iconPath);
+            task.setIconPath(AppProperties.TASK_ICON_URL + iconPath);
         }
+        String description = null;
+        try {
+            description = URLDecoder.decode(task.getDescription(), "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        task.setDescription(description);
         taskInfoDTO.setTask(task);
         Set<BsTaskDetail> taskDetailList = task.getTaskDetailSet();
         taskInfoDTO.setTaskDetailList(taskDetailList);
@@ -143,6 +155,13 @@ public class TaskServiceImpl implements TaskService {
         long peopleNum = taskInfoDTO.getTaskDetailList().stream().mapToInt(x -> x.getPeopleNum()).sum();
         task.setPeopleNum((int) peopleNum);
         task.setAuditStatus(0);
+        String description = null;
+        try {
+            description = URLEncoder.encode(task.getDescription(), "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        task.setDescription(description);
         task = taskRepository.save(task);
         for (BsTaskDetail taskDetail : taskInfoDTO.getTaskDetailList()) {
             taskDetail.setTask(task);
@@ -176,7 +195,13 @@ public class TaskServiceImpl implements TaskService {
         bsTask.setRewardType(task.getRewardType());
         bsTask.setRewardNum(task.getRewardNum());
         bsTask.setPushAddress(task.getPushAddress());
-        bsTask.setDescription(task.getDescription());
+        String description = null;
+        try {
+            description = URLEncoder.encode(task.getDescription(), "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        bsTask.setDescription(description);
         bsTask = taskRepository.save(bsTask);
         taskDetailRepository.deleteByTask(bsTask);
         for (BsTaskDetail taskDetail : taskInfoDTO.getTaskDetailList()) {

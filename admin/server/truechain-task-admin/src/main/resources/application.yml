@@ -42,9 +42,11 @@ spring:
   redis:
       host: 127.0.0.1
       port: 6379
-      password: 123
+      password:
 app:
   upload:
+    resume-url: http://www.phptrain.cn/resume
+    task-icon-url: http://www.phptrain.cn/taskicon
     file-path: D://
     task-icon-path: D://
 logging:
@@ -68,6 +70,8 @@ spring:
       ddl-auto: none
 app:
   upload:
+    resume-url: http://www.phptrain.cn/resume
+    task-icon-url: http://www.phptrain.cn/taskicon
     file-path: /home/work/data/test/upload/resume/
     task-icon-path: /home/work/data/test/upload/taskicon/
 springfox:
@@ -96,6 +100,8 @@ spring:
       ddl-auto: none
 app:
   upload:
+    resume-url: http://www.phptrain.cn/resume
+    task-icon-url: http://www.phptrain.cn/taskicon
     file-path: /home/work/data/upload/resume/
     task-icon-path: /home/work/data/upload/taskicon/
 springfox:
