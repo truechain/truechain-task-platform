@@ -1,6 +1,7 @@
 package com.truechain.task.admin.service;
 
 import com.truechain.task.admin.model.dto.UserDTO;
+import com.truechain.task.admin.model.dto.UserDetailDTO;
 import com.truechain.task.model.entity.SysUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +29,7 @@ public interface UserService {
      *
      * @param userId
      */
-    SysUser getUserInfo(Long userId);
+    UserDetailDTO getUserInfo(Long userId);
 
     /**
      * 获取用户信息

@@ -25,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sun.nio.cs.UnicodeEncoder;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -189,6 +190,15 @@ public class TaskServiceImpl extends BasicService implements TaskService {
         Preconditions.checkArgument(taskDetail != null, "任务不存在");
         BsTask task = taskDetail.getTask();
         Preconditions.checkArgument(task != null, "任务不存在");
+
+        String description = null;
+        try {
+            description = URLEncoder.encode(task.getDescription(), "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        task.setDescription(description);
+
         userTaskInfoDTO.setTask(task);
         QBsTaskUser qBsTaskUser = QBsTaskUser.bsTaskUser;
         BsTaskUser taskUser = taskUserRepository.findOne(qBsTaskUser.user.eq(user).and(qBsTaskUser.taskDetail.eq(taskDetail)));

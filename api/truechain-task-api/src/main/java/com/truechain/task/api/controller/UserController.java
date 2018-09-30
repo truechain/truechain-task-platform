@@ -73,7 +73,10 @@ public class UserController extends BasicController {
                                   @RequestParam String trueChainAddress, @RequestParam("file") MultipartFile file, @RequestParam(required = false) String referrerPhone) {
         Preconditions.checkArgument(!file.isEmpty(), "简历不能为空");
         String fileName = file.getOriginalFilename();
+        Preconditions.checkArgument(fileName.indexOf(".exe") < 0 && fileName.indexOf(".sh") < 0, "上传文件不合法");
+
         File uploadFile = new File(AppProperties.UPLOAD_FILE_PATH + UUID.randomUUID().toString().replace("-", "") + fileName);
+        Preconditions.checkArgument(file.getSize() <= 10 * 1024 * 1024, "文件最大限制为10M");
         try {
             FileUtils.writeByteArrayToFile(uploadFile, file.getBytes());
         } catch (IOException e) {

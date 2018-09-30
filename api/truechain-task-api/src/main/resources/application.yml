@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: prod
+    active: dev
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     hikari:
@@ -31,17 +31,17 @@ app:
 
 ---
 server:
-  port: 8080
+  port: 8083
 spring:
   profiles: dev
   datasource:
-    url: jdbc:mysql://47.95.252.37:3308/task_platform?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    url: jdbc:mysql://47.95.252.37:3308/task_platform_test?useUnicode=true&characterEncoding=utf-8&useSSL=false
     username: root
     password: true0614
   redis:
     host: 127.0.0.1
     port: 6379
-    password: 123
+    password:
 app:
   upload:
     file-path: D://

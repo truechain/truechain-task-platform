@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.querydsl.core.BooleanBuilder;
 import com.truechain.task.admin.config.AppProperties;
 import com.truechain.task.admin.model.dto.UserDTO;
+import com.truechain.task.admin.model.dto.UserDetailDTO;
 import com.truechain.task.admin.repository.BsRecommendTaskRepository;
 import com.truechain.task.admin.repository.BsUserAccountDetailRepository;
 import com.truechain.task.admin.repository.BsUserAccountRepository;
@@ -97,14 +98,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public SysUser getUserInfo(Long userId) {
+    public UserDetailDTO getUserInfo(Long userId) {
         SysUser user = userRepository.findOne(userId);
         String resumeFilePath = user.getResumeFilePath();
         if (StringUtils.isNotBlank(resumeFilePath)) {
             resumeFilePath = resumeFilePath.substring(resumeFilePath.lastIndexOf("/"));
             user.setResumeFilePath(AppProperties.RESUME_URL + resumeFilePath);
         }
-        return user;
+        UserDetailDTO userDetailDTO = new UserDetailDTO();
+        userDetailDTO.setSysUser(user);
+
+        if (user.getRecommendUserId() != 0) {
+            SysUser recommendUser = userRepository.findOne(user.getRecommendUserId());
+            userDetailDTO.setRefererPhone(recommendUser.getMobile());
+            userDetailDTO.setRefererWXName(recommendUser.getWxNickName());
+            userDetailDTO.setRefererAddress(recommendUser.getTrueChainAddress());
+        }
+        return userDetailDTO;
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.truechain.task.admin.controller;
 
 import com.google.common.base.Preconditions;
 import com.truechain.task.admin.model.dto.UserDTO;
+import com.truechain.task.admin.model.dto.UserDetailDTO;
 import com.truechain.task.admin.service.UserService;
 import com.truechain.task.core.BusinessException;
 import com.truechain.task.core.WrapMapper;
@@ -49,8 +50,8 @@ public class UserController extends BasicController {
      */
     @PostMapping("/getUserInfo")
     public Wrapper getUserInfo(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long userId) {
-        SysUser user = userService.getUserInfo(userId);
-        return WrapMapper.ok(user);
+        UserDetailDTO userInfo = userService.getUserInfo(userId);
+        return WrapMapper.ok(userInfo);
     }
 
     /**

@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public SysUser updateUser(SysUser user) {
         SysUser sysUser = userRepository.findOne(user.getId());
-//        Preconditions.checkArgument(null != sysUser, "用户不存在");
+        Preconditions.checkArgument(!sysUser.getMobile().equals(sysUser.getRecommendUserMobile()), "推荐人不能为用户本人手机号");
         if (sysUser == null) {
             throw new NullException("用户不存在");
         }
