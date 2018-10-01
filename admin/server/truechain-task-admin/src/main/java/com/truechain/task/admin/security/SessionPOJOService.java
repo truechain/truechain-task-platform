@@ -22,6 +22,8 @@ public class SessionPOJOService {
     public SessionPOJO initSession(AuthUser user) {
         SessionPOJO sessionPOJO = new SessionPOJO();
         String sessionId = CommonUtil.getRandomString(6);
+        sessionPOJO.setId(sessionId);
+        sessionPOJO.setUserId(String.valueOf(user.getId()));
         sessionPOJORedisRepository.set(sessionId, sessionPOJO);
         return sessionPOJO;
     }

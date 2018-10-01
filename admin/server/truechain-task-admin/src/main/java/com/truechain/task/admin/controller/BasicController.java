@@ -56,4 +56,22 @@ public class BasicController {
         SessionPOJO sessionPOJO = sessionPOJOService.getBySessionId(sessionId);
         return sessionPOJO;
     }
+
+    /**
+     * 获取登录信息
+     *
+     * @return
+     */
+    protected SessionPOJO getSessionPoJO() {
+        String token = request.getHeader(AppProperties.TOKEN_HEADER);
+        String salt = request.getHeader(AppProperties.AGENT_HEADER);
+        try {
+            String sessionId = JwtUtil.getRedisKeyByToken(token, salt);
+            SessionPOJO sessionPOJO = sessionPOJOService.getBySessionId(sessionId);
+            return sessionPOJO;
+        } catch (Exception e) {
+            logger.error("token和salt不存在, token={}, agent={}", token, salt);
+            return null;
+        }
+    }
 }

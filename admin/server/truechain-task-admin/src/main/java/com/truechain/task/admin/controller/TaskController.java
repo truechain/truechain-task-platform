@@ -2,14 +2,13 @@ package com.truechain.task.admin.controller;
 
 import com.google.common.base.Preconditions;
 import com.truechain.task.admin.config.AppProperties;
-import com.truechain.task.admin.model.dto.AuditEntryFormUserDTO;
-import com.truechain.task.admin.model.dto.TaskDTO;
-import com.truechain.task.admin.model.dto.TaskEntryFromDTO;
-import com.truechain.task.admin.model.dto.TaskInfoDTO;
+import com.truechain.task.admin.model.dto.*;
+import com.truechain.task.admin.repository.AuthUserRepository;
 import com.truechain.task.admin.service.TaskService;
 import com.truechain.task.core.BusinessException;
 import com.truechain.task.core.WrapMapper;
 import com.truechain.task.core.Wrapper;
+import com.truechain.task.model.entity.AuthUser;
 import com.truechain.task.model.entity.BsTask;
 import com.truechain.task.model.entity.BsTaskDetail;
 import com.truechain.task.model.entity.BsTaskUser;
@@ -42,6 +41,9 @@ import java.util.function.DoubleBinaryOperator;
 public class TaskController extends BasicController {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskController.class);
+
+    @Autowired
+    private AuthUserRepository authUserRepository;
 
     @Autowired
     private TaskService taskService;
@@ -105,6 +107,15 @@ public class TaskController extends BasicController {
     @PostMapping("/addTask")
     public Wrapper addTask(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody TaskInfoDTO taskInfoDTO) {
         logger.info("addTask taskInfoDTO{}", new JSONObject(taskInfoDTO));
+
+        //添加发布人
+        String publisherName = "";
+        SessionPOJO sessionPoJO = getSessionPoJO();
+        if (sessionPoJO != null) {
+            AuthUser authUser = authUserRepository.findOne(Long.parseLong(sessionPoJO.getUserId()));
+            publisherName = authUser.getRealName();
+        }
+
         Preconditions.checkArgument(null != taskInfoDTO, "数据为空");
         BsTask task = taskInfoDTO.getTask();
         Preconditions.checkArgument(null != task, "任务数据为空");
@@ -121,6 +132,7 @@ public class TaskController extends BasicController {
         }
 
         BsTask bsTask = taskInfoDTO.getTask();
+        bsTask.setCreateUser(publisherName);
         String[] startTime = bsTask.getStartDateTime().split("T");
         if (startTime.length > 0) {
             bsTask.setStartDateTime(startTime[0]);

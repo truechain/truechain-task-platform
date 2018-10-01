@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: dev
+    active: prod
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     hikari:
@@ -42,7 +42,7 @@ spring:
   redis:
       host: 127.0.0.1
       port: 6379
-      password:
+      password: 123
 app:
   upload:
     resume-url: http://www.phptrain.cn/resume
