@@ -90,13 +90,14 @@ public class TaskServiceImpl extends BasicService implements TaskService {
         if (endTimeArray.length > 0) {
             task.setEndDateTime(endTimeArray[0]);
         }
-        String description = null;
-        try {
-            description = URLDecoder.decode(task.getDescription(), "utf-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        task.setDescription(description);
+        //数据库中是已经编码后的，直接返回到前端，由前端解析展示
+//        String description = null;
+//        try {
+//            description = URLDecoder.decode(task.getDescription(), "utf-8");
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
+//        task.setDescription(description);
         taskDTO.setTask(task);
         taskDTO.setIsHold(0);
         taskDTO.setIsFull(0);
