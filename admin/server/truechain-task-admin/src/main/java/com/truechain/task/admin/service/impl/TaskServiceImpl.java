@@ -238,8 +238,8 @@ public class TaskServiceImpl implements TaskService {
         BsTaskUser taskUser = taskUserRepository.findOne(taskUserId);
         Preconditions.checkArgument(null != taskUser, "数据有误");
         Preconditions.checkArgument(1 == taskUser.getTaskStatus(), "用户尚未提交任务");
-        taskUser.setAuditStatus(1);
-        taskUserRepository.save(taskUser);
+//        taskUser.setAuditStatus(1);
+//        taskUserRepository.save(taskUser);
         BsTaskDetail bsTaskDetail = taskUser.getTaskDetail();
         BsTask bsTask = bsTaskDetail.getTask();
         QBsTaskUser qBsTaskUser = QBsTaskUser.bsTaskUser;
@@ -262,9 +262,9 @@ public class TaskServiceImpl implements TaskService {
     public BsTaskUser rewardEntryFromUser(Long taskUserId, Double userReward, Double recommendUserReward) {
         BsTaskUser taskUser = taskUserRepository.findOne(taskUserId);
         Preconditions.checkArgument(null != taskUser, "数据有误");
-        if (taskUser.getAuditStatus() == 0) {
-            throw new BusinessException("数据尚未审核");
-        }
+//        if (taskUser.getAuditStatus() == 0) {
+//            throw new BusinessException("数据尚未审核");
+//        }
         if (taskUser.getAuditStatus() == 2) {
             throw new BusinessException("奖励已经发放，不可重复发放");
         }
