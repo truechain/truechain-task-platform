@@ -12,8 +12,10 @@ import com.truechain.task.core.WrapMapper;
 import com.truechain.task.core.Wrapper;
 import com.truechain.task.model.entity.SysUser;
 import com.truechain.task.util.ValidateUtil;
+
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -92,7 +94,7 @@ public class UserController extends BasicController {
         user.setTrueChainAddress(trueChainAddress);
         user.setResumeFilePath(uploadFile.getPath());
 
-        if (referrerPhone != null) {
+        if (StringUtils.isEmpty(referrerPhone) == false) {
             Preconditions.checkArgument(ValidateUtil.isMobile(referrerPhone), "手机号不合法");
             SysUser referrerUser = userService.getUserByMobile(referrerPhone);
             if (referrerUser == null) {
