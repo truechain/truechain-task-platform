@@ -88,13 +88,42 @@ public class ReportController extends BasicController {
         Page<BsTask> taskPage = taskService.getTaskPage(taskDTO,pageable);
         reportIndexPojo.setTaskCount(taskPage.getTotalElements());
         //完成任务数目
+
+        /*
         taskPage.forEach(bsTask->{
             if(bsTask.getTaskStatus() != null && bsTask.getTaskStatus().intValue() == 1){
                 reportIndexPojo.setTaskDoneCount(reportIndexPojo.getTaskDoneCount() + 1);
             }
         });
-        //进行中任务数
-        reportIndexPojo.setTaskDoingCount(reportIndexPojo.getTaskCount() - reportIndexPojo.getTaskDoneCount());
+        */
+        taskPage.forEach(bsTask->{
+            if(bsTask.getAuditStatus() != null && bsTask.getAuditStatus().intValue() == 1){
+                reportIndexPojo.setTaskDoneCount(reportIndexPojo.getTaskDoneCount() + 1);
+            }
+        });
+
+        //完成任务数目 任务用户列表中的状态为1的数据
+        /*long taskDone =;
+        TaskDTO taskDTO2 = new TaskDTO();
+        taskDTO.setStartDateTime(timeRange.getStartDate());
+        taskDTO.setEndDateTime(timeRange.getEndDate());
+        Pageable pageable2 = new PageRequest(0, Integer.MAX_VALUE);
+        Page<BsTaskUser> taskUserPage2 = bsTaskUserService.getBsTaskUser(taskDTO2, pageable2);
+        reportIndexPojo.setTaskCount(taskUserPage2.getTotalElements());
+        taskUserPage2.forEach(bsTaskUser->{
+            if(bsTaskUser.getTaskStatus() == 1){
+                reportIndexPojo.setTaskDoneCount(reportIndexPojo.getTaskDoneCount() + 1);
+            }
+        });*/
+
+        //进行中任务数 audit_status=0
+       // reportIndexPojo.setTaskDoingCount(reportIndexPojo.getTaskCount() - reportIndexPojo.getTaskDoneCount());
+
+        taskPage.forEach(bsTask->{
+            if(bsTask.getAuditStatus() != null && bsTask.getAuditStatus().intValue() == 0){
+                reportIndexPojo.setTaskDoingCount(reportIndexPojo.getTaskDoingCount() + 1);
+            }
+        });
 
         Page<BsUserAccountDetail> bsUserAccountDetails = bsUserAccountDetailServiceImpl.getBsUserAccountDetail(timeRange,pageable);
         bsUserAccountDetails.forEach(bsUserAccountDetail -> {
