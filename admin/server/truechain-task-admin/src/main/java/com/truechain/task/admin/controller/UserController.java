@@ -22,6 +22,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * 用户Controller
@@ -90,6 +92,11 @@ public class UserController extends BasicController {
         SysUser user = new SysUser();
         user.setId(userId);
         user.setLevel(level);
+
+        SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String now=date.format(new Date());
+        user.setUpdatetime(now);
+
         userService.updateUser(user);
         return WrapMapper.ok();
     }

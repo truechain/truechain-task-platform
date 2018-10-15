@@ -15,7 +15,10 @@ import com.truechain.task.model.enums.AuditStatusEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.redis.connection.SortParameters;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,7 +66,10 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isNotBlank(user.getWxNickName())) {
             builder.and(qSysUser.wxNickName.like(user.getWxNickName() + "%"));
         }
+
+        pageable = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), Sort.Direction.DESC, "updateTime");
         Page<SysUser> userPage = userRepository.findAll(builder, pageable);
+
         return userPage;
     }
 
@@ -129,6 +135,7 @@ public class UserServiceImpl implements UserService {
         SysUser sysUser = userRepository.findOne(user.getId());
         Preconditions.checkArgument(null != sysUser, "该用户不存在");
         sysUser.setLevel(user.getLevel());
+        sysUser.setUpdatetime(user.getUpdateTime());
         userRepository.save(sysUser);
         return sysUser;
     }
