@@ -104,7 +104,7 @@ public class UserController extends BasicController {
     /**
      * 修改用户的
      */
-    @PostMapping("/updateUser")
+    @PostMapping("/updateUserBlank")
     public Wrapper updateUserBlank(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam long userId, @RequestParam int auditStatus) {
         SysUser user = new SysUser();
         user.setId(userId);
