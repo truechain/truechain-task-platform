@@ -268,6 +268,55 @@ public class ReportController extends BasicController {
         return WrapMapper.ok(rewardHistoryPojoList);
     }
 
+
+
+
+    /**
+     * 获取奖励清单
+     */
+    @ApiOperation(value = "奖励清单", notes = "返回结构中{taskName:任务名称;taskState:任务状态(0-任务中,1-已经完成)}")
+    @PostMapping("/getRewardList")
+    public Wrapper getRewardList(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestBody RewardViewDTO rewardViewDTO){
+        List<RewardListPojo> reward=Lists.newArrayList();
+        Pageable pageable = new PageRequest(0, Integer.MAX_VALUE);
+        Page<BsUserAccountDetail> page = bsUserAccountDetailServiceImpl.getBsUserAccountDetail(rewardViewDTO,pageable);
+        page.forEach(bsUserAccountDetail ->{
+            RewardListPojo rewardListPojo=new RewardListPojo();
+            rewardListPojo.setId(bsUserAccountDetail.getId());
+            Integer rewardResource = bsUserAccountDetail.getRewardResource();
+            if(bsUserAccountDetail.getRewardResource() != null){
+                if(rewardResource.intValue()==1){
+                    rewardListPojo.setEventName("推荐");
+                }
+                if(rewardResource.intValue()==2){
+                    rewardListPojo.setEventName("完成任务");
+                }
+                if(rewardResource.intValue()==3) {
+                    rewardListPojo.setEventName("评级");
+                }
+            }
+            rewardListPojo.setGotTime(bsUserAccountDetail.getUpdateTime());
+            rewardListPojo.setPersonName(bsUserAccountDetail.getUserAccount().getUser().getPersonName());
+            final int rewardType = bsUserAccountDetail.getRewardType();
+            if(rewardType==1){
+                rewardListPojo.setRewardType("true");
+            }
+            if(rewardType==2){
+                rewardListPojo.setRewardType("ttr");
+            }
+            if(rewardType==3){
+                rewardListPojo.setRewardType("rmb");
+            }
+            if( bsUserAccountDetail.getRewardNum() != null){
+                rewardListPojo.setRewardNum(bsUserAccountDetail.getRewardNum().doubleValue());
+            }
+            reward.add(rewardListPojo);
+        });
+        return WrapMapper.ok(reward);
+
+
+    }
+
     /**
      * 获取推荐统计数据
      */
