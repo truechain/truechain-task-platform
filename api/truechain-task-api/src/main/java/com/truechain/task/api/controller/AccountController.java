@@ -95,6 +95,9 @@ public class AccountController extends BasicController {
             user.setAuditStatus(AuditStatusEnum.UNCOMPLATE.getCode());
             user = userService.addUser(user);
         }
+        if(user.getAuditStatus() == -2){
+        	throw new BusinessException("该用户已被拉黑，如有疑问，请联系群管理");
+        }
         SessionPOJO sessionPOJO = sessionPOJOService.initSession(user);
         LoginDTO loginDTO = new LoginDTO();
         loginDTO.setUserUid(user.getId());

@@ -47,6 +47,13 @@ public interface UserService {
     SysUser updateUser(SysUser user);
 
     /**
+     * 修改用户
+     *
+     * @param user
+     */
+    SysUser updateUserBlank(SysUser user);
+    
+    /**
      * 审核用户
      *
      * @param userId

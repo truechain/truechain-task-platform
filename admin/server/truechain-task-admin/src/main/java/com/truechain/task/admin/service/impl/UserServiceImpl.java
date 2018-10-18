@@ -10,9 +10,13 @@ import com.truechain.task.admin.repository.BsUserAccountDetailRepository;
 import com.truechain.task.admin.repository.BsUserAccountRepository;
 import com.truechain.task.admin.repository.SysUserRepository;
 import com.truechain.task.admin.service.UserService;
+import com.truechain.task.core.BusinessException;
 import com.truechain.task.model.entity.*;
 import com.truechain.task.model.enums.AuditStatusEnum;
+
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +32,8 @@ import java.util.Date;
 @Service
 public class UserServiceImpl implements UserService {
 
+	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
     @Autowired
     private SysUserRepository userRepository;
 
@@ -135,6 +141,27 @@ public class UserServiceImpl implements UserService {
         SysUser sysUser = userRepository.findOne(user.getId());
         Preconditions.checkArgument(null != sysUser, "该用户不存在");
         sysUser.setLevel(user.getLevel());
+        sysUser.setUpdatetime(user.getUpdateTime());
+        userRepository.save(sysUser);
+        return sysUser;
+    }
+    
+    @Override
+    public SysUser updateUserBlank(SysUser user) {
+        SysUser sysUser = userRepository.findOne(user.getId());
+        Preconditions.checkArgument(null != sysUser, "该用户不存在");
+        if(user.getAuditStatus() == -2){
+        	logger.info("用户{}被管理员拉黑",user.getId());
+        }else{
+        	//用户状态是拉黑状态，管理员才能将它的状态置为其他状态
+        	if(sysUser.getAuditStatus() == -2){
+        		logger.info("拉黑用户{}被管理员置为{}",user.getId(),user.getAuditStatus());
+        	}else{
+        		logger.error("非法请求，非拉黑用户不能修改审核状态");
+        		 throw new BusinessException("非法请求，非拉黑用户不能修改审核状态");
+        	}
+        }
+        sysUser.setAuditStatus(user.getAuditStatus());
         sysUser.setUpdatetime(user.getUpdateTime());
         userRepository.save(sysUser);
         return sysUser;

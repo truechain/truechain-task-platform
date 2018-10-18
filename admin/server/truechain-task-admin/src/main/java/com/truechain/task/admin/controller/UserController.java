@@ -100,6 +100,22 @@ public class UserController extends BasicController {
         userService.updateUser(user);
         return WrapMapper.ok();
     }
+    
+    /**
+     * 修改用户的
+     */
+    @PostMapping("/updateUser")
+    public Wrapper updateUserBlank(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam long userId, @RequestParam int auditStatus) {
+        SysUser user = new SysUser();
+        user.setId(userId);
+        user.setAuditStatus(auditStatus);
+        SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String now=date.format(new Date());
+        user.setUpdatetime(now);
+
+        userService.updateUserBlank(user);
+        return WrapMapper.ok();
+    }   
 
     /**
      * 审核用户
