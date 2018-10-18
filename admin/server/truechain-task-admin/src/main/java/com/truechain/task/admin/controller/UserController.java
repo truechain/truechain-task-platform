@@ -8,6 +8,8 @@ import com.truechain.task.core.BusinessException;
 import com.truechain.task.core.WrapMapper;
 import com.truechain.task.core.Wrapper;
 import com.truechain.task.model.entity.SysUser;
+import com.truechain.task.model.enums.AuditStatusEnum;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -82,6 +85,18 @@ public class UserController extends BasicController {
         } catch (IOException e) {
             logger.error("下载异常", e);
         }
+    }
+    
+    /**
+     * 创建用户
+     */
+    @PostMapping("/addUser")
+    public Wrapper addUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam String mobile) {
+    	SysUser user = new SysUser();
+    	user.setMobile(mobile);
+    	user.setAuditStatus(AuditStatusEnum.UNCOMPLATE.getCode());
+        userService.addUser(user);
+        return WrapMapper.ok();
     }
 
     /**

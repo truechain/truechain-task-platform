@@ -12,6 +12,7 @@ import com.truechain.task.model.entity.BsTask;
 import com.truechain.task.model.entity.BsUserAccountDetail;
 import com.truechain.task.model.entity.QBsTask;
 import com.truechain.task.model.entity.QBsUserAccountDetail;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -103,7 +104,8 @@ public class BsUserAccountDetailServiceImpl implements BsUserAccountDetailServic
         Page<BsUserAccountDetail> taskPage = bsUserAccountDetailRepository.findAll(builder, pageable);
         return taskPage;
     }
-
+    
+    @Override
     public List<BsUserAccountDetail> getBsUserAccountDetail(Long taskId, Long userId){
         BooleanBuilder builder = new BooleanBuilder();
         QBsUserAccountDetail qBsUserAccountDetail = QBsUserAccountDetail.bsUserAccountDetail;

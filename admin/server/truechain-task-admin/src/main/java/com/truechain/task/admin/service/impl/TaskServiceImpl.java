@@ -10,6 +10,7 @@ import com.truechain.task.core.BusinessException;
 import com.truechain.task.model.entity.*;
 import com.truechain.task.model.enums.TaskStatusEnum;
 import com.truechain.task.util.JsonUtil;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -344,7 +345,8 @@ public class TaskServiceImpl implements TaskService {
         QBsTask qbsTask = QBsTask.bsTask;
         return taskRepository.count(qbsTask.auditStatus.eq(1));
     }
-
+    
+    @Override
     public Page<BsRecommendTask> getBsRecommendTaskList(UserDTO user, Pageable pageable) {
         BooleanBuilder builder = new BooleanBuilder();
         QBsRecommendTask qbsRecommendTask = QBsRecommendTask.bsRecommendTask;

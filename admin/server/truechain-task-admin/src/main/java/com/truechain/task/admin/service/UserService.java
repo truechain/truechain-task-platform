@@ -38,6 +38,13 @@ public interface UserService {
      * @return
      */
     SysUser getUser(Long userId);
+    
+    /**
+     * 创建用户
+     *
+     * @param user
+     */
+    SysUser addUser(SysUser user);
 
     /**
      * 修改用户

@@ -135,6 +135,16 @@ public class UserServiceImpl implements UserService {
         Preconditions.checkArgument(user != null, "用户不存在");
         return user;
     }
+    
+    @Override
+    public SysUser addUser(SysUser user) {
+    	long count = userRepository.countByMobile(user.getMobile());
+        if (count > 0) {
+            throw new BusinessException("手机号已经注册");
+        }
+        user = userRepository.save(user);
+        return user;
+    }
 
     @Override
     public SysUser updateUser(SysUser user) {
@@ -197,6 +207,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.count();
     }
 
+    @Override
     public long countAuditPass(String beginDate, String endDate) {
         BooleanBuilder builder = new BooleanBuilder();
         QSysUser qSysUser = QSysUser.sysUser;
