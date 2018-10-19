@@ -397,15 +397,24 @@ public class ReportController extends BasicController {
 
     @ApiOperation(value = "统计详情-导出")
     @GetMapping("/export")
-    public void export(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody UserDTO user) {
+    public void export(@RequestParam("startDate") String startDate,@RequestParam("endDate") String endDate,@RequestParam("name") String name,@RequestParam("wxNickName") String wxNickName,@RequestParam("auditStatus") Integer auditStatus,@RequestParam("level") String level,@RequestParam("pageSize") int pageSize,@RequestParam("pageIndex") int pageIndex) {
 
-        Preconditions.checkArgument(user.getPageIndex() > 0, "分页信息错误");
-        Preconditions.checkArgument(user.getPageSize() > 1, "分页信息错误");
+        UserDTO user=new UserDTO();
+        user.setName(name);
+        user.setLevel(level);
+        user.setPageIndex(pageIndex);
+        user.setAuditStatus(auditStatus);
+        user.setStartDate(startDate);
+        user.setEndDate(endDate);
+        user.setWxNickName(wxNickName);
+        user.setPageSize(pageSize);
+        Preconditions.checkArgument(user.getPageIndex()> 0, "分页信息错误");
+        Preconditions.checkArgument(user.getPageSize()> 1, "分页信息错误");
         Pageable pageable = new PageRequest(user.getPageIndex() - 1, user.getPageSize());
         Page<SysUser> userPage = userService.getAuditedUserPage(user, pageable);
 
         Page<UserProfilePagePojo> userProfilePagePojos = convert(userPage);
-        response.setContentType("application/binary;charset=UTF-8");
+        response.setContentType("application/vnd.ms-excel");
         try {
             ServletOutputStream out = response.getOutputStream();
 
@@ -442,7 +451,7 @@ public class ReportController extends BasicController {
                     hssfCellArray[i] = row.createCell(i);
                     hssfCellArray[i].setCellStyle(hssfCellStyle);
                 }
-                hssfCellArray[0].setCellValue(userProfilePagePojo.getSysUser().getUserName());
+                hssfCellArray[0].setCellValue(userProfilePagePojo.getSysUser().getPersonName());
                 hssfCellArray[1].setCellValue(userProfilePagePojo.getSysUser().getWxNickName());
                 hssfCellArray[2].setCellValue(userProfilePagePojo.getSysUser().getWxNum());
                 hssfCellArray[3].setCellValue(userProfilePagePojo.getTaskCount());
