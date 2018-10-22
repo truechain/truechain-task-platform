@@ -303,7 +303,7 @@ public class ReportController extends BasicController {
             if(bsUserAccountDetail.getTask()!=null)
             {
                 rewardListPojo.setTaskName(bsUserAccountDetail.getTask().getName());
-                rewardListPojo.setPassTime(bsUserAccountDetail.getTask().getEndDateTime());
+                rewardListPojo.setPassTime(bsUserAccountDetail.getTask().getReviewTime());
             }
 
             final int rewardType = bsUserAccountDetail.getRewardType();

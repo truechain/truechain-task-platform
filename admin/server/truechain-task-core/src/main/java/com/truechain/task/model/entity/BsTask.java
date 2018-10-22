@@ -43,9 +43,14 @@ public class BsTask extends BaseEntity {
      */
     private String endDateTime;
     /**
+     * 任务审核时间
+     */
+    private String reviewTime;
+    /**
      * 奖励类型
      */
     private Integer rewardType;
+
     /**
      * 奖励数量
      */
@@ -205,5 +210,13 @@ public class BsTask extends BaseEntity {
 
     public Integer getPeopleNum() {
         return peopleNum;
+    }
+
+    public String getReviewTime() {
+        return reviewTime;
+    }
+
+    public void setReviewTime(String reviewTime) {
+        this.reviewTime = reviewTime;
     }
 }
