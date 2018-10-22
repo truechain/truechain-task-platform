@@ -5,10 +5,14 @@ package com.truechain.task.admin.model.viewPojo;
 public class RewardListPojo {
     private Long id;
     private String personName;
+    private String wxName;
+    private String passTime;
+    private String tcAddress;
+    private String taskName;
     private String eventName;
     private String rewardType;
-    private String gotTime;
     private double rewardNum;
+    private String lssuingstate;
 
     public RewardListPojo() {
     }
@@ -29,6 +33,38 @@ public class RewardListPojo {
         this.personName = personName;
     }
 
+    public String getWxName() {
+        return wxName;
+    }
+
+    public void setWxName(String wxName) {
+        this.wxName = wxName;
+    }
+
+    public String getPassTime() {
+        return passTime;
+    }
+
+    public void setPassTime(String passTime) {
+        this.passTime = passTime;
+    }
+
+    public String getTcAddress() {
+        return tcAddress;
+    }
+
+    public void setTcAddress(String tcAddress) {
+        this.tcAddress = tcAddress;
+    }
+
+    public String getTaskName() {
+        return taskName;
+    }
+
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
+    }
+
     public String getEventName() {
         return eventName;
     }
@@ -45,19 +81,19 @@ public class RewardListPojo {
         this.rewardType = rewardType;
     }
 
-    public String getGotTime() {
-        return gotTime;
-    }
-
-    public void setGotTime(String gotTime) {
-        this.gotTime = gotTime;
-    }
-
     public double getRewardNum() {
         return rewardNum;
     }
 
     public void setRewardNum(double rewardNum) {
         this.rewardNum = rewardNum;
+    }
+
+    public String getLssuingstate() {
+        return lssuingstate;
+    }
+
+    public void setLssuingstate(String lssuingstate) {
+        this.lssuingstate = lssuingstate;
     }
 }

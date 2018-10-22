@@ -297,8 +297,15 @@ public class ReportController extends BasicController {
                     rewardListPojo.setEventName("评级");
                 }
             }
-            rewardListPojo.setGotTime(bsUserAccountDetail.getUpdateTime());
             rewardListPojo.setPersonName(bsUserAccountDetail.getUserAccount().getUser().getPersonName());
+            rewardListPojo.setWxName(bsUserAccountDetail.getUserAccount().getUser().getWxNickName());
+            rewardListPojo.setTcAddress(bsUserAccountDetail.getUserAccount().getUser().getTrueChainAddress());
+            if(bsUserAccountDetail.getTask()!=null)
+            {
+                rewardListPojo.setTaskName(bsUserAccountDetail.getTask().getName());
+                rewardListPojo.setPassTime(bsUserAccountDetail.getTask().getEndDateTime());
+            }
+
             final int rewardType = bsUserAccountDetail.getRewardType();
             if(rewardType==1){
                 rewardListPojo.setRewardType("true");
@@ -311,6 +318,13 @@ public class ReportController extends BasicController {
             }
             if( bsUserAccountDetail.getRewardNum() != null){
                 rewardListPojo.setRewardNum(bsUserAccountDetail.getRewardNum().doubleValue());
+            }
+            final int lstate=bsUserAccountDetail.getLssuingState();
+            if(lstate==0){
+                rewardListPojo.setLssuingstate("未发放");
+            }
+            if(lstate==1){
+                rewardListPojo.setLssuingstate("已发放");
             }
             reward.add(rewardListPojo);
         });
