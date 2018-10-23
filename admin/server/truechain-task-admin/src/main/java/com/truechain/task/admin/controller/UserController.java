@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.common.base.Preconditions;
+import com.truechain.task.admin.config.AppProperties;
 import com.truechain.task.admin.model.dto.UserDTO;
 import com.truechain.task.admin.model.dto.UserDetailDTO;
 import com.truechain.task.admin.service.UserService;
@@ -34,6 +36,8 @@ import com.truechain.task.core.WrapMapper;
 import com.truechain.task.core.Wrapper;
 import com.truechain.task.model.entity.SysUser;
 import com.truechain.task.model.enums.AuditStatusEnum;
+import com.truechain.task.util.ShareCodeUtil;
+import com.truechain.task.util.ValidateUtil;
 
 /**
  * 用户Controller
@@ -98,13 +102,43 @@ public class UserController extends BasicController {
      * 创建用户
      */
     @PostMapping("/addUser")
-    public Wrapper addUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestParam String mobile, 
-    		@RequestParam String name, @RequestParam String wxNickName, @RequestParam(required = false) String wxNum, 
-    		@RequestParam(required = false) String openId,@RequestParam String trueChainAddress, 
-    		@RequestParam("file") MultipartFile file, @RequestParam(required = false) String referrerPhone) {
-    	SysUser user = new SysUser();
-    	user.setMobile(mobile);
-    	user.setAuditStatus(AuditStatusEnum.UNCOMPLATE.getCode());
+    public Wrapper addUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, 
+    		@RequestParam String name, @RequestParam String wxNickName, @RequestParam String wxNum, 
+    		@RequestParam String mobile,@RequestParam String trueChainAddress, @RequestParam("file") MultipartFile file,
+    		@RequestParam String recommendResource, @RequestParam(required = false) String shareCode) {
+    	Preconditions.checkArgument(!file.isEmpty(), "简历不能为空");
+        String fileName = file.getOriginalFilename();
+        Preconditions.checkArgument(fileName.indexOf(".exe") < 0 && fileName.indexOf(".sh") < 0, "上传文件不合法");
+
+        File uploadFile = new File(AppProperties.UPLOAD_FILE_PATH + UUID.randomUUID().toString().replace("-", "") + fileName);
+        Preconditions.checkArgument(file.getSize() <= 10 * 1024 * 1024, "文件最大限制为10M");
+        try {
+            FileUtils.writeByteArrayToFile(uploadFile, file.getBytes());
+        } catch (IOException e) {
+            throw new BusinessException("文件上传异常");
+        }
+
+        SysUser user = new SysUser();
+        user.setMobile(mobile);
+    	user.setAuditStatus(AuditStatusEnum.UNAUDITED.getCode());
+        user.setPersonName(name);
+        user.setWxNickName(wxNickName);
+        user.setWxNum(wxNum);
+        
+        user.setTrueChainAddress(trueChainAddress);
+        user.setResumeFilePath(uploadFile.getPath());
+
+        if (StringUtils.isEmpty(shareCode) == false) {
+        	String referrerPhone = String.valueOf(ShareCodeUtil.codeToNum(shareCode));
+            Preconditions.checkArgument(ValidateUtil.isMobile(referrerPhone), "手机号不合法");
+            SysUser referrerUser = userService.getUserByMobile(referrerPhone);
+            if (referrerUser == null) {
+                throw new BusinessException("没有找到该推荐人");
+            }
+            user.setRecommendUserId(referrerUser.getId());
+            user.setRecommendUserMobile(referrerPhone);
+        }
+    	
         userService.addUser(user);
         return WrapMapper.ok();
     }

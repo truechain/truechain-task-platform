@@ -1,5 +1,19 @@
 package com.truechain.task.admin.service.impl;
 
+import java.math.BigDecimal;
+import java.util.Date;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.google.common.base.Preconditions;
 import com.querydsl.core.BooleanBuilder;
 import com.truechain.task.admin.config.AppProperties;
@@ -11,23 +25,11 @@ import com.truechain.task.admin.repository.BsUserAccountRepository;
 import com.truechain.task.admin.repository.SysUserRepository;
 import com.truechain.task.admin.service.UserService;
 import com.truechain.task.core.BusinessException;
-import com.truechain.task.model.entity.*;
+import com.truechain.task.model.entity.BsUserAccount;
+import com.truechain.task.model.entity.BsUserAccountDetail;
+import com.truechain.task.model.entity.QSysUser;
+import com.truechain.task.model.entity.SysUser;
 import com.truechain.task.model.enums.AuditStatusEnum;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.redis.connection.SortParameters;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.util.Date;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -137,12 +139,24 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
+    public SysUser getUserByMobile(String mobile) {
+        SysUser sysUser = userRepository.findByMobile(mobile);
+        return sysUser;
+    }
+    
+    @Override
     public SysUser addUser(SysUser user) {
     	long count = userRepository.countByMobile(user.getMobile());
         if (count > 0) {
             throw new BusinessException("手机号已经注册");
         }
-        user = userRepository.save(user);
+        user = userRepository.save(user);       
+        BsUserAccount userAccount = new BsUserAccount();
+        userAccount.setUser(user);
+        userAccount.setGitReward(BigDecimal.ZERO);
+        userAccount.setTrueReward(BigDecimal.ZERO);
+        userAccount.setTtrReward(BigDecimal.ZERO);
+        userAccountRepository.save(userAccount);
         return user;
     }
 
