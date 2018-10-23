@@ -40,6 +40,10 @@ public class BsUserAccountDetail extends BaseEntity {
      */
     private Integer rewardResource;
     /**
+     * 奖励发放状态（0-未发放，1-发放)
+     */
+    private Integer lssuingState;
+    /**
      * 奖励数量
      */
     /*@JsonProperty("reward")*/
@@ -91,5 +95,13 @@ public class BsUserAccountDetail extends BaseEntity {
 
     public void setRewardResource(Integer rewardResource) {
         this.rewardResource = rewardResource;
+    }
+
+    public Integer getLssuingState() {
+        return lssuingState;
+    }
+
+    public void setLssuingState(Integer lssuingState) {
+        this.lssuingState = lssuingState;
     }
 }
