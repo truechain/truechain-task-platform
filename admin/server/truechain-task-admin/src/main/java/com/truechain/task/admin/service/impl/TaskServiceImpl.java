@@ -149,10 +149,10 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public BsTask addTask(TaskInfoDTO taskInfoDTO) {
         BsTask task = taskInfoDTO.getTask();
-        double totalRewardNum = taskInfoDTO.getTaskDetailList().stream().mapToDouble(x -> x.getPeopleNum() * x.getRewardNum().doubleValue()).sum();
-        if (task.getRewardNum().doubleValue() != totalRewardNum) {
-            throw new BusinessException("任务奖励总和和明细项不匹配");
-        }
+//        double totalRewardNum = taskInfoDTO.getTaskDetailList().stream().mapToDouble(x -> x.getPeopleNum() * x.getRewardNum().doubleValue()).sum();
+//        if (task.getRewardNum().doubleValue() != totalRewardNum) {
+//            throw new BusinessException("任务奖励总和和明细项不匹配");
+//        }
         long peopleNum = taskInfoDTO.getTaskDetailList().stream().mapToInt(x -> x.getPeopleNum()).sum();
         task.setPeopleNum((int) peopleNum);
         task.setAuditStatus(0);
