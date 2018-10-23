@@ -1,5 +1,23 @@
 package com.truechain.task.api.controller;
 
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.google.common.base.Preconditions;
 import com.truechain.task.api.model.dto.LoginDTO;
 import com.truechain.task.api.model.dto.SessionPOJO;
@@ -7,23 +25,15 @@ import com.truechain.task.api.security.SessionPOJOService;
 import com.truechain.task.api.service.DeclareService;
 import com.truechain.task.api.service.UserService;
 import com.truechain.task.core.BusinessException;
-import com.truechain.task.core.NullException;
 import com.truechain.task.core.WrapMapper;
 import com.truechain.task.core.Wrapper;
 import com.truechain.task.model.entity.SysDeclare;
 import com.truechain.task.model.entity.SysUser;
 import com.truechain.task.model.enums.AuditStatusEnum;
 import com.truechain.task.util.CommonUtil;
+import com.truechain.task.util.RandomValidateCodeUtil;
 import com.truechain.task.util.SMSHttpRequest;
 import com.truechain.task.util.ValidateUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * 账户Controller
@@ -53,7 +63,16 @@ public class AccountController extends BasicController {
      * 注册
      */
     @PostMapping("/register")
-    public Wrapper register(@RequestParam String mobile, @RequestParam String verifyCode) {
+    public Wrapper register(@RequestParam String mobile, @RequestParam String verifyCode,
+    		@RequestParam String verifyCodeImage,@RequestParam String verifyToken) {    	
+    	Preconditions.checkArgument(StringUtils.isEmpty(verifyCodeImage)==false, "图形验证码不允许为空");
+    	ValueOperations<String, String> voperations = stringRedisTemplate.opsForValue();
+		String randomString = voperations.get(RandomValidateCodeUtil.RANDOMCODEKEY+"_"+verifyToken);
+		if(verifyCodeImage.equalsIgnoreCase(String.valueOf(randomString)) == false){
+			throw new BusinessException("图形验证码错误");
+		}
+		
+		Preconditions.checkArgument(ValidateUtil.isMobile(mobile), "手机号不合法");
         String verifyRedisKey = "verify_login_" + mobile;
         String realVerifyCode = stringRedisTemplate.opsForValue().get(verifyRedisKey);
         logger.info("realVerifyCode = " + realVerifyCode);
@@ -77,8 +96,17 @@ public class AccountController extends BasicController {
      * 登录
      */
     @PostMapping("/login")
-    public Wrapper login(@RequestParam String mobile, @RequestParam String verifyCode) {
-        Preconditions.checkArgument(ValidateUtil.isMobile(mobile), "手机号不合法");
+    public Wrapper login(@RequestParam String mobile, @RequestParam String verifyCode,
+    		@RequestParam String verifyCodeImage,@RequestParam String verifyToken) {       
+        Preconditions.checkArgument(StringUtils.isEmpty(verifyCodeImage)==false, "图形验证码不允许为空");
+        ValueOperations<String, String> voperations = stringRedisTemplate.opsForValue();
+		String randomString = voperations.get(RandomValidateCodeUtil.RANDOMCODEKEY+"_"+verifyToken);
+		if(verifyCodeImage.equalsIgnoreCase(String.valueOf(randomString)) == false){
+			throw new BusinessException("图形验证码错误");
+		}
+//		stringRedisTemplate.delete(RandomValidateCodeUtil.RANDOMCODEKEY+"_"+verifyToken);
+		
+		Preconditions.checkArgument(ValidateUtil.isMobile(mobile), "手机号不合法");
         String verifyRedisKey = "verify_login_" + mobile;
         String realVerifyCode = stringRedisTemplate.opsForValue().get(verifyRedisKey);
         if (StringUtils.isBlank(realVerifyCode)) {
@@ -105,6 +133,21 @@ public class AccountController extends BasicController {
         loginDTO.setToken(sessionPOJO.getToken());
         redisTemplate.delete(verifyRedisKey);
         return WrapMapper.ok(loginDTO);
+    }
+    
+    /**
+     * 获取图形验证码 
+     */
+    @GetMapping("/verifyCodeImage")
+    public void verifyCodeImage(@RequestParam String verifyToken){
+    	try {
+    		Preconditions.checkArgument(StringUtils.isEmpty(verifyToken)==false, "图形验证码不允许为空");
+    		String randomString = RandomValidateCodeUtil.getRandcode(response.getOutputStream());
+			ValueOperations<String, String> voperations = stringRedisTemplate.opsForValue();
+			voperations.set(RandomValidateCodeUtil.RANDOMCODEKEY+"_"+verifyToken, randomString,300,TimeUnit.SECONDS);
+    	} catch (IOException e) {			
+			e.printStackTrace();
+		}
     }
 
     /**
