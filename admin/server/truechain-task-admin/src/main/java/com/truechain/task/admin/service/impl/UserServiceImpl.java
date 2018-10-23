@@ -164,6 +164,27 @@ public class UserServiceImpl implements UserService {
     public SysUser updateUser(SysUser user) {
         SysUser sysUser = userRepository.findOne(user.getId());
         Preconditions.checkArgument(null != sysUser, "该用户不存在");
+        sysUser.setPersonName(user.getPersonName());
+        sysUser.setWxNickName(user.getWxNickName());
+        sysUser.setWxNum(user.getWxNum());
+        if (StringUtils.isEmpty(user.getResumeFilePath()) == false) {
+        	sysUser.setResumeFilePath(user.getResumeFilePath());    
+        }        
+        if (StringUtils.isEmpty(user.getRecommendShareCode()) == false) {	       
+	        sysUser.setRecommendUserId(user.getRecommendUserId());
+	        sysUser.setRecommendUserMobile(user.getRecommendUserMobile());
+	        sysUser.setRecommendShareCode(user.getRecommendShareCode());
+        }
+        sysUser.setRecommendResource(user.getRecommendResource());
+        sysUser.setUpdatetime(user.getUpdateTime());
+        userRepository.save(sysUser);
+        return sysUser;
+    }
+    
+    @Override
+    public SysUser updateUserLevel(SysUser user) {
+        SysUser sysUser = userRepository.findOne(user.getId());
+        Preconditions.checkArgument(null != sysUser, "该用户不存在");
         sysUser.setLevel(user.getLevel());
         sysUser.setUpdatetime(user.getUpdateTime());
         userRepository.save(sysUser);

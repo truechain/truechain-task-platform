@@ -105,7 +105,7 @@ public class UserController extends BasicController {
     public Wrapper addUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, 
     		@RequestParam String name, @RequestParam String wxNickName, @RequestParam String wxNum, 
     		@RequestParam String mobile,@RequestParam String trueChainAddress, @RequestParam("file") MultipartFile file,
-    		@RequestParam String recommendResource, @RequestParam(required = false) String shareCode) {
+    		@RequestParam String recommendResource, @RequestParam(required = false) String recommendShareCode) {
     	Preconditions.checkArgument(!file.isEmpty(), "简历不能为空");
         String fileName = file.getOriginalFilename();
         Preconditions.checkArgument(fileName.indexOf(".exe") < 0 && fileName.indexOf(".sh") < 0, "上传文件不合法");
@@ -124,17 +124,18 @@ public class UserController extends BasicController {
         user.setPersonName(name);
         user.setWxNickName(wxNickName);
         user.setWxNum(wxNum);
-        
+        user.setRecommendResource(recommendResource);
         user.setTrueChainAddress(trueChainAddress);
         user.setResumeFilePath(uploadFile.getPath());
 
-        if (StringUtils.isEmpty(shareCode) == false) {
-        	String referrerPhone = String.valueOf(ShareCodeUtil.codeToNum(shareCode));
+        if (StringUtils.isEmpty(recommendShareCode) == false) {
+        	String referrerPhone = String.valueOf(ShareCodeUtil.codeToNum(recommendShareCode));
             Preconditions.checkArgument(ValidateUtil.isMobile(referrerPhone), "手机号不合法");
             SysUser referrerUser = userService.getUserByMobile(referrerPhone);
             if (referrerUser == null) {
                 throw new BusinessException("没有找到该推荐人");
             }
+            user.setRecommendShareCode(recommendShareCode);
             user.setRecommendUserId(referrerUser.getId());
             user.setRecommendUserMobile(referrerPhone);
         }
@@ -142,21 +143,66 @@ public class UserController extends BasicController {
         userService.addUser(user);
         return WrapMapper.ok();
     }
-
+    
     /**
      * 修改用户
      */
     @PostMapping("/updateUser")
-    public Wrapper updateUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam long userId, @RequestParam String level) {
-        SysUser user = new SysUser();
-        user.setId(userId);
-        user.setLevel(level);
+    public Wrapper updateUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, 
+    		@RequestParam Long id,@RequestParam String name, @RequestParam String wxNickName, @RequestParam String wxNum, 
+    		 @RequestParam(value = "file", required = false) MultipartFile file,
+    		 @RequestParam(required = false) String recommendResource, @RequestParam(required = false) String recommendShareCode) {
+    	SysUser user = new SysUser();    	
+    	user.setId(id);
+    	if(!file.isEmpty()){
+    		String fileName = file.getOriginalFilename();
+            Preconditions.checkArgument(fileName.indexOf(".exe") < 0 && fileName.indexOf(".sh") < 0, "上传文件不合法");
 
+            File uploadFile = new File(AppProperties.UPLOAD_FILE_PATH + UUID.randomUUID().toString().replace("-", "") + fileName);
+            Preconditions.checkArgument(file.getSize() <= 10 * 1024 * 1024, "文件最大限制为10M");
+            try {
+                FileUtils.writeByteArrayToFile(uploadFile, file.getBytes());
+            } catch (IOException e) {
+                throw new BusinessException("文件上传异常");
+            }
+            user.setResumeFilePath(uploadFile.getPath());
+    	}
+    	user.setAuditStatus(AuditStatusEnum.UNAUDITED.getCode());
+        user.setPersonName(name);
+        user.setWxNickName(wxNickName);
+        user.setWxNum(wxNum);
+        user.setRecommendResource(recommendResource);
+        
+        if (StringUtils.isEmpty(recommendShareCode) == false) {
+        	String referrerPhone = String.valueOf(ShareCodeUtil.codeToNum(recommendShareCode));
+            Preconditions.checkArgument(ValidateUtil.isMobile(referrerPhone), "手机号不合法");
+            SysUser referrerUser = userService.getUserByMobile(referrerPhone);
+            if (referrerUser == null) {
+                throw new BusinessException("没有找到该推荐人");
+            }
+            user.setRecommendShareCode(recommendShareCode);
+            user.setRecommendUserId(referrerUser.getId());
+            user.setRecommendUserMobile(referrerPhone);
+        }
         SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String now=date.format(new Date());
         user.setUpdatetime(now);
-
         userService.updateUser(user);
+    	return WrapMapper.ok();
+    }
+
+    /**
+     * 修改用户的等级
+     */
+    @PostMapping("/updateUserLevel")
+    public Wrapper updateUserLevel(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam long userId, @RequestParam String level) {
+        SysUser user = new SysUser();
+        user.setId(userId);
+        user.setLevel(level);
+        SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String now=date.format(new Date());
+        user.setUpdatetime(now);
+        userService.updateUserLevel(user);
         return WrapMapper.ok();
     }
     

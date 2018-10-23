@@ -61,9 +61,16 @@ public interface UserService {
      * @param user
      */
     SysUser updateUser(SysUser user);
+    
+    /**
+     * 修改用户的等级
+     *
+     * @param user
+     */
+    SysUser updateUserLevel(SysUser user);
 
     /**
-     * 修改用户
+     * 修改用户的黑名状态
      *
      * @param user
      */

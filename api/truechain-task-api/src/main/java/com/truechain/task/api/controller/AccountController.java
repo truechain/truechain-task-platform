@@ -172,7 +172,7 @@ public class AccountController extends BasicController {
         String verifyCode = CommonUtil.getRandomString(6);
         SMSHttpRequest.sendVerifyCodeSMS(smsUserName, smsPassword, mobile, verifyCode);                                //调用SMSAPI发送验证码短信
         stringRedisTemplate.opsForValue().set(verifyRedisKey, verifyCode, 1, TimeUnit.MINUTES);
-        return WrapMapper.ok(verifyCode);
+        return WrapMapper.ok();
     }
 
     /**

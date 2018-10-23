@@ -8,7 +8,7 @@ package com.truechain.task.util;
 public class ShareCodeUtil {
 
 	public static void main(String[] args) {  
-		String code = ShareCodeUtil.numToCode(13316853840L);
+		String code = ShareCodeUtil.numToCode(12345678998L);
 		System.out.println(code);
 		System.out.println(ShareCodeUtil.codeToNum(code));  
 	}  

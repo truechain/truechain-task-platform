@@ -71,6 +71,16 @@ public class SysUser extends BaseEntity {
      * 推荐人ID
      */
     private long recommendUserId;
+    
+    /**
+     * 推荐码
+     */
+    private String recommendShareCode;
+    
+    /**
+     * 用户来源
+     */
+    private String recommendResource;
     /**
      * 账户
      */
@@ -211,4 +221,20 @@ public class SysUser extends BaseEntity {
     public void setRecommendUserId(long recommendUserId) {
         this.recommendUserId = recommendUserId;
     }
+
+	public String getRecommendShareCode() {
+		return recommendShareCode;
+	}
+
+	public void setRecommendShareCode(String recommendShareCode) {
+		this.recommendShareCode = recommendShareCode;
+	}
+
+	public String getRecommendResource() {
+		return recommendResource;
+	}
+
+	public void setRecommendResource(String recommendResource) {
+		this.recommendResource = recommendResource;
+	}
 }
