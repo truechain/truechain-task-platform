@@ -1,8 +1,10 @@
 package com.truechain.task.api.controller;
 
+import com.truechain.task.api.model.dto.ReferrerDTO;
 import com.truechain.task.api.model.dto.SessionPOJO;
 import com.truechain.task.api.model.dto.TaskDTO;
 import com.truechain.task.api.service.TaskService;
+import com.truechain.task.api.service.UserService;
 import com.truechain.task.api.service.weixin.WeiXinService;
 import com.truechain.task.core.WrapMapper;
 import com.truechain.task.core.Wrapper;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +25,10 @@ import java.util.Map;
 @RequestMapping("/unauth")
 public class UnAuthController extends BasicController {
 
+	
+	@Autowired
+	private UserService userService;
+	
     @Autowired
     private TaskService taskService;
 
@@ -69,4 +76,18 @@ public class UnAuthController extends BasicController {
         }
         return WrapMapper.ok(resultMap);
     }
+    
+    /**
+	 * 获取推荐人
+	 */
+	@GetMapping("/getReferrer")
+	public Wrapper getReferrer(String referralCode) {
+		ReferrerDTO dto = userService.getReferrerByCode(referralCode);
+		if (null != dto) {
+			return WrapMapper.ok(dto);
+
+		}
+		return WrapMapper.error("推荐人不存在");
+	}
+
 }

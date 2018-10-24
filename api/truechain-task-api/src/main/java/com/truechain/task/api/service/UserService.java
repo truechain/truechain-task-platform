@@ -2,6 +2,7 @@ package com.truechain.task.api.service;
 
 
 import com.truechain.task.api.model.dto.RecommendTaskDTO;
+import com.truechain.task.api.model.dto.ReferrerDTO;
 import com.truechain.task.api.model.dto.UserInfoDTO;
 import com.truechain.task.model.entity.SysUser;
 
@@ -65,4 +66,13 @@ public interface UserService {
      * @return
      */
     List<RecommendTaskDTO> getRecommendUserList(long userId);
+    
+    
+    /**
+     * 根据推荐号获取推荐人信息
+     *
+     * @param code
+     * @return
+     */
+    ReferrerDTO getReferrerByCode(String referralCode);
 }
