@@ -22,14 +22,6 @@ public class BsTaskUser extends BaseEntity {
      */
     private int taskStatus;
     /**
-     * 审核状态 不用
-     */
-    private int auditStatus;
-    /**
-     * 审核结果 不用(0-未审核,1-已审核,2-已发放)
-     */
-    private String auditResult;
-    /**
      * 提交地址
      */
     private String pushAddress;
@@ -68,21 +60,7 @@ public class BsTaskUser extends BaseEntity {
     @JoinColumn(name = "userId")
     private SysUser user;
 
-    public int getAuditStatus() {
-        return auditStatus;
-    }
 
-    public void setAuditStatus(int auditStatus) {
-        this.auditStatus = auditStatus;
-    }
-
-    public String getAuditResult() {
-        return auditResult;
-    }
-
-    public void setAuditResult(String auditResult) {
-        this.auditResult = auditResult;
-    }
 
     public BigDecimal getRewardNum() {
         return rewardNum;
