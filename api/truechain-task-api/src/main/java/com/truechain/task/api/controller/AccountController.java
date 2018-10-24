@@ -3,8 +3,6 @@ package com.truechain.task.api.controller;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.base.Preconditions;
 import com.truechain.task.api.model.dto.LoginDTO;
-import com.truechain.task.api.model.dto.ReferrerDTO;
 import com.truechain.task.api.model.dto.SessionPOJO;
 import com.truechain.task.api.security.SessionPOJOService;
 import com.truechain.task.api.service.DeclareService;
@@ -164,7 +161,15 @@ public class AccountController extends BasicController {
 	 * 获取验证码
 	 */
 	@GetMapping("/verifyCode/{mobile}")
-	public Wrapper getVerifyCode(@PathVariable("mobile") String mobile) {
+	public Wrapper getVerifyCode(@PathVariable("mobile") String mobile,
+			@RequestParam String verifyCodeImage, @RequestParam String verifyToken) {
+		Preconditions.checkArgument(StringUtils.isEmpty(verifyCodeImage) == false, "图形验证码不允许为空");
+		ValueOperations<String, String> voperations = stringRedisTemplate.opsForValue();
+		String randomString = voperations.get(RandomValidateCodeUtil.RANDOMCODEKEY + "_" + verifyToken);
+		if (verifyCodeImage.equalsIgnoreCase(String.valueOf(randomString)) == false) {
+			throw new BusinessException("图形验证码错误");
+		}
+		
 		Preconditions.checkArgument(ValidateUtil.isMobile(mobile), "手机号不合法");
 		// 如果还能获取到说明上一个验证码未过期
 		String verifyRedisKey = "verify_login_" + mobile;

@@ -99,15 +99,16 @@ public class UserServiceImpl implements UserService {
 			throw new NullException("用户不存在");
 		}
 		userInfoDTO.setUser(sysUser);
-		List<SysUser> recommendUserIds = userRepository.findByRecommendUserId(sysUser.getId());
-		long count = 0;
-		for (int i = 0; i < recommendUserIds.size(); i++) {
-			SysUser user = recommendUserIds.get(i);
-			// 只记录审核通过的玩家
-			if (user.getAuditStatus() == AuditStatusEnum.AUDITED.getCode()) {
-				count++;
-			}
-		}
+//		List<SysUser> recommendUserIds = userRepository.findByRecommendUserId(sysUser.getId());
+//		long count = 0;
+//		for (int i = 0; i < recommendUserIds.size(); i++) {
+//			SysUser user = recommendUserIds.get(i);
+//			// 只记录审核通过的玩家
+//			if (user.getAuditStatus() == AuditStatusEnum.AUDITED.getCode()) {
+//				count++;
+//			}
+//		}
+		long count = userRepository.countByRecommendUserIdAndAuditStatus(sysUser.getId());
 		userInfoDTO.setRecommendPeople(count);
 		UserAccountDTO userAccountDTO = new UserAccountDTO();
 		userAccountDTO.setGitReward("0");
