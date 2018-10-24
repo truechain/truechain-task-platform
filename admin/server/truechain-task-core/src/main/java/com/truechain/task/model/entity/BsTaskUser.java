@@ -18,15 +18,15 @@ public class BsTaskUser extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 状态(0-任务中,1-已经完成)
+     * 状态(0-未提交,1-待审核,-1 = 取消,2 审核通过   3 未通过审核   4 已发放)
      */
     private int taskStatus;
     /**
-     * 审核状态
+     * 审核状态 不用
      */
     private int auditStatus;
     /**
-     * 审核结果(0-未审核,1-已审核,2-已发放)
+     * 审核结果 不用(0-未审核,1-已审核,2-已发放)
      */
     private String auditResult;
     /**
@@ -42,6 +42,16 @@ public class BsTaskUser extends BaseEntity {
      */
     /*@JsonProperty("reward")*/
     private BigDecimal rewardNum;
+    
+    /**
+     * 推荐人奖励
+     */
+    private BigDecimal referralNum;
+    
+    /**
+     * 名次 1 2 3 4 优秀 5通过
+     */
+    private Integer finishLevel;
 
     /**
      * 任务
@@ -121,4 +131,24 @@ public class BsTaskUser extends BaseEntity {
     public void setRemark(String remark) {
         this.remark = remark;
     }
+
+	public BigDecimal getReferralNum() {
+		return referralNum;
+	}
+
+	public void setReferralNum(BigDecimal referralNum) {
+		this.referralNum = referralNum;
+	}
+
+	public Integer getFinishLevel() {
+		return finishLevel;
+	}
+
+	public void setFinishLevel(Integer finishLevel) {
+		this.finishLevel = finishLevel;
+	}
+
+
+
+	
 }

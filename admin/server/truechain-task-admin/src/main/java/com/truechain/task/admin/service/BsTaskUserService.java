@@ -1,5 +1,6 @@
 package com.truechain.task.admin.service;
 
+import com.truechain.task.admin.model.dto.AuditBsTaskUserDTO;
 import com.truechain.task.admin.model.dto.TaskDTO;
 import com.truechain.task.model.entity.BsTask;
 import com.truechain.task.model.entity.BsTaskUser;
@@ -16,4 +17,10 @@ public interface BsTaskUserService {
     Page<BsTaskUser> getBsTaskUser(TaskDTO task, Pageable pageable);
 
     long getBsTaskUserCount(TaskDTO task);
+    
+    void cancelBsTaskUser(Long id);
+    
+
+	void auditBsTaskUser(AuditBsTaskUserDTO auditBsTaskUserDTO);
+	AuditBsTaskUserDTO getDefaultReward(Long id) ;
 }

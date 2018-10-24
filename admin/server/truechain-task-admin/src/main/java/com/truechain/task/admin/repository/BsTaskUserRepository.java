@@ -1,5 +1,6 @@
 package com.truechain.task.admin.repository;
 
+import com.truechain.task.model.entity.BsTaskDetail;
 import com.truechain.task.model.entity.BsTaskUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,4 +13,6 @@ public interface BsTaskUserRepository extends JpaRepository<BsTaskUser, Long>, Q
 
     @Query("select u from BsTaskUser u where u.user.id in ?1")
     List<BsTaskUser> findByUserIds(Collection<Long> userIds);
+    
+    Integer countByTaskDetailAndFinishLevel(BsTaskDetail taskDetail,int finishLevel);
 }
