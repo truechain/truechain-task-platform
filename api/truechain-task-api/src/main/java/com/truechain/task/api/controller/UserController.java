@@ -112,6 +112,19 @@ public class UserController extends BasicController {
 		userService.updateUser(user);
 		return WrapMapper.ok();
 	}
+	
+	/**
+	 * 更新个人信息 简版
+	 */
+	@PostMapping("/updateSimpleUserInfo")
+	public Wrapper updateSimpleUserInfo(@RequestParam Long userId, @RequestParam String name, @RequestParam String trueChainAddress){
+		SysUser user = new SysUser();
+		user.setId(userId);
+		user.setPersonName(name);
+		user.setTrueChainAddress(trueChainAddress);
+		userService.updateSimpleUser(user);
+		return WrapMapper.ok();
+	}
 
 	/**
 	 * 获取推荐码

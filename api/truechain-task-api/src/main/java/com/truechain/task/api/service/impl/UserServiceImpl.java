@@ -89,6 +89,19 @@ public class UserServiceImpl implements UserService {
 		userAccountRepository.save(userAccount);
 		return sysUser;
 	}
+	
+	@Override
+	public SysUser updateSimpleUser(SysUser user){
+		SysUser sysUser = userRepository.findOne(user.getId());
+		Preconditions.checkArgument(!sysUser.getMobile().equals(sysUser.getRecommendUserMobile()), "推荐人不能为用户本人手机号");
+		if (sysUser == null) {
+			throw new NullException("用户不存在");
+		}
+		sysUser.setPersonName(user.getPersonName());
+		sysUser.setTrueChainAddress(user.getTrueChainAddress());
+		sysUser = userRepository.save(sysUser);
+		return sysUser;
+	}
 
 	@Override
 	public UserInfoDTO getUserInfo(long userId, Integer rewardType) {

@@ -41,6 +41,14 @@ public interface UserService {
      * @return
      */
     SysUser updateUser(SysUser user);
+    
+    /**
+     * 更新用户信息
+     *
+     * @param user
+     * @return
+     */
+    SysUser updateSimpleUser(SysUser user);
 
     /**
      * 获取用户详情
