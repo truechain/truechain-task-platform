@@ -1,6 +1,7 @@
 package com.truechain.task.admin.service.impl;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.commons.lang3.StringUtils;
@@ -214,13 +215,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void auditUser(Long userId, String level, String rewardNum) {
+    public void auditUser(Long userId, String level, String rewardNum,String recommendResource) {
         SysUser sysUser = userRepository.findOne(userId);
         Preconditions.checkArgument(null != sysUser, "该用户不存在");
         Preconditions.checkArgument(AuditStatusEnum.UNAUDITED.getCode() == sysUser.getAuditStatus(), "用户已通过审核");
         sysUser.setAuditStatus(AuditStatusEnum.AUDITED.getCode());
-        sysUser.setAuditPassTime(new Date().toString());
+        SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String now=date.format(new Date());
+        sysUser.setAuditPassTime(now);
         sysUser.setLevel(level);
+        sysUser.setRecommendResource(recommendResource);
         userRepository.save(sysUser);
 //        BsRecommendTask recommendTask = recommendTaskRepository.getByUser(sysUser);
 //        Preconditions.checkArgument(null != recommendTask, "用户推荐信息未完善");
