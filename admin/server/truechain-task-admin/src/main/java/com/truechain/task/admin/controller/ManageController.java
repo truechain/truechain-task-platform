@@ -54,7 +54,7 @@ public class ManageController extends BasicController{
     }
     @PostMapping("/updateManage")
     public Wrapper updateManage (@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody ManageDTO manageDTO){
-
+    	 return WrapMapper.ok();
     }
 
 
