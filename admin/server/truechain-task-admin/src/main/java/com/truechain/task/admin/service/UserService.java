@@ -82,8 +82,9 @@ public interface UserService {
      * @param userId
      * @param level
      * @param rewardNum
+     * @param recommendResource
      */
-    void auditUser(Long userId, String level, String rewardNum);
+    void auditUser(Long userId, String level, String rewardNum,String recommendResource);
 
     /**
      * 获取兼职总人数
