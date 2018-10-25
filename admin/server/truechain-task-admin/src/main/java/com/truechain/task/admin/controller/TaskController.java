@@ -140,6 +140,14 @@ public class TaskController extends BasicController {
         Preconditions.checkArgument(null != task.getRewardType(), "奖励类型不能为空");
         Preconditions.checkArgument(null != task.getRewardNum(), "奖励不能为空");
         Preconditions.checkArgument(null != taskInfoDTO.getTaskDetailList(), "任务信息不完整");
+        int category = taskInfoDTO.getTask().getCategory();
+        if(category==0){
+            Preconditions.checkArgument(taskInfoDTO.getTaskDetailList().size()==1, "任务类型不正确");
+        }
+        else{
+            Preconditions.checkArgument(taskInfoDTO.getTaskDetailList().size()>1, "任务类型不正确");
+	
+        }
         Set<BsTaskDetail> taskDetailSet = taskInfoDTO.getTaskDetailList();
         for (BsTaskDetail taskDetail : taskDetailSet) {
             Preconditions.checkArgument(StringUtils.isNotBlank(taskDetail.getStation()), "岗位名称不能为空");
@@ -176,6 +184,14 @@ public class TaskController extends BasicController {
         Preconditions.checkArgument(null != task.getRewardType(), "奖励类型不能为空");
         Preconditions.checkArgument(null != task.getRewardNum(), "奖励不能为空");
         Preconditions.checkArgument(null != taskInfoDTO.getTaskDetailList(), "任务信息不完整");
+        int category = taskInfoDTO.getTask().getCategory();
+        if(category==0){
+            Preconditions.checkArgument(taskInfoDTO.getTaskDetailList().size()==1, "任务类型不正确");
+        }
+        else{
+            Preconditions.checkArgument(taskInfoDTO.getTaskDetailList().size()>1, "任务类型不正确");
+	
+        }
         Set<BsTaskDetail> taskDetailSet = taskInfoDTO.getTaskDetailList();
         for (BsTaskDetail taskDetail : taskDetailSet) {
             Preconditions.checkArgument(StringUtils.isNotBlank(taskDetail.getStation()), "岗位名称不能为空");

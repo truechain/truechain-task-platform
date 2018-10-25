@@ -229,7 +229,7 @@ public class TaskServiceImpl extends BasicService implements TaskService {
         }
 
         QBsTaskUser qtaskUser = QBsTaskUser.bsTaskUser;
-        long count = taskUserRepository.count(qtaskUser.user.eq(user).and(qtaskUser.taskDetail.eq(taskDetail)));
+        long count = taskUserRepository.count(qtaskUser.user.eq(user).and(qtaskUser.taskDetail.task.eq(taskDetail.getTask())));
         if (count > 0) {
             throw new BusinessException("你已抢过该任务，不可重复抢取");
         }
