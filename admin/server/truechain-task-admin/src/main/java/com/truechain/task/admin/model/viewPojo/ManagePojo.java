@@ -11,7 +11,7 @@ public class ManagePojo {
     private String updatetime;
     private String createtime;
     private String createuser;
-    
+
     public Long getId() {
         return id;
     }

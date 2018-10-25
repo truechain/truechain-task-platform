@@ -1,12 +1,17 @@
 package com.truechain.task.admin.controller;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
+import com.google.common.base.Preconditions;
+import com.truechain.task.admin.config.AppProperties;
+import com.truechain.task.admin.model.dto.*;
+import com.truechain.task.admin.repository.AuthUserRepository;
+import com.truechain.task.admin.service.TaskService;
+import com.truechain.task.core.BusinessException;
+import com.truechain.task.core.WrapMapper;
+import com.truechain.task.core.Wrapper;
+import com.truechain.task.model.entity.AuthUser;
+import com.truechain.task.model.entity.BsTask;
+import com.truechain.task.model.entity.BsTaskDetail;
+import com.truechain.task.model.entity.BsTaskUser;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
@@ -16,33 +21,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.google.common.base.Preconditions;
-import com.truechain.task.admin.config.AppProperties;
-import com.truechain.task.admin.model.dto.AuditBsTaskUserDTO;
-import com.truechain.task.admin.model.dto.AuditEntryFormUserDTO;
-import com.truechain.task.admin.model.dto.SessionPOJO;
-import com.truechain.task.admin.model.dto.TaskDTO;
-import com.truechain.task.admin.model.dto.TaskEntryFromDTO;
-import com.truechain.task.admin.model.dto.TaskInfoDTO;
-import com.truechain.task.admin.repository.AuthUserRepository;
-import com.truechain.task.admin.service.BsTaskUserService;
-import com.truechain.task.admin.service.TaskService;
-import com.truechain.task.core.BusinessException;
-import com.truechain.task.core.WrapMapper;
-import com.truechain.task.core.Wrapper;
-import com.truechain.task.model.entity.AuthUser;
-import com.truechain.task.model.entity.BsTask;
-import com.truechain.task.model.entity.BsTaskDetail;
-import com.truechain.task.model.entity.BsTaskUser;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.function.DoubleBinaryOperator;
 
 
 /**
@@ -59,10 +47,6 @@ public class TaskController extends BasicController {
 
     @Autowired
     private TaskService taskService;
-    
-    @Autowired
-    private BsTaskUserService bsTaskUserService;
-    
 
     /**
      * 获取任务数据
@@ -140,14 +124,6 @@ public class TaskController extends BasicController {
         Preconditions.checkArgument(null != task.getRewardType(), "奖励类型不能为空");
         Preconditions.checkArgument(null != task.getRewardNum(), "奖励不能为空");
         Preconditions.checkArgument(null != taskInfoDTO.getTaskDetailList(), "任务信息不完整");
-        int category = taskInfoDTO.getTask().getCategory();
-        if(category==0){
-            Preconditions.checkArgument(taskInfoDTO.getTaskDetailList().size()==1, "任务类型不正确");
-        }
-        else{
-            Preconditions.checkArgument(taskInfoDTO.getTaskDetailList().size()>1, "任务类型不正确");
-	
-        }
         Set<BsTaskDetail> taskDetailSet = taskInfoDTO.getTaskDetailList();
         for (BsTaskDetail taskDetail : taskDetailSet) {
             Preconditions.checkArgument(StringUtils.isNotBlank(taskDetail.getStation()), "岗位名称不能为空");
@@ -184,14 +160,6 @@ public class TaskController extends BasicController {
         Preconditions.checkArgument(null != task.getRewardType(), "奖励类型不能为空");
         Preconditions.checkArgument(null != task.getRewardNum(), "奖励不能为空");
         Preconditions.checkArgument(null != taskInfoDTO.getTaskDetailList(), "任务信息不完整");
-        int category = taskInfoDTO.getTask().getCategory();
-        if(category==0){
-            Preconditions.checkArgument(taskInfoDTO.getTaskDetailList().size()==1, "任务类型不正确");
-        }
-        else{
-            Preconditions.checkArgument(taskInfoDTO.getTaskDetailList().size()>1, "任务类型不正确");
-	
-        }
         Set<BsTaskDetail> taskDetailSet = taskInfoDTO.getTaskDetailList();
         for (BsTaskDetail taskDetail : taskDetailSet) {
             Preconditions.checkArgument(StringUtils.isNotBlank(taskDetail.getStation()), "岗位名称不能为空");
@@ -247,34 +215,4 @@ public class TaskController extends BasicController {
         BsTaskUser bsTaskUser = taskService.rewardEntryFromUser(taskUserId, userReward, recommendUserReward);
         return WrapMapper.ok(bsTaskUser);
     }
-    
-    /**
-     * 取消报名任务
-     */
-    @PostMapping("/cancelEntryFormUser")
-    public Wrapper cancelBsTaskUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long taskUserId) {
-    	bsTaskUserService.cancelBsTaskUser(taskUserId);
-        return WrapMapper.ok();
-    }
-    
-    /**
-     * 审核报名任务
-     */
-    @PostMapping("/auditBsTaskUser")
-    public Wrapper auditBsTaskUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody AuditBsTaskUserDTO auditBsTaskUserDTO) {
-    	bsTaskUserService.auditBsTaskUser(auditBsTaskUserDTO);;
-        return WrapMapper.ok();
-    }
-    
-    /**
-     * 默认奖励数量
-     */
-    @GetMapping("/getDefaultReward")
-    public Wrapper getDefaultReward(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long taskUserId) {
-        return WrapMapper.ok(bsTaskUserService.getDefaultReward(taskUserId));
-    }
-    
-    
-    
-    
 }
