@@ -78,7 +78,24 @@ public class BsTask extends BaseEntity {
     /**
      * 任务描述
      */
-    private String description;
+    private String description;    
+    /**
+     * 已报名人数
+     */
+    private Integer enteredPeopleNum;
+    /**
+     * 已完成人数
+     */
+    private Integer completedPeopleNum;
+    /**
+     * 是否报名已满(0-未满，1-已满)
+     */
+    private short isEnteredFull;
+    /**
+     * 是否完成任务已满(0-未满，1-已满)
+     */
+    private short isCompletedFull;
+    
     /**
      * 任务详情
      */
@@ -219,4 +236,36 @@ public class BsTask extends BaseEntity {
     public void setReviewTime(String reviewTime) {
         this.reviewTime = reviewTime;
     }
+
+	public Integer getEnteredPeopleNum() {
+		return enteredPeopleNum;
+	}
+
+	public void setEnteredPeopleNum(Integer enteredPeopleNum) {
+		this.enteredPeopleNum = enteredPeopleNum;
+	}
+
+	public Integer getCompletedPeopleNum() {
+		return completedPeopleNum;
+	}
+
+	public void setCompletedPeopleNum(Integer completedPeopleNum) {
+		this.completedPeopleNum = completedPeopleNum;
+	}
+
+	public short getIsEnteredFull() {
+		return isEnteredFull;
+	}
+
+	public void setIsEnteredFull(short isEnteredFull) {
+		this.isEnteredFull = isEnteredFull;
+	}
+
+	public short getIsCompletedFull() {
+		return isCompletedFull;
+	}
+
+	public void setIsCompletedFull(short isCompletedFull) {
+		this.isCompletedFull = isCompletedFull;
+	}
 }
