@@ -1,9 +1,11 @@
 package com.truechain.task.model.entity;
 
-import org.hibernate.annotations.DynamicUpdate;
+import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Table(name="ConfigManage")
@@ -12,8 +14,8 @@ public class ConfigManage extends BaseEntity{
     private String name;
     private String configType;
     private String configData;
-    private String updateTime;
-    private String createTime;
+    private Date updateTime;
+    private Date createTime;
     private String createUser;
 
     public String getName() {
@@ -38,27 +40,7 @@ public class ConfigManage extends BaseEntity{
 
     public void setConfigData(String configData) {
         this.configData = configData;
-    }
-
-    @Override
-    public String getUpdateTime() {
-        return updateTime;
-    }
-
-    @Override
-    public void setUpdateTime(String updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    @Override
-    public String getCreateTime() {
-        return createTime;
-    }
-
-    @Override
-    public void setCreateTime(String createTime) {
-        this.createTime = createTime;
-    }
+    }  
 
     @Override
     public String getCreateUser() {
@@ -69,4 +51,5 @@ public class ConfigManage extends BaseEntity{
     public void setCreateUser(String createUser) {
         this.createUser = createUser;
     }
+	
 }

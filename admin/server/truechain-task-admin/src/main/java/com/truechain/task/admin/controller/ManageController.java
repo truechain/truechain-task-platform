@@ -1,5 +1,6 @@
 package com.truechain.task.admin.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.truechain.task.admin.model.dto.ManageDTO;
@@ -9,7 +10,9 @@ import com.truechain.task.core.WrapMapper;
 import com.truechain.task.core.Wrapper;
 import com.truechain.task.model.entity.ConfigManage;
 import com.truechain.task.util.JsonUtil;
+
 import io.swagger.annotations.ApiOperation;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -40,18 +43,17 @@ public class ManageController extends BasicController{
             managePojo.setId(item.getId());
             managePojo.setName(item.getName());
 //            managePojo.setConfigdata(item.getConfigData());
-            Map outMap =  JsonUtil.parseObject(item.getConfigData(),Map.class);
-            managePojo.setConfigdataMap(outMap);
-            managePojo.setType(item.getConfigType());
-            managePojo.setUpdatetime(item.getUpdateTime());
-            managePojo.setCreatetime(item.getCreateTime());
-            managePojo.setCreateuser(item.getCreateUser());
+            List<ManagePojo.Option> oList = JsonUtil.parseObject(item.getConfigData(), new TypeReference<List<ManagePojo.Option>>() {	});
+            managePojo.setConfigdataByList(oList);
+            managePojo.setType(item.getConfigType());           
             managePojoList.add(managePojo);
 
         }
         return WrapMapper.ok(managePojoList);
 
     }
+    
+    
     @PostMapping("/updateManage")
     public Wrapper updateManage (@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody ManageDTO manageDTO){
     	 return WrapMapper.ok();

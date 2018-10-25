@@ -1,16 +1,19 @@
 package com.truechain.task.admin.model.viewPojo;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.truechain.task.util.JsonUtil;
 
 public class ManagePojo {
+		
     private Long id;
     private String name;
     private String type;
-    private Map configdataMap;
-    //    private String configdata;
-    private String updatetime;
-    private String createtime;
-    private String createuser;
+    private List<Option> configdataByList;
+//    private Map configdataMap;
+    //    private String configdata;    
 
     public Long getId() {
         return id;
@@ -36,35 +39,59 @@ public class ManagePojo {
         this.type = type;
     }
 
-    public String getUpdatetime() {
-        return updatetime;
+	public List<Option> getConfigdataByList() {
+		return configdataByList;
+	}
+
+	public void setConfigdataByList(List<Option> configdataByList) {
+		this.configdataByList = configdataByList;
+	}
+
+    public static class Option{
+    	private String key;
+    	private String value;
+    	
+    	public Option(){
+    		
+    	}
+    	
+    	public Option(String key,String value){
+    		this.key = key;
+    		this.value = value;
+    	}
+    	
+		public String getKey() {
+			return key;
+		}
+		public void setKey(String key) {
+			this.key = key;
+		}
+		public String getValue() {
+			return value;
+		}
+		public void setValue(String value) {
+			this.value = value;
+		}
+		
+		public String toString(){
+			return "key:"+key+",value:"+value;
+		}
     }
 
-    public void setUpdatetime(String updatetime) {
-        this.updatetime = updatetime;
-    }
-
-    public String getCreatetime() {
-        return createtime;
-    }
-
-    public void setCreatetime(String createtime) {
-        this.createtime = createtime;
-    }
-
-    public String getCreateuser() {
-        return createuser;
-    }
-
-    public void setCreateuser(String createuser) {
-        this.createuser = createuser;
-    }
-
-    public Map getConfigdataMap() {
-        return configdataMap;
-    }
-
-    public void setConfigdataMap(Map configdataMap) {
-        this.configdataMap = configdataMap;
-    }
+//	
+//	public static void main(String[] args) {		
+//		Option o1 = new ManagePojo.Option("1","启用");
+//		Option o2 = new ManagePojo.Option("0","停用");
+//		List<Option> oList = new ArrayList<Option>();
+//		oList.add(o1);
+//		oList.add(o2);
+//		String str = JsonUtil.toJsonString(oList);
+//		System.out.println(str);
+//		List<ManagePojo.Option> o2List = JsonUtil.parseObject(str, new TypeReference<List<ManagePojo.Option>>() {	});
+//		
+//		for(int i=0;i<o2List.size();i++){
+//			Option o = o2List.get(i);			
+//			System.out.println(o);
+//		}		
+//	}
 }
