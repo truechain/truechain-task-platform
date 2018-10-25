@@ -1,5 +1,20 @@
 package com.truechain.task.admin.service.impl;
 
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.google.common.base.Preconditions;
 import com.querydsl.core.BooleanBuilder;
 import com.truechain.task.admin.config.AppProperties;
@@ -11,23 +26,11 @@ import com.truechain.task.admin.repository.BsUserAccountRepository;
 import com.truechain.task.admin.repository.SysUserRepository;
 import com.truechain.task.admin.service.UserService;
 import com.truechain.task.core.BusinessException;
-import com.truechain.task.model.entity.*;
+import com.truechain.task.model.entity.BsUserAccount;
+import com.truechain.task.model.entity.BsUserAccountDetail;
+import com.truechain.task.model.entity.QSysUser;
+import com.truechain.task.model.entity.SysUser;
 import com.truechain.task.model.enums.AuditStatusEnum;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.redis.connection.SortParameters;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.util.Date;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -137,17 +140,50 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
+    public SysUser getUserByMobile(String mobile) {
+        SysUser sysUser = userRepository.findByMobile(mobile);
+        return sysUser;
+    }
+    
+    @Override
     public SysUser addUser(SysUser user) {
     	long count = userRepository.countByMobile(user.getMobile());
         if (count > 0) {
             throw new BusinessException("手机号已经注册");
         }
-        user = userRepository.save(user);
+        user = userRepository.save(user);       
+        BsUserAccount userAccount = new BsUserAccount();
+        userAccount.setUser(user);
+        userAccount.setGitReward(BigDecimal.ZERO);
+        userAccount.setTrueReward(BigDecimal.ZERO);
+        userAccount.setTtrReward(BigDecimal.ZERO);
+        userAccountRepository.save(userAccount);
         return user;
     }
 
     @Override
     public SysUser updateUser(SysUser user) {
+        SysUser sysUser = userRepository.findOne(user.getId());
+        Preconditions.checkArgument(null != sysUser, "该用户不存在");
+        sysUser.setPersonName(user.getPersonName());
+        sysUser.setWxNickName(user.getWxNickName());
+        sysUser.setWxNum(user.getWxNum());
+        if (StringUtils.isEmpty(user.getResumeFilePath()) == false) {
+        	sysUser.setResumeFilePath(user.getResumeFilePath());    
+        }        
+        if (StringUtils.isEmpty(user.getRecommendShareCode()) == false) {	       
+	        sysUser.setRecommendUserId(user.getRecommendUserId());
+	        sysUser.setRecommendUserMobile(user.getRecommendUserMobile());
+	        sysUser.setRecommendShareCode(user.getRecommendShareCode());
+        }
+        sysUser.setRecommendResource(user.getRecommendResource());
+        sysUser.setUpdatetime(user.getUpdateTime());
+        userRepository.save(sysUser);
+        return sysUser;
+    }
+    
+    @Override
+    public SysUser updateUserLevel(SysUser user) {
         SysUser sysUser = userRepository.findOne(user.getId());
         Preconditions.checkArgument(null != sysUser, "该用户不存在");
         sysUser.setLevel(user.getLevel());
@@ -179,13 +215,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void auditUser(Long userId, String level, String rewardNum) {
+    public void auditUser(Long userId, String level, String rewardNum,String recommendResource) {
         SysUser sysUser = userRepository.findOne(userId);
         Preconditions.checkArgument(null != sysUser, "该用户不存在");
         Preconditions.checkArgument(AuditStatusEnum.UNAUDITED.getCode() == sysUser.getAuditStatus(), "用户已通过审核");
         sysUser.setAuditStatus(AuditStatusEnum.AUDITED.getCode());
-        sysUser.setAuditPassTime(new Date().toString());
+        SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String now=date.format(new Date());
+        sysUser.setAuditPassTime(now);
         sysUser.setLevel(level);
+        sysUser.setRecommendResource(recommendResource);
         userRepository.save(sysUser);
 //        BsRecommendTask recommendTask = recommendTaskRepository.getByUser(sysUser);
 //        Preconditions.checkArgument(null != recommendTask, "用户推荐信息未完善");

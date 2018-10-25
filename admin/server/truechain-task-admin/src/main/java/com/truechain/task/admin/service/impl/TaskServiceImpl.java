@@ -126,7 +126,7 @@ public class TaskServiceImpl implements TaskService {
             SysUser user = x.getUser();
             taskEntryFromDTO.setPersonName(user.getPersonName());
             taskEntryFromDTO.setWxNickName(user.getWxNickName());
-            taskEntryFromDTO.setAuditStatus(x.getAuditStatus());
+            taskEntryFromDTO.setAuditStatus(x.getTaskStatus());
 //            if (taskEntryFromDTO.getAuditStatus() == 0 && taskEntryFrom.getTotalAuditStatus() != 0) {                       //TODO 当最后一个任务被审核通过的时候BSTask.auditTask应该被设置为审核通过,此处逻辑可不保留
 //                taskEntryFrom.setTotalAuditStatus(0);
 //            }
@@ -244,7 +244,7 @@ public class TaskServiceImpl implements TaskService {
         BsTaskDetail bsTaskDetail = taskUser.getTaskDetail();
         BsTask bsTask = bsTaskDetail.getTask();
         QBsTaskUser qBsTaskUser = QBsTaskUser.bsTaskUser;
-        long count = taskUserRepository.count(qBsTaskUser.taskDetail.eq(bsTaskDetail).and(qBsTaskUser.auditStatus.eq(1)));
+        long count = taskUserRepository.count(qBsTaskUser.taskDetail.eq(bsTaskDetail).and(qBsTaskUser.taskStatus.eq(2)));
         if (count == bsTask.getPeopleNum()) {                                                           //TODO 当最后一个任务被审核通过的时候BSTask.auditTask应该被设置为审核通过,此处逻辑应该保留
             bsTask.setAuditStatus(1);
             taskRepository.save(bsTask);
@@ -266,10 +266,10 @@ public class TaskServiceImpl implements TaskService {
 //        if (taskUser.getAuditStatus() == 0) {
 //            throw new BusinessException("数据尚未审核");
 //        }
-        if (taskUser.getAuditStatus() == 2) {
+        if (taskUser.getTaskStatus() == 4) {
             throw new BusinessException("奖励已经发放，不可重复发放");
         }
-        taskUser.setAuditStatus(2);
+        taskUser.setTaskStatus(4);
         taskUser = taskUserRepository.save(taskUser);
         //发放奖励
         SysUser user = taskUser.getUser();

@@ -3,6 +3,7 @@ package com.truechain.task.admin.service;
 import com.truechain.task.admin.model.dto.UserDTO;
 import com.truechain.task.admin.model.dto.UserDetailDTO;
 import com.truechain.task.model.entity.SysUser;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -40,6 +41,14 @@ public interface UserService {
     SysUser getUser(Long userId);
     
     /**
+     * 根据手机号获取用户
+     *
+     * @param mobile
+     * @return
+     */
+    SysUser getUserByMobile(String mobile);
+    
+    /**
      * 创建用户
      *
      * @param user
@@ -52,9 +61,16 @@ public interface UserService {
      * @param user
      */
     SysUser updateUser(SysUser user);
+    
+    /**
+     * 修改用户的等级
+     *
+     * @param user
+     */
+    SysUser updateUserLevel(SysUser user);
 
     /**
-     * 修改用户
+     * 修改用户的黑名状态
      *
      * @param user
      */
@@ -66,8 +82,9 @@ public interface UserService {
      * @param userId
      * @param level
      * @param rewardNum
+     * @param recommendResource
      */
-    void auditUser(Long userId, String level, String rewardNum);
+    void auditUser(Long userId, String level, String rewardNum,String recommendResource);
 
     /**
      * 获取兼职总人数

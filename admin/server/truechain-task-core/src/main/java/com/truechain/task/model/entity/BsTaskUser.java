@@ -18,17 +18,9 @@ public class BsTaskUser extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 状态(0-任务中,1-已经完成)
+     * 状态(0-未提交,1-待审核,-1 = 取消,2 审核通过   3 未通过审核   4 已发放)
      */
     private int taskStatus;
-    /**
-     * 审核状态
-     */
-    private int auditStatus;
-    /**
-     * 审核结果(0-未审核,1-已审核,2-已发放)
-     */
-    private String auditResult;
     /**
      * 提交地址
      */
@@ -42,6 +34,16 @@ public class BsTaskUser extends BaseEntity {
      */
     /*@JsonProperty("reward")*/
     private BigDecimal rewardNum;
+    
+    /**
+     * 推荐人奖励
+     */
+    private BigDecimal referralNum;
+    
+    /**
+     * 名次 1 2 3 4 优秀 5通过
+     */
+    private Integer finishLevel;
 
     /**
      * 任务
@@ -58,21 +60,7 @@ public class BsTaskUser extends BaseEntity {
     @JoinColumn(name = "userId")
     private SysUser user;
 
-    public int getAuditStatus() {
-        return auditStatus;
-    }
 
-    public void setAuditStatus(int auditStatus) {
-        this.auditStatus = auditStatus;
-    }
-
-    public String getAuditResult() {
-        return auditResult;
-    }
-
-    public void setAuditResult(String auditResult) {
-        this.auditResult = auditResult;
-    }
 
     public BigDecimal getRewardNum() {
         return rewardNum;
@@ -121,4 +109,24 @@ public class BsTaskUser extends BaseEntity {
     public void setRemark(String remark) {
         this.remark = remark;
     }
+
+	public BigDecimal getReferralNum() {
+		return referralNum;
+	}
+
+	public void setReferralNum(BigDecimal referralNum) {
+		this.referralNum = referralNum;
+	}
+
+	public Integer getFinishLevel() {
+		return finishLevel;
+	}
+
+	public void setFinishLevel(Integer finishLevel) {
+		this.finishLevel = finishLevel;
+	}
+
+
+
+	
 }

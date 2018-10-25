@@ -1,5 +1,21 @@
 package com.truechain.task.api.service.impl;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.google.common.base.Preconditions;
 import com.querydsl.core.BooleanBuilder;
 import com.truechain.task.api.model.dto.TaskDTO;
@@ -13,26 +29,15 @@ import com.truechain.task.api.repository.SysUserRepository;
 import com.truechain.task.api.service.TaskService;
 import com.truechain.task.core.BusinessException;
 import com.truechain.task.core.NullException;
-import com.truechain.task.model.entity.*;
+import com.truechain.task.model.entity.BsTask;
+import com.truechain.task.model.entity.BsTaskDetail;
+import com.truechain.task.model.entity.BsTaskUser;
+import com.truechain.task.model.entity.QBsTask;
+import com.truechain.task.model.entity.QBsTaskDetail;
+import com.truechain.task.model.entity.QBsTaskUser;
+import com.truechain.task.model.entity.SysUser;
 import com.truechain.task.model.enums.AuditStatusEnum;
 import com.truechain.task.model.enums.TaskStatusEnum;
-import com.truechain.task.util.JsonUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import sun.nio.cs.UnicodeEncoder;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Set;
 
 @Service
 public class TaskServiceImpl extends BasicService implements TaskService {
@@ -62,17 +67,12 @@ public class TaskServiceImpl extends BasicService implements TaskService {
         }
         if (null != task.getLevel()) {
             builder.and(qTask.level.eq(task.getLevel()));
-        }
-        Pageable pageable = null;
-        if (null != task.getRewardType()) {
-            if (task.getRewardType() == 1) {
-                pageable = new PageRequest(pageIndex - 1, pageSize, Sort.Direction.ASC, "rewardNum", "updateTime");
-            } else {
-                pageable = new PageRequest(pageIndex - 1, pageSize, Sort.Direction.DESC, "rewardNum", "updateTime");
-            }
-        } else {
-            pageable = new PageRequest(pageIndex - 1, pageSize, Sort.Direction.DESC, "updateTime");
-        }
+        }       
+        	
+        Order order1 = new Order(Sort.Direction.ASC,"isEnteredFull");
+        Order order2 = new Order(Sort.Direction.DESC,"updateTime");
+        Pageable pageable = new PageRequest(pageIndex - 1, pageSize,new Sort(order1,order2));
+
         Page<BsTask> taskPage = taskRepository.findAll(builder, pageable);
         return taskPage;
     }
@@ -229,7 +229,7 @@ public class TaskServiceImpl extends BasicService implements TaskService {
         }
 
         QBsTaskUser qtaskUser = QBsTaskUser.bsTaskUser;
-        long count = taskUserRepository.count(qtaskUser.user.eq(user).and(qtaskUser.taskDetail.eq(taskDetail)));
+        long count = taskUserRepository.count(qtaskUser.user.eq(user).and(qtaskUser.taskDetail.task.eq(taskDetail.getTask())));
         if (count > 0) {
             throw new BusinessException("你已抢过该任务，不可重复抢取");
         }

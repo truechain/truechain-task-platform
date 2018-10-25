@@ -41,7 +41,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         if (uri.contains("/unauth/") || uri.contains("/actuator")
                 || uri.contains("swagger") || uri.contains("webjars") || uri.contains("/v2") || uri.contains(".css")
                 || uri.contains(".ttf") || uri.contains(".js") || uri.contains(".png") || uri.contains(".gif")
-                || uri.contains(".ico") || uri.contains(".jpg")) {
+                || uri.contains(".ico") || uri.contains(".jpg") || uri.contains("/getUserInfo")) {
             return true;
         }
 
