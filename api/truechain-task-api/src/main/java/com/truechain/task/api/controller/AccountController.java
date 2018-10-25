@@ -85,6 +85,8 @@ public class AccountController extends BasicController {
 		SysUser user = new SysUser();
 		user.setMobile(mobile);
 		user.setAuditStatus(AuditStatusEnum.UNCOMPLATE.getCode());
+		//TODO 等级枚举
+		user.setLevel("D");
 		if (StringUtils.isNoneBlank(referralCode)) {
 			SysUser referralUser = userService.getUserByMobile(String.valueOf(ShareCodeUtil.codeToNum(referralCode)));
 			user.setRecommendUserId(referralUser.getId());
