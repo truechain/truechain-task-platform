@@ -14,8 +14,8 @@ public class ConfigManage extends BaseEntity{
     private String name;
     private String configType;
     private String configData;
-    private Date updateTime;
-    private Date createTime;
+    private String updateTime;
+    private String createTime;
     private String createUser;
 
     public String getName() {
@@ -51,5 +51,21 @@ public class ConfigManage extends BaseEntity{
     public void setCreateUser(String createUser) {
         this.createUser = createUser;
     }
+
+	public String getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(String updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	public String getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
 	
 }

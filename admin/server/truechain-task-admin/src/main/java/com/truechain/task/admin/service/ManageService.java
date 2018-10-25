@@ -1,9 +1,16 @@
 package com.truechain.task.admin.service;
-import com.truechain.task.model.entity.ConfigManage;
-
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import com.truechain.task.admin.model.dto.ManageDTO;
+import com.truechain.task.admin.model.viewPojo.ManagePojo;
 
 public interface ManageService {
-    Page<ConfigManage> getConfigManage( Pageable pageable);
+    Page<ManagePojo> getTaskPage(ManageDTO manageDTO, Pageable pageable);
+    
+    ManagePojo getManageInfo(Long manageId);
+    
+    ManagePojo addManage(ManagePojo managePojo);
+    
+    ManagePojo updateManage(ManagePojo managePojo);
 }

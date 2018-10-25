@@ -1,10 +1,6 @@
 package com.truechain.task.admin.model.viewPojo;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.truechain.task.util.JsonUtil;
 
 public class ManagePojo {
 		
