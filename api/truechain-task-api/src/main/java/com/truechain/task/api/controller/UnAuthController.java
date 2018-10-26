@@ -25,59 +25,58 @@ import java.util.Map;
 @RequestMapping("/unauth")
 public class UnAuthController extends BasicController {
 
-	
 	@Autowired
 	private UserService userService;
-	
-    @Autowired
-    private TaskService taskService;
 
-    @Autowired
-    private WeiXinService weiXinService;
+	@Autowired
+	private TaskService taskService;
 
-    /**
-     * 获取任务分页数据
-     */
-    @PostMapping("/task/getTaskPage")
-    public Wrapper getTaskPage(@RequestParam(required = false) String taskName, @RequestParam(required = false) Integer category, @RequestParam(required = false) String level,
-                               @RequestParam(required = false) Integer reward, @RequestParam int pageIndex, @RequestParam int pageSize) {
-        BsTask task = new BsTask();
-        task.setName(taskName);
-        task.setCategory(category);
-        task.setLevel(level);
-        task.setRewardType(reward);
-        Page<BsTask> taskPage = taskService.getTaskPage(task, pageIndex, pageSize);
-        return WrapMapper.ok(taskPage);
-    }
+	@Autowired
+	private WeiXinService weiXinService;
 
+	/**
+	 * 获取任务分页数据
+	 */
+	@PostMapping("/task/getTaskPage")
+	public Wrapper getTaskPage(@RequestParam(required = false) String taskName,
+			@RequestParam(required = false) Integer category, @RequestParam(required = false) String level,
+			@RequestParam(required = false) Integer reward, @RequestParam int pageIndex, @RequestParam int pageSize) {
+		BsTask task = new BsTask();
+		task.setName(taskName);
+		task.setCategory(category);
+		task.setLevel(level);
+		task.setRewardType(reward);
+		Page<BsTask> taskPage = taskService.getTaskPage(task, pageIndex, pageSize);
+		return WrapMapper.ok(taskPage);
+	}
 
-    /**
-     * 获取任务详情
-     */
-    @PostMapping("/task/getTaskInfo")
-    public Wrapper getTaskInfo(@RequestParam Long taskId) {
-        SessionPOJO sessionPOJO = getSessionPoJO();
-        Long userId = null;
-        if (null != sessionPOJO) {
-            userId = sessionPOJO.getUserId();
-        }
-        TaskDTO taskDTO = taskService.getTaskInfo(taskId, userId);
-        return WrapMapper.ok(taskDTO);
-    }
+	/**
+	 * 获取任务详情
+	 */
+	@PostMapping("/task/getTaskInfo")
+	public Wrapper getTaskInfo(@RequestParam Long taskId) {
+		SessionPOJO sessionPOJO = getSessionPoJO();
+		Long userId = null;
+		if (null != sessionPOJO) {
+			userId = sessionPOJO.getUserId();
+		}
+		TaskDTO taskDTO = taskService.getTaskInfo(taskId, userId);
+		return WrapMapper.ok(taskDTO);
+	}
 
-    /**
-     * 获取微信签名加密
-     */
-    @PostMapping(value = "/weixin/getWxSign")
-    public Wrapper getSign(String url) {
-        Map resultMap = weiXinService.getSign(url);
-        if (CollectionUtils.isEmpty(resultMap) || StringUtils.isEmpty(resultMap.get("signature"))) {
-            return WrapMapper.error("微信签名失败");
-        }
-        return WrapMapper.ok(resultMap);
-    }
-    
-    /**
+	/**
+	 * 获取微信签名加密
+	 */
+	@PostMapping(value = "/weixin/getWxSign")
+	public Wrapper getSign(String url) {
+		Map resultMap = weiXinService.getSign(url);
+		if (CollectionUtils.isEmpty(resultMap) || StringUtils.isEmpty(resultMap.get("signature"))) {
+			return WrapMapper.error("微信签名失败");
+		}
+		return WrapMapper.ok(resultMap);
+	}
+
+	/**
 	 * 获取推荐人
 	 */
 	@GetMapping("/getReferrer")
@@ -88,6 +87,15 @@ public class UnAuthController extends BasicController {
 
 		}
 		return WrapMapper.error("推荐人不存在");
+	}
+
+	/**
+	 * 获取微信的access_token
+	 */
+	@GetMapping("/getWxUserInfo")
+	public Wrapper getWxUserInfo(String code,String state) {
+		userService.getWxUserInfo(code, Long.valueOf(state));
+		return WrapMapper.ok();
 	}
 
 }

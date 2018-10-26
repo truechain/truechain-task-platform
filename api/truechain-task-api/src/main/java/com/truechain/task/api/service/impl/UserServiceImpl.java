@@ -2,24 +2,30 @@ package com.truechain.task.api.service.impl;
 
 import com.google.common.base.Preconditions;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.truechain.task.api.model.dto.AccessTokenDTO;
 import com.truechain.task.api.model.dto.RecommendTaskDTO;
 import com.truechain.task.api.model.dto.ReferrerDTO;
 import com.truechain.task.api.model.dto.UserAccountDTO;
 import com.truechain.task.api.model.dto.UserInfoDTO;
+import com.truechain.task.api.model.dto.WxUserinfoDTO;
 import com.truechain.task.api.repository.BsRecommendTaskRepository;
 import com.truechain.task.api.repository.BsUserAccountDetailRepository;
 import com.truechain.task.api.repository.BsUserAccountRepository;
 import com.truechain.task.api.repository.SysUserRepository;
 import com.truechain.task.api.service.UserService;
+import com.truechain.task.api.service.weixin.WeiXinService;
 import com.truechain.task.core.BusinessException;
 import com.truechain.task.core.NullException;
 import com.truechain.task.model.entity.*;
 import com.truechain.task.model.enums.AuditStatusEnum;
 import com.truechain.task.util.ShareCodeUtil;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -219,5 +225,31 @@ public class UserServiceImpl implements UserService {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	@Autowired
+	WeiXinService weiXinService;
+	
+	@Override
+	public void getWxUserInfo(String code,Long userId){
+		SysUser sysUser= userRepository.getOne(userId);
+		Preconditions.checkArgument(sysUser!=null, "用户不存在");
+		Preconditions.checkArgument(StringUtils.isEmpty(sysUser.getOpenId()), "用户已经绑定过");
+		String url = WeiXinService.oauth2OokenUrl.replace("CODE", code);
+		AccessTokenDTO accessTokenDTO = weiXinService.getAccessTokenVo(url);
+		Preconditions.checkArgument(StringUtils.isBlank(accessTokenDTO.getErrcode()), "用户绑定异常");
+		url = WeiXinService.userinfoUrl.replace("ACCESS_TOKEN", accessTokenDTO.getAccess_token()).replace("OPENID", accessTokenDTO.getOpenid());
+		WxUserinfoDTO wxUserinfoDTO = null;
+		try {
+			wxUserinfoDTO = weiXinService.getUserinfo(url);
+		} catch (RestClientException | UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Preconditions.checkArgument(StringUtils.isBlank(wxUserinfoDTO.getErrcode()), "用户绑定异常");
+		sysUser.setOpenId(wxUserinfoDTO.getOpenid());
+		sysUser.setWxNickName(wxUserinfoDTO.getNickname());
+		sysUser.setWxImageUrl(wxUserinfoDTO.getHeadimgurl());
+		userRepository.save(sysUser);
+		
 	}
 }

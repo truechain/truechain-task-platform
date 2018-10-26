@@ -137,6 +137,7 @@ public class AccountController extends BasicController {
 		loginDTO.setUserUid(user.getId());
 		loginDTO.setAgent(sessionPOJO.getSalt());
 		loginDTO.setToken(sessionPOJO.getToken());
+		loginDTO.setWxBinded(StringUtils.isNotEmpty(user.getOpenId()));
 		redisTemplate.delete(verifyRedisKey);
 		return WrapMapper.ok(loginDTO);
 	}

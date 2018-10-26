@@ -19,6 +19,8 @@ public class AccessTokenDTO implements Serializable {
 
     //错误描述
     private String errmsg;
+    
+    private String openid;
 
     public String getErrcode() {
         return errcode;
@@ -51,4 +53,12 @@ public class AccessTokenDTO implements Serializable {
     public void setExpires_in(String expires_in) {
         this.expires_in = expires_in;
     }
+
+	public String getOpenid() {
+		return openid;
+	}
+
+	public void setOpenid(String openid) {
+		this.openid = openid;
+	}
 }

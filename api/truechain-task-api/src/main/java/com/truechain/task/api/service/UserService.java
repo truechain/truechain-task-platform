@@ -83,4 +83,10 @@ public interface UserService {
      * @return
      */
     ReferrerDTO getReferrerByCode(String referralCode);
+    
+     /** 获取微信信息
+     * @param code
+     * @param userId
+     */
+    void getWxUserInfo(String code,Long userId);
 }

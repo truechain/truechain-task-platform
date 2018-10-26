@@ -14,6 +14,8 @@ public class LoginDTO implements Serializable {
     private String token;
 
     private String agent;
+    
+    private Boolean wxBinded;
 
     public Long getUserUid() {
         return userUid;
@@ -38,4 +40,12 @@ public class LoginDTO implements Serializable {
     public void setAgent(String agent) {
         this.agent = agent;
     }
+
+	public Boolean getWxBinded() {
+		return wxBinded;
+	}
+
+	public void setWxBinded(Boolean wxBinded) {
+		this.wxBinded = wxBinded;
+	}
 }

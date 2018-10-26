@@ -35,6 +35,8 @@ public class SysUser extends BaseEntity {
      * 微信号码
      */
     private String wxNum;
+    
+    private String wxImageUrl;
     /**
      * openId
      */
@@ -236,5 +238,13 @@ public class SysUser extends BaseEntity {
 
 	public void setRecommendResource(String recommendResource) {
 		this.recommendResource = recommendResource;
+	}
+
+	public String getWxImageUrl() {
+		return wxImageUrl;
+	}
+
+	public void setWxImageUrl(String wxImageUrl) {
+		this.wxImageUrl = wxImageUrl;
 	}
 }
