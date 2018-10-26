@@ -1,15 +1,15 @@
 package com.truechain.task.admin.model.viewPojo;
 
-import java.util.List;
 
 public class ManagePojo {
 		
     private Long id;
     private String name;
     private String type;
-    private List<Option> configdataByList;
+    private Object configdata;
 //    private Map configdataMap;
-    //    private String configdata;    
+    //    private String configdata;
+    private Integer typeId;
 
     public Long getId() {
         return id;
@@ -35,13 +35,21 @@ public class ManagePojo {
         this.type = type;
     }
 
-	public List<Option> getConfigdataByList() {
-		return configdataByList;
-	}
+    public Object getConfigdata() {
+        return  configdata;
+    }
 
-	public void setConfigdataByList(List<Option> configdataByList) {
-		this.configdataByList = configdataByList;
-	}
+    public void setConfigdata(Object configdata) {
+        this.configdata = configdata;
+    }
+
+    public Integer getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(Integer typeId) {
+        this.typeId = typeId;
+    }
 
     public static class Option{
     	private String key;
@@ -72,6 +80,8 @@ public class ManagePojo {
 		public String toString(){
 			return "key:"+key+",value:"+value;
 		}
+
+
     }
 
 //	

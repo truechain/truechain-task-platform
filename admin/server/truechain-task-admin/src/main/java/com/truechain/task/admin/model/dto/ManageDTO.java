@@ -11,6 +11,7 @@ public class ManageDTO implements Serializable {
     private String updatetime;
     private String createtime;
     private String createuser;
+    private Integer typeId;
     /**
      * 页数
      */
@@ -90,5 +91,13 @@ public class ManageDTO implements Serializable {
 
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public Integer getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(Integer typeId) {
+        this.typeId = typeId;
     }
 }
