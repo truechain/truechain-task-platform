@@ -119,11 +119,7 @@
             <artifactId>springfox-swagger-ui</artifactId>
             <version>2.6.1</version>
         </dependency>
-        <dependency>
-            <groupId>com.truechain</groupId>
-            <artifactId>truechain-task-core</artifactId>
-            <version>0.0.1</version>
-        </dependency>
+       
         <!-- swagger dependency end-->
 
     </dependencies>
@@ -134,6 +130,7 @@
             <plugin>
                 <groupId>com.querydsl</groupId>
                 <artifactId>querydsl-maven-plugin</artifactId>
+                <version>4.2.1</version>
                 <executions>
                     <execution>
                         <phase>generate-sources</phase>

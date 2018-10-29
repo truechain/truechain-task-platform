@@ -63,8 +63,8 @@ spring:
     password: true0614
   redis:
     host: 127.0.0.1
-    port: 6379
-    password: true0614
+    port: 3690
+    password: 8289-udss
 app:
   upload:
     file-path: /home/work/data/test/upload/resume/
@@ -75,7 +75,7 @@ springfox:
   documentation:
     swagger:
       v2:
-        host: www.phptrain.cn/testapi
+        host: test.phptrain.cn
 logging:
   config: classpath:log/logback-test.xml
 

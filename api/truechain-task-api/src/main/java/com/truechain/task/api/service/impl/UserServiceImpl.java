@@ -246,6 +246,8 @@ public class UserServiceImpl implements UserService {
 			e.printStackTrace();
 		}
 		Preconditions.checkArgument(StringUtils.isBlank(wxUserinfoDTO.getErrcode()), "用户绑定异常");
+		Preconditions.checkArgument(userRepository.countByOpenId(wxUserinfoDTO.getOpenid()) == 0 , "微信已被绑定");
+		
 		sysUser.setOpenId(wxUserinfoDTO.getOpenid());
 		sysUser.setWxNickName(wxUserinfoDTO.getNickname());
 		sysUser.setWxImageUrl(wxUserinfoDTO.getHeadimgurl());

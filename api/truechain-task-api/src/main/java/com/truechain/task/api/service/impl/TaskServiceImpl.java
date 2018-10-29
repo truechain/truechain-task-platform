@@ -2,11 +2,15 @@ package com.truechain.task.api.service.impl;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -67,8 +71,11 @@ public class TaskServiceImpl extends BasicService implements TaskService {
         }
         if (null != task.getLevel()) {
             builder.and(qTask.level.eq(task.getLevel()));
-        }       
-        	
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date now = new Date();
+        Date today = DateUtils.truncate(now, Calendar.DATE);
+        builder.and(qTask.startDateTime.lt(sdf.format(today))).and(qTask.endDateTime.gt(sdf.format(today)));	
         Order order1 = new Order(Sort.Direction.ASC,"isEnteredFull");
         Order order2 = new Order(Sort.Direction.DESC,"updateTime");
         Pageable pageable = new PageRequest(pageIndex - 1, pageSize,new Sort(order1,order2));

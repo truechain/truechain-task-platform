@@ -23,4 +23,6 @@ public interface SysUserRepository extends JpaRepository<SysUser, Long>, QueryDs
     long countByRecommendUserIdAndAuditStatus(@Param("recommendUserId") long recommendUserId);
 
     long countByMobile(String mobile);
+    
+    long countByOpenId(String openId);
 }
