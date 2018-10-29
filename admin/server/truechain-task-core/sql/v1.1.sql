@@ -9,16 +9,13 @@ ALTER TABLE `bs_task`
 	ADD COLUMN `is_entered_full` SMALLINT(6) NOT NULL DEFAULT '0' COMMENT '是否报名已满(0-未满，1-已满)',
 	ADD COLUMN `is_completed_full` SMALLINT(6) NOT NULL DEFAULT '0' COMMENT '是否完成已满(0-未满，1-已满)';
 
---	ALTER TABLE `sys_user`
---	DROP COLUMN `recommend_share_code`,
---	DROP COLUMN `recommend_share_code2`;
-
+-- shiming
 alter table bs_task_user drop column audit_status,drop column audit_result;
-
 ALTER TABLE bs_task_user  ADD `referral_num` decimal(18,0);    
 ALTER TABLE  bs_task_user  ADD  `finish_level` int(255) ; 
-
 ALTER TABLE  sys_user  ADD  `wx_image_url` varchar(255);
+
+-- chenqian
 CREATE TABLE `config_manage` (
 	`id` INT(20) NOT NULL AUTO_INCREMENT,
 	`manage_name` VARCHAR(255) NULL DEFAULT NULL COMMENT '管理名称' COLLATE 'utf8_bin',
