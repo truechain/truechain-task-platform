@@ -12,3 +12,10 @@ ALTER TABLE `bs_task`
 --	ALTER TABLE `sys_user`
 --	DROP COLUMN `recommend_share_code`,
 --	DROP COLUMN `recommend_share_code2`;
+
+alter table bs_task_user drop column audit_status,drop column audit_result;
+
+ALTER TABLE bs_task_user  ADD `referral_num` decimal(18,0);    
+ALTER TABLE  bs_task_user  ADD  `finish_level` int(255) ; 
+
+ALTER TABLE  sys_user  ADD  `wx_image_url` varchar(255);
