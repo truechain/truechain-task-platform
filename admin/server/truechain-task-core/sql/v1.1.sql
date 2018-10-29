@@ -19,3 +19,23 @@ ALTER TABLE bs_task_user  ADD `referral_num` decimal(18,0);
 ALTER TABLE  bs_task_user  ADD  `finish_level` int(255) ; 
 
 ALTER TABLE  sys_user  ADD  `wx_image_url` varchar(255);
+CREATE TABLE `config_manage` (
+	`id` INT(20) NOT NULL AUTO_INCREMENT,
+	`manage_name` VARCHAR(255) NULL DEFAULT NULL COMMENT '管理名称' COLLATE 'utf8_bin',
+	`create_id` VARCHAR(255) NULL DEFAULT NULL COMMENT '创建人id' COLLATE 'utf8_bin',
+	`type_name` VARCHAR(255) NULL DEFAULT NULL COMMENT '管理类型' COLLATE 'utf8_bin',
+	`config_data` VARCHAR(255) NULL DEFAULT NULL COMMENT '数据值' COLLATE 'utf8_bin',
+	`config_type` INT(11) NULL DEFAULT NULL COMMENT '数据id,0-数字，1-字符串，2-枚举',
+	`create_time` DATETIME NULL DEFAULT NULL COMMENT '创建时间',
+	`create_user` VARCHAR(255) NULL DEFAULT NULL COMMENT '创建人' COLLATE 'utf8_bin',
+	`update_id` VARCHAR(255) NULL DEFAULT NULL COMMENT '更新人ID' COLLATE 'utf8_bin',
+	`update_time` DATETIME NULL DEFAULT NULL COMMENT '更新时间',
+	`update_user` VARCHAR(255) NULL DEFAULT NULL COMMENT '更新人员' COLLATE 'utf8_bin',
+	PRIMARY KEY (`id`)
+)
+COMMENT='配置管理'
+COLLATE='utf8_bin'
+ENGINE=InnoDB
+AUTO_INCREMENT=4
+;
+
