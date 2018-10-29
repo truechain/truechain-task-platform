@@ -5,13 +5,13 @@ import java.io.Serializable;
 public class ManageDTO implements Serializable {
     private static final long serialVersionUID = 1L;
     private Long id;
-    private String name;
-    private String configtype;
+    private String manageName;
+    private String typeName;
     private String configdata;
     private String updatetime;
     private String createtime;
     private String createuser;
-    private Integer typeId;
+    private Integer configType;
     /**
      * 页数
      */
@@ -29,20 +29,20 @@ public class ManageDTO implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getManageName() {
+        return manageName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setManageName(String manageName) {
+        this.manageName = manageName;
     }
 
-    public String getConfigtype() {
-        return configtype;
+    public String getTypeName() {
+        return typeName;
     }
 
-    public void setConfigtype(String configtype) {
-        this.configtype = configtype;
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 
     public String getConfigdata() {
@@ -77,6 +77,14 @@ public class ManageDTO implements Serializable {
         this.createuser = createuser;
     }
 
+    public Integer getConfigType() {
+        return configType;
+    }
+
+    public void setConfigType(Integer configType) {
+        this.configType = configType;
+    }
+
     public int getPageIndex() {
         return pageIndex;
     }
@@ -91,13 +99,5 @@ public class ManageDTO implements Serializable {
 
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
-    }
-
-    public Integer getTypeId() {
-        return typeId;
-    }
-
-    public void setTypeId(Integer typeId) {
-        this.typeId = typeId;
     }
 }

@@ -11,28 +11,28 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name="ConfigManage")
 @DynamicUpdate
 public class ConfigManage extends BaseEntity{
-    private String name;
-    private String configType;
+    private String manageName;
+    private String typeName;
     private String configData;
     private String updateTime;
     private String createTime;
     private String createUser;
-    private Integer typeId;
+    private Integer configType;
 
-    public String getName() {
-        return name;
+    public String getManageName() {
+        return manageName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setManageName(String manageName) {
+        this.manageName = manageName;
     }
 
-    public String getConfigType() {
-        return configType;
+    public String getTypeName() {
+        return typeName;
     }
 
-    public void setConfigType(String configType) {
-        this.configType = configType;
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 
     public String getConfigData() {
@@ -41,7 +41,15 @@ public class ConfigManage extends BaseEntity{
 
     public void setConfigData(String configData) {
         this.configData = configData;
-    }  
+    }
+
+    public Integer getConfigType() {
+        return configType;
+    }
+
+    public void setConfigType(Integer configType) {
+        this.configType = configType;
+    }
 
     @Override
     public String getCreateUser() {
@@ -69,11 +77,7 @@ public class ConfigManage extends BaseEntity{
 		this.createTime = createTime;
 	}
 
-    public Integer getTypeId() {
-        return typeId;
-    }
 
-    public void setTypeId(Integer typeId) {
-        this.typeId = typeId;
-    }
+
+
 }

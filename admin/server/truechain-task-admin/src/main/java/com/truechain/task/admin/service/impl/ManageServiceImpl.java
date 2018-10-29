@@ -28,21 +28,21 @@ public class ManageServiceImpl implements ManageService {
 		public ManagePojo convert(ConfigManage source) {
 			ManagePojo managePojo = new ManagePojo();
 			managePojo.setId(source.getId());
-			managePojo.setName(source.getName());
-			if(source.getTypeId()==0){
+			managePojo.setManageName(source.getManageName());
+			if(source.getConfigType()==0){
 				Long num=Long.parseLong(source.getConfigData());
 				managePojo.setConfigdata(num);
 			}
-			if(source.getTypeId()==1){
+			if(source.getConfigType()==1){
 				managePojo.setConfigdata(source.getConfigData());
 			}
-			if(source.getTypeId()==2) {
+			if(source.getConfigType()==2) {
 				List<ManagePojo.Option> oList = JsonUtil.parseObject(source.getConfigData(), new TypeReference<List<ManagePojo.Option>>() {
 				});
 				managePojo.setConfigdata(oList);
 			}
-			managePojo.setTypeId(source.getTypeId());
-			managePojo.setType(source.getConfigType());
+			managePojo.setConfigType(source.getConfigType());
+			managePojo.setType(source.getTypeName());
 
 			return managePojo;
 		}
@@ -54,11 +54,11 @@ public class ManageServiceImpl implements ManageService {
 	public Page<ManagePojo> getTaskPage(ManageDTO manageDTO, Pageable pageable) {
 		BooleanBuilder builder = new BooleanBuilder();
 		QConfigManage qConfigManage = QConfigManage.configManage;
-		if (null != manageDTO.getTypeId()) {
-			builder.and(qConfigManage.typeId.eq(manageDTO.getTypeId()));
+		if (null != manageDTO.getConfigType()) {
+			builder.and(qConfigManage.configType.eq(manageDTO.getConfigType()));
 		}
-		if(StringUtils.isNotBlank(manageDTO.getConfigtype())){
-			builder.and(qConfigManage.configType.eq(manageDTO.getConfigtype()));
+		if(StringUtils.isNotBlank(manageDTO.getTypeName())){
+			builder.and(qConfigManage.typeName.eq(manageDTO.getTypeName()));
 		}
 		Page<ConfigManage> managePage=configManageRepository.findAll(builder,pageable);
 		Page<ManagePojo> managePojoPage = managePage.map(new ManagePojoConverter());		
@@ -70,18 +70,18 @@ public class ManageServiceImpl implements ManageService {
 		ConfigManage manage = configManageRepository.findOne(manageId);
 		ManagePojo managePojo = new ManagePojo();
 		managePojo.setId(manage.getId());
-		managePojo.setName(manage.getName());
-		managePojo.setType(manage.getConfigType());
-		managePojo.setTypeId(manage.getTypeId());
-		if(manage.getTypeId()==0){
+		managePojo.setManageName(manage.getManageName());
+		managePojo.setType(manage.getTypeName());
+		managePojo.setConfigType(manage.getConfigType());
+		if(manage.getConfigType()==0){
 			Long num=Long.parseLong(manage.getConfigData());
 			managePojo.setConfigdata(num);
 		}
-		if(manage.getTypeId()==1)
+		if(manage.getConfigType()==1)
 		{
 			managePojo.setConfigdata(manage.getConfigData());
 		}
-		if(manage.getTypeId()==2) {
+		if(manage.getConfigType()==2) {
 			List<ManagePojo.Option> oList = JsonUtil.parseObject(manage.getConfigData(), new TypeReference<List<ManagePojo.Option>>() {
 			});
 			managePojo.setConfigdata(oList);
@@ -91,22 +91,22 @@ public class ManageServiceImpl implements ManageService {
 	@Override
 	public ManagePojo addManage(ManagePojo managePojo) {
 		ConfigManage manage = new ConfigManage();
-		manage.setName(managePojo.getName());
-		manage.setConfigType(managePojo.getType());
+		manage.setManageName(managePojo.getManageName());
+		manage.setTypeName(managePojo.getType());
 		if(managePojo.getConfigdata() !=null){
-			if(managePojo.getTypeId()==0){
+			if(managePojo.getConfigType()==0){
 				manage.setConfigData(String.valueOf(managePojo.getConfigdata()));
 			}
-			if(managePojo.getTypeId()==1)
+			if(managePojo.getConfigType()==1)
 			{
 				manage.setConfigData(String.valueOf(managePojo.getConfigdata()));
 			}
-			if(managePojo.getTypeId()==2) {
+			if(managePojo.getConfigType()==2) {
 				String configData = JsonUtil.toJsonString(managePojo.getConfigdata());
 				manage.setConfigData(configData);
 			}
 		}
-		manage.setTypeId(managePojo.getTypeId());
+		manage.setConfigType(managePojo.getConfigType());
 		configManageRepository.save(manage);
 		managePojo.setId(manage.getId());
 		return managePojo;
@@ -115,23 +115,23 @@ public class ManageServiceImpl implements ManageService {
 	public ManagePojo updateManage(ManagePojo managePojo) {
 		ConfigManage manage = configManageRepository.findOne(managePojo.getId());
 		Preconditions.checkArgument(null != manage, "该任务不存在");
-		manage.setName(managePojo.getName());
-		manage.setTypeId(managePojo.getTypeId());
+		manage.setManageName(managePojo.getManageName());
+		manage.setConfigType(managePojo.getConfigType());
 		if(managePojo.getConfigdata() !=null){
-			if(managePojo.getTypeId()==0){
+			if(managePojo.getConfigType()==0){
 				manage.setConfigData(String.valueOf(managePojo.getConfigdata()));
 
 			}
-			if(managePojo.getTypeId()==1)
+			if(managePojo.getConfigType()==1)
 			{
 				manage.setConfigData(String.valueOf(managePojo.getConfigdata()));
 			}
-			if(managePojo.getTypeId()==2) {
+			if(managePojo.getConfigType()==2) {
 				String configData = JsonUtil.toJsonString(managePojo.getConfigdata());
 				manage.setConfigData(configData);
 			}
 		}
-		manage.setTypeId(managePojo.getTypeId());
+		manage.setTypeName(managePojo.getType());
 		configManageRepository.save(manage);
 		return managePojo;
 	}

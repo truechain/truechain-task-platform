@@ -4,12 +4,12 @@ package com.truechain.task.admin.model.viewPojo;
 public class ManagePojo {
 		
     private Long id;
-    private String name;
+    private String manageName;
     private String type;
     private Object configdata;
 //    private Map configdataMap;
     //    private String configdata;
-    private Integer typeId;
+    private Integer configType;
 
     public Long getId() {
         return id;
@@ -19,12 +19,12 @@ public class ManagePojo {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getManageName() {
+        return manageName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setManageName(String manageName) {
+        this.manageName = manageName;
     }
 
     public String getType() {
@@ -36,19 +36,19 @@ public class ManagePojo {
     }
 
     public Object getConfigdata() {
-        return  configdata;
+        return configdata;
     }
 
     public void setConfigdata(Object configdata) {
         this.configdata = configdata;
     }
 
-    public Integer getTypeId() {
-        return typeId;
+    public Integer getConfigType() {
+        return configType;
     }
 
-    public void setTypeId(Integer typeId) {
-        this.typeId = typeId;
+    public void setConfigType(Integer configType) {
+        this.configType = configType;
     }
 
     public static class Option{
