@@ -36,9 +36,9 @@ server:
 spring:
   profiles: dev
   datasource:
-      url: jdbc:mysql://47.95.252.37:3308/task_platform_test?useUnicode=true&characterEncoding=utf-8&useSSL=false
-      username: root
-      password: true0614
+    url: jdbc:mysql://47.92.149.129:3306/task_platform_test?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: root
+    password: 8w98ro2rsf-2s8
   redis:
       host: 127.0.0.1
       port: 6379
@@ -58,13 +58,13 @@ server:
 spring:
   profiles: test
   datasource:
-    url: jdbc:mysql://47.95.252.37:3308/task_platform_test?useUnicode=true&characterEncoding=utf-8&useSSL=false
+        url: jdbc:mysql://47.92.149.129:3306/task_platform_test?useUnicode=true&characterEncoding=utf-8&useSSL=false
     username: root
-    password: true0614
+    password: 8w98ro2rsf-2s8
   redis:
     host: 127.0.0.1
     port: 6379
-    password: true0614
+    password: 8289-udss
   jpa:
     hibernate:
       ddl-auto: none
@@ -78,7 +78,7 @@ springfox:
   documentation:
     swagger:
       v2:
-        host: www.phptrain.cn/testadmin
+        host: test.phptrain.cn/admin
 logging:
   config: classpath:log/logback-test.xml
 
