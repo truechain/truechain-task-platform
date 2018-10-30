@@ -91,17 +91,6 @@ public class UnAuthController extends BasicController {
 		return WrapMapper.error("推荐人不存在");
 	}
 
-	/**
-	 * 获取微信的access_token
-	 */
-	@GetMapping("/getWxUserInfo")
-	public String getWxUserInfo(HttpServletRequest httpServletRequest,String code, String state) {
-		try {
-			userService.getWxUserInfo(code, Long.valueOf(state));
-		} catch (Exception e) {
-			return "redirect:"+httpServletRequest.getContextPath()+"/#/invite-reg-success";
-		}
-		return "redirect:"+httpServletRequest.getContextPath()+"/#/mine";
-	}
+
 
 }
