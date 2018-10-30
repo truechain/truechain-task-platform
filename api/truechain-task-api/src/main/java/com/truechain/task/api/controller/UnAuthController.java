@@ -93,9 +93,13 @@ public class UnAuthController extends BasicController {
 	 * 获取微信的access_token
 	 */
 	@GetMapping("/getWxUserInfo")
-	public Wrapper getWxUserInfo(String code,String state) {
-		userService.getWxUserInfo(code, Long.valueOf(state));
-		return WrapMapper.ok();
+	public String getWxUserInfo(String code, String state) {
+		try {
+			userService.getWxUserInfo(code, Long.valueOf(state));
+		} catch (Exception e) {
+			return "redirect:/#/invite-reg-success";
+		}
+		return "redirect:/#/mine";
 	}
 
 }
