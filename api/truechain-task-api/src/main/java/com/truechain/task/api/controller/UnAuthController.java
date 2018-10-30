@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/unauth")
 public class UnAuthController extends BasicController {
@@ -93,13 +95,13 @@ public class UnAuthController extends BasicController {
 	 * 获取微信的access_token
 	 */
 	@GetMapping("/getWxUserInfo")
-	public String getWxUserInfo(String code, String state) {
+	public String getWxUserInfo(HttpServletRequest httpServletRequest,String code, String state) {
 		try {
 			userService.getWxUserInfo(code, Long.valueOf(state));
 		} catch (Exception e) {
-			return "redirect:/#/invite-reg-success";
+			return "redirect:"+httpServletRequest.getContextPath()+"/#/invite-reg-success";
 		}
-		return "redirect:/#/mine";
+		return "redirect:"+httpServletRequest.getContextPath()+"/#/mine";
 	}
 
 }
