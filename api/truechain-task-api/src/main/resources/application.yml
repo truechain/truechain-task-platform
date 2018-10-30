@@ -48,6 +48,7 @@ app:
   sms:
     smsUserName: TRUE888hy
     smsPassword: ADljCe
+  domain: test.phptrain.cn
 logging:
   config: classpath:log/logback-dev.xml
 
@@ -71,6 +72,7 @@ app:
   sms:
     smsUserName: TRUE888hy
     smsPassword: ADljCe
+  domain: test.phptrain.cn
 springfox:
   documentation:
     swagger:
@@ -98,6 +100,7 @@ app:
   sms:
     smsUserName: TRUE888hy
     smsPassword: ADljCe
+  domain: www.phptrain.cn
 springfox:
   documentation:
     swagger:
