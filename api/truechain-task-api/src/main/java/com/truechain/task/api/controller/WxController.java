@@ -15,7 +15,7 @@ import com.truechain.task.api.service.UserService;
 @Controller
 public class WxController {
 	
-	@Value("#{app.domain}")
+	@Value("${app.domain}")
 	private String domain;
 	
 	@Autowired
