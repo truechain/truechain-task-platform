@@ -63,7 +63,7 @@ spring:
     password: 8w98ro2rsf-2s8
   redis:
     host: 127.0.0.1
-    port: 6379
+    port: 3690
     password: 8289-udss
   jpa:
     hibernate:
