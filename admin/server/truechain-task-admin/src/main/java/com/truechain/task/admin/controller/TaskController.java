@@ -69,6 +69,7 @@ public class TaskController extends BasicController {
     /**
      * 获取任务数据
      */
+    @ApiOperation(value = "任务列表")
     @PostMapping("/getTaskPage")
     public Wrapper getTaskPage(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody TaskDTO task) {
         Preconditions.checkArgument(task.getPageIndex() > 0, "分页信息错误");
@@ -81,6 +82,7 @@ public class TaskController extends BasicController {
     /**
      * 获取任务详情
      */
+    @ApiOperation(value = "任务详情")
     @PostMapping("/getTaskInfo")
     public Wrapper getTaskInfo(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long taskId) {
         TaskInfoDTO task = taskService.getTaskInfo(taskId);
@@ -90,6 +92,7 @@ public class TaskController extends BasicController {
     /**
      * 获取报名表信息
      */
+    @ApiOperation(value = "报名表信息")
     @PostMapping("/getEntryFormInfo")
     public Wrapper getEntryFormInfo(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long taskId) {
         TaskEntryFromDTO taskEntryFromDTO = taskService.getEntryFormInfo(taskId);
