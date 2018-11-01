@@ -39,13 +39,14 @@ public class ManageController extends BasicController{
         return WrapMapper.ok(page);
     }
     
-    
+    @ApiOperation(value="添加配置")
     @PostMapping("/addManage")
     public Wrapper addManage (@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody ManagePojo managePojo){
     	manageService.addManage(managePojo);
     	return WrapMapper.ok();
     }
     
+    @ApiOperation(value="修改配置")
     @PostMapping("/updateManage")
     public Wrapper updateManage (@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, 
     		@RequestBody ManagePojo managePojo){ 

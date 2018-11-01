@@ -54,6 +54,7 @@ public class UserController extends BasicController {
     /**
      * 获取用户记录
      */
+    @ApiOperation(value="分页获取用户记录")
     @PostMapping("/getUserPage")
     public Wrapper getUserPage(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody UserDTO user) {
         Preconditions.checkArgument(user.getPageIndex() > 0, "分页信息错误");
@@ -66,6 +67,7 @@ public class UserController extends BasicController {
     /**
      * 获取用户详情
      */
+    @ApiOperation(value="获取用户详情")
     @PostMapping("/getUserInfo")
     public Wrapper getUserInfo(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long userId) {
         UserDetailDTO userInfo = userService.getUserInfo(userId);
@@ -75,6 +77,7 @@ public class UserController extends BasicController {
     /**
      * 下载文件
      */
+    @ApiOperation(value="下载简历")
     @GetMapping("/downLoadResume")
     public void downLoadResume(@RequestParam Long userId, final HttpServletResponse response) {
         SysUser user = userService.getUser(userId);
