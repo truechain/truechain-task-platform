@@ -276,7 +276,7 @@ public class ReportController extends BasicController {
     /**
      * 获取奖励清单
      */
-    @ApiOperation(value = "奖励清单", notes = "返回结构中{taskName:任务名称;taskState:任务状态(0-任务中,1-已经完成)}")
+    @ApiOperation(value = "奖励清单列表", notes = "返回结构中{taskName:任务名称;taskState:任务状态(0-任务中,1-已经完成)}")
     @PostMapping("/getRewardList")
     public Wrapper getRewardList(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestBody RewardViewDTO rewardViewDTO){
         List<RewardListPojo> reward=Lists.newArrayList();
