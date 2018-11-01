@@ -6,25 +6,25 @@ public class RewardViewDTO extends TimeRangeDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private Long userId;
-    private String channel;
-    private String rewardType;
+    private Integer rewardResource;
+    private Integer rewardType;
 
     public RewardViewDTO() {
     }
 
-    public String getChannel() {
-        return channel;
+    public Integer getRewardResource() {
+        return rewardResource;
     }
 
-    public void setChannel(String channel) {
-        this.channel = channel;
+    public void setRewardResource(Integer rewardResource) {
+        this.rewardResource = rewardResource;
     }
 
-    public String getRewardType() {
+    public Integer getRewardType() {
         return rewardType;
     }
 
-    public void setRewardType(String rewordType) {
+    public void setRewardType(Integer rewordType) {
         this.rewardType = rewordType;
     }
 

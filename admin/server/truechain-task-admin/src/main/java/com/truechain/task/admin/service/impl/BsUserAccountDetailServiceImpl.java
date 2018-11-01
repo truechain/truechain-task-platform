@@ -34,8 +34,8 @@ public class BsUserAccountDetailServiceImpl implements BsUserAccountDetailServic
         if (rewardViewDTO.getUserId() != null) {
             builder.and(qBsUserAccountDetail.userAccount.user.id.eq(rewardViewDTO.getUserId()));
         }
-        if (StringUtils.isNotBlank(rewardViewDTO.getChannel())) {
-            int channel = Integer.parseInt(rewardViewDTO.getChannel());
+        if (null != rewardViewDTO.getRewardResource()) {
+            int channel = rewardViewDTO.getRewardResource();
 //            if("完成任务".equals(rewardViewDTO.getChannel())){
 //                builder.and(qBsUserAccountDetail.task.isNull());
 //            }
@@ -47,8 +47,8 @@ public class BsUserAccountDetailServiceImpl implements BsUserAccountDetailServic
 //            }
             builder.and(qBsUserAccountDetail.rewardResource.eq(channel));
         }
-        if (StringUtils.isNotBlank(rewardViewDTO.getRewardType()) ) {
-            int rewardType = Integer.parseInt(rewardViewDTO.getRewardType());
+        if ( rewardViewDTO.getRewardType() != null ) {
+            int rewardType = rewardViewDTO.getRewardType();
             builder.and(qBsUserAccountDetail.rewardType.eq(rewardType));
         }
 
