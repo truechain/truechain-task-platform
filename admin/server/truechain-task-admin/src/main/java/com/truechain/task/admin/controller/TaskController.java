@@ -102,6 +102,7 @@ public class TaskController extends BasicController {
     /**
      * 上传图片
      */
+    @ApiOperation(value = "上传图片")
     @PostMapping("/uploadTaskIcon")
     public Wrapper uploadTaskIcon(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
@@ -212,6 +213,7 @@ public class TaskController extends BasicController {
     /**
      * 删除任务
      */
+    @ApiOperation(value = "删除任务")
     @PostMapping("/deleteTask")
     public Wrapper deleteTask(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long taskId) {
         taskService.deleteTask(taskId);
@@ -221,6 +223,7 @@ public class TaskController extends BasicController {
     /**
      * 启用任务
      */
+    @ApiOperation(value = "启用任务")
     @PostMapping("/enableTask")
     public Wrapper enableTask(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long taskId) {
         taskService.enableTask(taskId);
@@ -230,6 +233,7 @@ public class TaskController extends BasicController {
     /**
      * 禁用任务
      */
+    @ApiOperation(value = "禁用任务")
     @PostMapping("/disableTask")
     public Wrapper disableTask(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long taskId) {
         taskService.disableTask(taskId);
@@ -239,6 +243,7 @@ public class TaskController extends BasicController {
     /**
      * 审核报名表人员
      */
+    @ApiOperation(value = "审核报名表人员")
     @PostMapping("/auditEntryFormUser")
     public Wrapper auditEntryFormUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long taskUserId) {
         AuditEntryFormUserDTO result = taskService.auditEntryFormUser(taskUserId);
@@ -248,6 +253,7 @@ public class TaskController extends BasicController {
     /**
      * 发放奖励
      */
+    @ApiOperation(value = "发放奖励")
     @PostMapping("/rewardEntryFromUser")
     public Wrapper rewardEntryFromUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,
                                        @RequestParam Long taskUserId, @RequestParam(required = false) Double userReward, @RequestParam(required = false) Double recommendUserReward) {
@@ -278,6 +284,7 @@ public class TaskController extends BasicController {
     /**
      * 默认奖励数量
      */
+    @ApiOperation(value = "获取默认奖励数量")
     @GetMapping("/getDefaultReward")
     public Wrapper getDefaultReward(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long taskUserId) {
         return WrapMapper.ok(bsTaskUserService.getDefaultReward(taskUserId));
