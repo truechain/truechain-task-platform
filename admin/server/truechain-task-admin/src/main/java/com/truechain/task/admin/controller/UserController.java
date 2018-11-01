@@ -1,5 +1,7 @@
 package com.truechain.task.admin.controller;
 
+import io.swagger.annotations.ApiOperation;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -101,6 +103,7 @@ public class UserController extends BasicController {
     /**
      * 创建用户
      */
+    @ApiOperation(value = "创建用户")
     @PostMapping("/addUser")
     public Wrapper addUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, 
     		@RequestParam String name, @RequestParam String wxNickName, @RequestParam String wxNum, 
@@ -147,6 +150,7 @@ public class UserController extends BasicController {
     /**
      * 修改用户
      */
+    @ApiOperation(value = "修改用户")
     @PostMapping("/updateUser")
     public Wrapper updateUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, 
     		@RequestParam Long id,@RequestParam String name, @RequestParam String wxNickName, @RequestParam String wxNum, 
@@ -194,6 +198,7 @@ public class UserController extends BasicController {
     /**
      * 修改用户的等级
      */
+    @ApiOperation(value = "修改用户的等级")
     @PostMapping("/updateUserLevel")
     public Wrapper updateUserLevel(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam long userId, @RequestParam String level) {
         SysUser user = new SysUser();
@@ -207,8 +212,9 @@ public class UserController extends BasicController {
     }
     
     /**
-     * 修改用户的
+     * 将用户拉黑
      */
+    @ApiOperation(value="将用户拉黑")
     @PostMapping("/updateUserBlank")
     public Wrapper updateUserBlank(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam long userId, @RequestParam int auditStatus) {
         SysUser user = new SysUser();
@@ -225,6 +231,7 @@ public class UserController extends BasicController {
     /**
      * 审核用户
      */
+    @ApiOperation(value="审核用户")
     @PostMapping("/auditUser")
     public Wrapper auditUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long userId, 
     		@RequestParam String level, @RequestParam String rewardNum,@RequestParam String recommendResource) {
