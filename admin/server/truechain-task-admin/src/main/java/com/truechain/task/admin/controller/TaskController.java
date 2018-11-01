@@ -44,6 +44,8 @@ import com.truechain.task.model.entity.BsTask;
 import com.truechain.task.model.entity.BsTaskDetail;
 import com.truechain.task.model.entity.BsTaskUser;
 
+import io.swagger.annotations.ApiOperation;
+
 
 /**
  * 任务Controller
@@ -120,6 +122,7 @@ public class TaskController extends BasicController {
     /**
      * 新增任务
      */
+    @ApiOperation(value = "新增任务")
     @PostMapping("/addTask")
     public Wrapper addTask(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody TaskInfoDTO taskInfoDTO) {
         logger.info("addTask taskInfoDTO{}", new JSONObject(taskInfoDTO));
@@ -172,6 +175,7 @@ public class TaskController extends BasicController {
     /**
      * 更新任务
      */
+    @ApiOperation(value = "修改任务")
     @PostMapping("/updateTask")
     public Wrapper updateTask(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody TaskInfoDTO taskInfoDTO) {
         logger.info("updateTask taskInfoDTO{}", new JSONObject(taskInfoDTO));
@@ -251,6 +255,7 @@ public class TaskController extends BasicController {
     /**
      * 取消报名任务
      */
+    @ApiOperation(value = "取消报名任务")
     @PostMapping("/cancelEntryFormUser")
     public Wrapper cancelBsTaskUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long taskUserId) {
     	bsTaskUserService.cancelBsTaskUser(taskUserId);
@@ -260,6 +265,7 @@ public class TaskController extends BasicController {
     /**
      * 审核报名任务
      */
+    @ApiOperation(value = "审核报名任务")
     @PostMapping("/auditBsTaskUser")
     public Wrapper auditBsTaskUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody AuditBsTaskUserDTO auditBsTaskUserDTO) {
     	bsTaskUserService.auditBsTaskUser(auditBsTaskUserDTO);;
