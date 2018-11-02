@@ -53,7 +53,7 @@ public class ManageServiceImpl implements ManageService {
 				}
 			}
 			managePojo.setConfigType(source.getConfigType());
-			managePojo.setType(source.getTypeName());
+			managePojo.setTypeName(source.getTypeName());
 
 			return managePojo;
 		}
@@ -83,7 +83,7 @@ public class ManageServiceImpl implements ManageService {
 		ManagePojo managePojo = new ManagePojo();
 		managePojo.setId(manage.getId());
 		managePojo.setManageName(manage.getManageName());
-		managePojo.setType(manage.getTypeName());
+		managePojo.setTypeName(manage.getTypeName());
 		managePojo.setConfigType(manage.getConfigType());
 		if(manage.getConfigType()==0){
 			Long num=Long.parseLong(manage.getConfigData());
@@ -102,13 +102,13 @@ public class ManageServiceImpl implements ManageService {
 	}
 	@Override
 	public ManagePojo addManage(ManagePojo managePojo) {
-		ConfigManage manageDb = configManageRepository.findByTypeName(managePojo.getType());
+		ConfigManage manageDb = configManageRepository.findByTypeName(managePojo.getTypeName());
 		if(manageDb != null){
-			throw new BusinessException("type="+managePojo.getType()+"已存在");
+			throw new BusinessException("type="+managePojo.getTypeName()+"已存在");
 		}
 		ConfigManage manage = new ConfigManage();
 		manage.setManageName(managePojo.getManageName());
-		manage.setTypeName(managePojo.getType());
+		manage.setTypeName(managePojo.getTypeName());
 		if(managePojo.getConfigData() !=null){
 			if(managePojo.getConfigType()==0){
 				if(managePojo.getConfigData() instanceof Number){
@@ -170,7 +170,7 @@ public class ManageServiceImpl implements ManageService {
 				}
 			}
 		}
-		manage.setTypeName(managePojo.getType());
+		manage.setTypeName(managePojo.getTypeName());
 		configManageRepository.save(manage);
 		return managePojo;
 	}
