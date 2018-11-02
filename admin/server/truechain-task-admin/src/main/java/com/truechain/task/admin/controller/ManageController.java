@@ -39,14 +39,14 @@ public class ManageController extends BasicController{
         return WrapMapper.ok(page);
     }
     
-    @ApiOperation(value="添加配置")
+    @ApiOperation(value="添加配置",notes="configType=0时,configdata必须为数字类型;configType=1时,configdata必须为字符串类型;configType=2时,configdata必须为枚举类型;")
     @PostMapping("/addManage")
     public Wrapper addManage (@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody ManagePojo managePojo){
     	manageService.addManage(managePojo);
     	return WrapMapper.ok();
     }
     
-    @ApiOperation(value="修改配置")
+    @ApiOperation(value="修改配置",notes="configType=0时,configdata必须为数字类型;configType=1时,configdata必须为字符串类型;configType=2时,configdata必须为枚举类型;")
     @PostMapping("/updateManage")
     public Wrapper updateManage (@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, 
     		@RequestBody ManagePojo managePojo){ 

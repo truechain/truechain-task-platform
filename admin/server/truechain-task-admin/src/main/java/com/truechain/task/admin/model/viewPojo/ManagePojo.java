@@ -6,7 +6,7 @@ public class ManagePojo {
     private Long id;
     private String manageName;
     private String type;
-    private Object configdata;
+    private Object configData;
 //    private Map configdataMap;
     //    private String configdata;
     private Integer configType;
@@ -35,12 +35,12 @@ public class ManagePojo {
         this.type = type;
     }
 
-    public Object getConfigdata() {
-        return configdata;
+    public Object getConfigData() {
+        return configData;
     }
 
-    public void setConfigdata(Object configdata) {
-        this.configdata = configdata;
+    public void setConfigData(Object configdata) {
+        this.configData = configdata;
     }
 
     public Integer getConfigType() {
