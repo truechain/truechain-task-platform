@@ -25,13 +25,13 @@ public class WxController {
 	 * 获取微信的access_token
 	 */
 	@GetMapping("/getWxUserInfo")
-	public String getWxUserInfo(HttpServletRequest httpServletRequest,String code, String state) {
+	public String getWxUserInfo(String code, String state) {
 		try {
 			userService.getWxUserInfo(code, Long.valueOf(state));
 		} catch (Exception e) {
-			return "redirect:http://"+domain+httpServletRequest.getContextPath()+"/#/invite-reg-success";
+			return "redirect:http://"+domain+"/#/invite-reg-success";
 		}
-		return "redirect:"+domain+httpServletRequest.getContextPath()+"/#/mine";
+		return "redirect:"+domain+"/#/mine";
 	}
 
 }
