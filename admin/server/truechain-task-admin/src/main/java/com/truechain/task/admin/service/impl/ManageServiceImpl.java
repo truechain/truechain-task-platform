@@ -61,6 +61,7 @@ public class ManageServiceImpl implements ManageService {
 
 	@Autowired
 	private ConfigManageRepository configManageRepository;
+	
 	@Override
 	public Page<ManagePojo> getTaskPage(ManageDTO manageDTO, Pageable pageable) {
 		BooleanBuilder builder = new BooleanBuilder();
@@ -101,6 +102,10 @@ public class ManageServiceImpl implements ManageService {
 	}
 	@Override
 	public ManagePojo addManage(ManagePojo managePojo) {
+		ConfigManage manageDb = configManageRepository.findByTypeName(managePojo.getType());
+		if(manageDb != null){
+			throw new BusinessException("type="+managePojo.getType()+"已存在");
+		}
 		ConfigManage manage = new ConfigManage();
 		manage.setManageName(managePojo.getManageName());
 		manage.setTypeName(managePojo.getType());
