@@ -86,6 +86,7 @@ public class UserServiceImpl implements UserService {
 		sysUser.setAuditStatus(AuditStatusEnum.UNAUDITED.getCode());
 		sysUser.setRecommendUserId(user.getRecommendUserId());
 		sysUser.setRecommendUserMobile(user.getRecommendUserMobile());
+		sysUser.setRecommendShareCode(user.getRecommendShareCode());
 		sysUser = userRepository.save(sysUser);
 		BsUserAccount userAccount = new BsUserAccount();
 		userAccount.setUser(sysUser);

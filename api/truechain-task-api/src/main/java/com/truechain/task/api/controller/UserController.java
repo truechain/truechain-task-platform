@@ -75,19 +75,37 @@ public class UserController extends BasicController {
 	@PostMapping("/updateUserInfo")
 	public Wrapper updateUserInfo(@RequestParam Long userId, @RequestParam String name, @RequestParam String wxNickName,
 			@RequestParam(required = false) String wxNum, @RequestParam(required = false) String openId,
-			@RequestParam String trueChainAddress, @RequestParam("file") MultipartFile file,
-			@RequestParam(required = false) String referrerPhone) {
-		Preconditions.checkArgument(!file.isEmpty(), "简历不能为空");
-		String fileName = file.getOriginalFilename();
-		Preconditions.checkArgument(fileName.indexOf(".exe") < 0 && fileName.indexOf(".sh") < 0, "上传文件不合法");
+			@RequestParam(required = false) String trueChainAddress, @RequestParam(required = false) MultipartFile file,
+			@RequestParam(required = false) String referrerCode) {
+		//如果上传过简历 则更新资料的时候 不需要再次上传
+		SysUser initUser = userService.getByUserId(userId);
+		
+		System.out.println("initUser:" + initUser);
+		
+		String resumeFilePath = "";
+		if(null != initUser && null != initUser.getResumeFilePath()){
+			resumeFilePath = initUser.getResumeFilePath();
+		}else{
+			if(null == file || file.isEmpty()){
+				return WrapMapper.errorParam("简历不能为空");
+			}else{
+				String fileName = file.getOriginalFilename();
+				Preconditions.checkArgument(fileName.indexOf(".exe") < 0 && fileName.indexOf(".sh") < 0, "上传文件不合法");
 
-		File uploadFile = new File(
-				AppProperties.UPLOAD_FILE_PATH + UUID.randomUUID().toString().replace("-", "") + fileName);
-		Preconditions.checkArgument(file.getSize() <= 10 * 1024 * 1024, "文件最大限制为10M");
-		try {
-			FileUtils.writeByteArrayToFile(uploadFile, file.getBytes());
-		} catch (IOException e) {
-			throw new BusinessException("文件上传异常");
+				File uploadFile = new File(AppProperties.UPLOAD_FILE_PATH + UUID.randomUUID().toString().replace("-", "") + fileName);
+				
+				if(file.getSize() > 10 * 1024 * 1024){
+					//Preconditions.checkArgument(file.getSize() <= 10 * 1024 * 1024, "文件最大限制为10M");
+					return WrapMapper.errorParam("文件最大限制为10M");
+				}
+				
+				try {
+					FileUtils.writeByteArrayToFile(uploadFile, file.getBytes());
+					resumeFilePath = uploadFile.getPath();
+				} catch (IOException e) {
+					throw new BusinessException("文件上传异常");
+				}
+			}
 		}
 
 		SysUser user = new SysUser();
@@ -97,16 +115,23 @@ public class UserController extends BasicController {
 		user.setWxNum(wxNum);
 		user.setOpenId(openId);
 		user.setTrueChainAddress(trueChainAddress);
-		user.setResumeFilePath(uploadFile.getPath());
+		user.setResumeFilePath(resumeFilePath);
 
-		if (StringUtils.isEmpty(referrerPhone) == false) {
-			Preconditions.checkArgument(ValidateUtil.isMobile(referrerPhone), "手机号不合法");
-			SysUser referrerUser = userService.getUserByMobile(referrerPhone);
+		if (StringUtils.isEmpty(referrerCode) == false) {
+			//根据code反向得到手机号码
+			Long phoneNum = ShareCodeUtil.codeToNum(referrerCode);
+			//Preconditions.checkArgument(ValidateUtil.isMobile(phoneNum.toString()), "邀请码不存在");
+			if(!ValidateUtil.isMobile(phoneNum.toString())){
+				return WrapMapper.errorParam("邀请码不存在");
+			}
+			
+			SysUser referrerUser = userService.getUserByMobile(phoneNum.toString());
 			if (referrerUser == null) {
 				throw new BusinessException("没有找到该推荐人");
 			}
 			user.setRecommendUserId(referrerUser.getId());
-			user.setRecommendUserMobile(referrerPhone);
+			user.setRecommendUserMobile(referrerUser.getMobile());
+			user.setRecommendShareCode(referrerCode);
 		}
 
 		userService.updateUser(user);
