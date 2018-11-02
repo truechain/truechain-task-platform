@@ -31,7 +31,7 @@ public class WxController {
 		} catch (Exception e) {
 			return "redirect:http://"+domain+"/#/invite-reg-success";
 		}
-		return "redirect:"+domain+"/#/mine";
+		return "redirect:http://"+domain+"/#/mine";
 	}
 
 }
