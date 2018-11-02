@@ -88,4 +88,14 @@ public class WrapMapper {
     public static <E> Wrapper<E> errorNull(String message) {
         return wrap(GlobalStatusEnum.NULL.getCode(), StringUtils.isEmpty(message) ? GlobalStatusEnum.NULL.getDesc() : message);
     }
+    
+    /**
+     * 参数信息异常
+     * @param message
+     * @param <E>
+     * @return
+     */
+    public static <E> Wrapper<E> errorParam(String message) {
+        return wrap(GlobalStatusEnum.ERRORPARAM.getCode(), StringUtils.isEmpty(message) ? GlobalStatusEnum.ERRORPARAM.getDesc() : message);
+    }
 }
