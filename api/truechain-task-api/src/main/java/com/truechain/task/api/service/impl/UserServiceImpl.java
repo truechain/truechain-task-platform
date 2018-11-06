@@ -29,7 +29,10 @@ import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.*;
 
+import javax.transaction.Transactional;
+
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
 	@Autowired

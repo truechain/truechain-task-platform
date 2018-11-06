@@ -1,6 +1,7 @@
 package com.truechain.task.api.service.weixin;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.security.MessageDigest;
 import java.util.Formatter;
 import java.util.HashMap;
@@ -60,8 +61,9 @@ public class WeiXinService {
      *
      * @param url
      * @return
+     * @throws UnsupportedEncodingException 
      */
-    public Map<String, String> getSign(String url) {
+    public Map<String, String> getSign(String url) throws UnsupportedEncodingException {
         String jsapi_ticket = stringRedisTemplate.opsForValue().get(wxTicketRedisKey);
         if (StringUtils.isBlank(jsapi_ticket)) {
             getWxTokenToRedis();
@@ -73,11 +75,15 @@ public class WeiXinService {
             String nonce_str = CommonUtil.getRandomString(32);
             String timestamp = Long.toString(DateUtil.getCurrentTime("S"));
             String signature = "";
+            
+            //url decode
+            String urlStr = URLDecoder.decode(url, "UTF-8");
+            
             //注意这里参数名必须全部小写，且必须有序
             String resStr = "jsapi_ticket=" + jsapi_ticket +
                     "&noncestr=" + nonce_str +
                     "&timestamp=" + timestamp +
-                    "&url=" + url;
+                    "&url=" + urlStr;
             logger.info("--方法--sign,签名加密原始串--" + resStr);
             try {
                 MessageDigest crypt = MessageDigest.getInstance("SHA-1");
@@ -88,7 +94,7 @@ public class WeiXinService {
                 logger.error("--方法--sign,签名加密出现异常", e);
                 throw new RuntimeException("微信签名失败");
             }
-            resMap.put("url", url);
+            resMap.put("url", urlStr);
             resMap.put("jsapi_ticket", jsapi_ticket);
             resMap.put("nonceStr", nonce_str);
             resMap.put("timestamp", timestamp);

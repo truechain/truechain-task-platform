@@ -79,9 +79,7 @@ public class UserController extends BasicController {
 			@RequestParam(required = false) String referrerCode) {
 		//如果上传过简历 则更新资料的时候 不需要再次上传
 		SysUser initUser = userService.getByUserId(userId);
-		
-		System.out.println("initUser:" + initUser);
-		
+				
 		String resumeFilePath = "";
 		if(null != initUser && null != initUser.getResumeFilePath()){
 			resumeFilePath = initUser.getResumeFilePath();

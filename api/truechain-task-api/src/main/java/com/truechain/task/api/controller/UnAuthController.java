@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -68,9 +69,10 @@ public class UnAuthController extends BasicController {
 
 	/**
 	 * 获取微信签名加密
+	 * @throws UnsupportedEncodingException 
 	 */
 	@PostMapping(value = "/weixin/getWxSign")
-	public Wrapper getSign(String url) {
+	public Wrapper getSign(String url) throws UnsupportedEncodingException {
 		Map resultMap = weiXinService.getSign(url);
 		if (CollectionUtils.isEmpty(resultMap) || StringUtils.isEmpty(resultMap.get("signature"))) {
 			return WrapMapper.error("微信签名失败");
