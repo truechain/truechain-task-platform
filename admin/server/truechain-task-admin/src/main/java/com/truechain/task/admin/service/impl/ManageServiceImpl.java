@@ -66,7 +66,7 @@ public class ManageServiceImpl implements ManageService {
 			builder.and(qConfigManage.configType.eq(manageDTO.getConfigType()));
 		}
 		if(StringUtils.isNotBlank(manageDTO.getTypeName())){
-			builder.and(qConfigManage.typeName.eq(manageDTO.getTypeName()));
+			builder.and(qConfigManage.typeName.like("%"+manageDTO.getTypeName()+"%"));
 		}
 		Page<ConfigManage> managePage=configManageRepository.findAll(builder,pageable);
 		Page<ManagePojo> managePojoPage = managePage.map(new ManagePojoConverter());		
