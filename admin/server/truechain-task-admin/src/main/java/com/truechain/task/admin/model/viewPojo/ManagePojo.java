@@ -6,9 +6,9 @@ public class ManagePojo {
     private Long id;
     private String manageName;
     private String typeName;
-    private Object configData;
+//    private Object configData;
 //    private Map configdataMap;
-    //    private String configdata;
+    private String configData;
     private Integer configType;
 
     public Long getId() {
@@ -35,12 +35,20 @@ public class ManagePojo {
         this.typeName = typeName;
     }
 
-    public Object getConfigData() {
-        return configData;
+//    public Object getConfigData() {
+//        return configData;
+//    }
+//
+//    public void setConfigData(Object configdata) {
+//        this.configData = configdata;
+//    }
+    
+    public String getConfigData() {
+    	return configData;
     }
 
-    public void setConfigData(Object configdata) {
-        this.configData = configdata;
+    public void setConfigData(String configData) {
+    	this.configData = configData;
     }
 
     public Integer getConfigType() {
@@ -51,38 +59,38 @@ public class ManagePojo {
         this.configType = configType;
     }
 
-    public static class Option{
-    	private String key;
-    	private String value;
-    	
-    	public Option(){
-    		
-    	}
-    	
-    	public Option(String key,String value){
-    		this.key = key;
-    		this.value = value;
-    	}
-    	
-		public String getKey() {
-			return key;
-		}
-		public void setKey(String key) {
-			this.key = key;
-		}
-		public String getValue() {
-			return value;
-		}
-		public void setValue(String value) {
-			this.value = value;
-		}
-		
-		public String toString(){
-			return "key:"+key+",value:"+value;
-		}
-
-
-    }
+//    public static class Option{
+//    	private String key;
+//    	private String value;
+//    	
+//    	public Option(){
+//    		
+//    	}
+//    	
+//    	public Option(String key,String value){
+//    		this.key = key;
+//    		this.value = value;
+//    	}
+//    	
+//		public String getKey() {
+//			return key;
+//		}
+//		public void setKey(String key) {
+//			this.key = key;
+//		}
+//		public String getValue() {
+//			return value;
+//		}
+//		public void setValue(String value) {
+//			this.value = value;
+//		}
+//		
+//		public String toString(){
+//			return "key:"+key+",value:"+value;
+//		}
+//
+//
+//    }
 
 //	
 //	public static void main(String[] args) {		

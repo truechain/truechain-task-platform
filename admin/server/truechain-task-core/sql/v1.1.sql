@@ -22,7 +22,7 @@ CREATE TABLE `config_manage` (
 	`create_id` VARCHAR(255) NULL DEFAULT NULL COMMENT '创建人id' COLLATE 'utf8_bin',
 	`type_name` VARCHAR(255) NULL DEFAULT NULL COMMENT '管理类型' COLLATE 'utf8_bin',
 	`config_data` VARCHAR(255) NULL DEFAULT NULL COMMENT '数据值' COLLATE 'utf8_bin',
-	`config_type` INT(11) NULL DEFAULT NULL COMMENT '数据id,0-数字，1-字符串，2-枚举',
+	`config_type` INT(11) NULL DEFAULT NULL COMMENT '数据类型,0-数字，1-字符串，2-枚举',
 	`create_time` DATETIME NULL DEFAULT NULL COMMENT '创建时间',
 	`create_user` VARCHAR(255) NULL DEFAULT NULL COMMENT '创建人' COLLATE 'utf8_bin',
 	`update_id` VARCHAR(255) NULL DEFAULT NULL COMMENT '更新人ID' COLLATE 'utf8_bin',
