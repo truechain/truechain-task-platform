@@ -70,6 +70,12 @@ public class UserServiceImpl implements UserService {
 			throw new BusinessException("手机号已经注册");
 		}
 		user = userRepository.save(user);
+		BsUserAccount userAccount = new BsUserAccount();
+		userAccount.setUser(user);
+		userAccount.setGitReward(BigDecimal.ZERO);
+		userAccount.setTrueReward(BigDecimal.ZERO);
+		userAccount.setTtrReward(BigDecimal.ZERO);
+		userAccountRepository.save(userAccount);
 		return user;
 	}
 
@@ -99,9 +105,9 @@ public class UserServiceImpl implements UserService {
 		userAccountRepository.save(userAccount);
 		return sysUser;
 	}
-	
+
 	@Override
-	public SysUser updateSimpleUser(SysUser user){
+	public SysUser updateSimpleUser(SysUser user) {
 		SysUser sysUser = userRepository.findOne(user.getId());
 		Preconditions.checkArgument(!sysUser.getMobile().equals(sysUser.getRecommendUserMobile()), "推荐人不能为用户本人手机号");
 		if (sysUser == null) {
@@ -122,15 +128,16 @@ public class UserServiceImpl implements UserService {
 			throw new NullException("用户不存在");
 		}
 		userInfoDTO.setUser(sysUser);
-//		List<SysUser> recommendUserIds = userRepository.findByRecommendUserId(sysUser.getId());
-//		long count = 0;
-//		for (int i = 0; i < recommendUserIds.size(); i++) {
-//			SysUser user = recommendUserIds.get(i);
-//			// 只记录审核通过的玩家
-//			if (user.getAuditStatus() == AuditStatusEnum.AUDITED.getCode()) {
-//				count++;
-//			}
-//		}
+		// List<SysUser> recommendUserIds =
+		// userRepository.findByRecommendUserId(sysUser.getId());
+		// long count = 0;
+		// for (int i = 0; i < recommendUserIds.size(); i++) {
+		// SysUser user = recommendUserIds.get(i);
+		// // 只记录审核通过的玩家
+		// if (user.getAuditStatus() == AuditStatusEnum.AUDITED.getCode()) {
+		// count++;
+		// }
+		// }
 		long count = userRepository.countByRecommendUserIdAndAuditStatus(sysUser.getId());
 		userInfoDTO.setRecommendPeople(count);
 		UserAccountDTO userAccountDTO = new UserAccountDTO();
@@ -230,18 +237,20 @@ public class UserServiceImpl implements UserService {
 			return null;
 		}
 	}
+
 	@Autowired
 	WeiXinService weiXinService;
-	
+
 	@Override
-	public void getWxUserInfo(String code,Long userId){
-		SysUser sysUser= userRepository.getOne(userId);
-		Preconditions.checkArgument(sysUser!=null, "用户不存在");
+	public void getWxUserInfo(String code, Long userId) {
+		SysUser sysUser = userRepository.getOne(userId);
+		Preconditions.checkArgument(sysUser != null, "用户不存在");
 		Preconditions.checkArgument(StringUtils.isEmpty(sysUser.getOpenId()), "用户已经绑定过");
 		String url = WeiXinService.oauth2OokenUrl.replace("CODE", code);
 		AccessTokenDTO accessTokenDTO = weiXinService.getAccessTokenVo(url);
 		Preconditions.checkArgument(StringUtils.isBlank(accessTokenDTO.getErrcode()), "用户绑定异常");
-		url = WeiXinService.userinfoUrl.replace("ACCESS_TOKEN", accessTokenDTO.getAccess_token()).replace("OPENID", accessTokenDTO.getOpenid());
+		url = WeiXinService.userinfoUrl.replace("ACCESS_TOKEN", accessTokenDTO.getAccess_token()).replace("OPENID",
+				accessTokenDTO.getOpenid());
 		WxUserinfoDTO wxUserinfoDTO = null;
 		try {
 			wxUserinfoDTO = weiXinService.getUserinfo(url);
@@ -250,12 +259,12 @@ public class UserServiceImpl implements UserService {
 			e.printStackTrace();
 		}
 		Preconditions.checkArgument(StringUtils.isBlank(wxUserinfoDTO.getErrcode()), "用户绑定异常");
-		Preconditions.checkArgument(userRepository.countByOpenId(wxUserinfoDTO.getOpenid()) == 0 , "微信已被绑定");
-		
+		Preconditions.checkArgument(userRepository.countByOpenId(wxUserinfoDTO.getOpenid()) == 0, "微信已被绑定");
+
 		sysUser.setOpenId(wxUserinfoDTO.getOpenid());
 		sysUser.setWxNickName(wxUserinfoDTO.getNickname());
 		sysUser.setWxImageUrl(wxUserinfoDTO.getHeadimgurl());
 		userRepository.save(sysUser);
-		
+
 	}
 }
