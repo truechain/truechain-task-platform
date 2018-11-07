@@ -10,6 +10,7 @@ public class ManagePojo {
 //    private Map configdataMap;
     private String configData;
     private Integer configType;
+    private String datetime;
 
     public Long getId() {
         return id;
@@ -58,6 +59,14 @@ public class ManagePojo {
     public void setConfigType(Integer configType) {
         this.configType = configType;
     }
+
+	public String getDatetime() {
+		return datetime;
+	}
+
+	public void setDatetime(String datetime) {
+		this.datetime = datetime;
+	}
 
 //    public static class Option{
 //    	private String key;

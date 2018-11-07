@@ -1,7 +1,5 @@
 package com.truechain.task.model.entity;
 
-import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -13,8 +11,8 @@ import org.hibernate.annotations.DynamicUpdate;
 public class ConfigManage extends BaseEntity{
     private String manageName;
     private String typeName;
-    private String configData;
-    private String updateTime;
+    private String configData;     
+    private String updateTime; 
     private String createTime;
     private String createUser;
     private Integer configType;
