@@ -13,4 +13,6 @@ public interface ManageService {
     ManagePojo addManage(ManagePojo managePojo);
     
     ManagePojo updateManage(ManagePojo managePojo);
+    
+    void delete(Long id);
 }

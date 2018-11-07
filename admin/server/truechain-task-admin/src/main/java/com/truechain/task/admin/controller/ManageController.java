@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.base.Preconditions;
@@ -63,6 +64,15 @@ public class ManageController extends BasicController{
     	return WrapMapper.ok();
     }
     
+    /**
+     * 删除配置
+     */
+    @ApiOperation(value = "删除配置")
+    @PostMapping("/deleteManage")
+    public Wrapper deleteManage(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long id) {
+    	manageService.delete(id);
+        return WrapMapper.ok();
+    }
 
 
 

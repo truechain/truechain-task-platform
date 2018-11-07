@@ -176,4 +176,10 @@ public class ManageServiceImpl implements ManageService {
 		configManageRepository.save(manage);
 		return managePojo;
 	}
+	
+	
+	@Override
+    public void delete(Long id) {
+		configManageRepository.delete(id);
+    }
 }
