@@ -11,9 +11,9 @@ ALTER TABLE `bs_task`
 
 -- shiming
 alter table bs_task_user drop column audit_status,drop column audit_result;
-ALTER TABLE bs_task_user  ADD `referral_num` decimal(18,0);    
-ALTER TABLE  bs_task_user  ADD  `finish_level` int(255) ; 
-ALTER TABLE  sys_user  ADD  `wx_image_url` varchar(255);
+ALTER TABLE bs_task_user  ADD `referral_num` decimal(18,0) COMMENT '推荐人奖励';    
+ALTER TABLE  bs_task_user  ADD  `finish_level` int(255) COMMENT '完成级别'; 
+ALTER TABLE  sys_user  ADD  `wx_image_url` varchar(255) COMMENT '微信头像url';
 
 -- chenqian
 CREATE TABLE `config_manage` (
