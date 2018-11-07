@@ -36,3 +36,5 @@ ENGINE=InnoDB
 AUTO_INCREMENT=4
 ;
 
+--zhouduanyang
+ALTER TABLE bs_user_account_detail ADD lssuing_state int(11) DEFAULT '0' COMMENT '奖励发放状态（0-未发放，1-发放）',
