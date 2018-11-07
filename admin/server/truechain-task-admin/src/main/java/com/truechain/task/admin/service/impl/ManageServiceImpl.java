@@ -33,25 +33,26 @@ public class ManageServiceImpl implements ManageService {
 			ManagePojo managePojo = new ManagePojo();
 			managePojo.setId(source.getId());
 			managePojo.setManageName(source.getManageName());
-			if(source.getConfigType()==0){
-				try{
-					Long num=Long.parseLong(source.getConfigData());
-					managePojo.setConfigData(num);
-				}catch(Exception e){
-					throw new BusinessException("数据记录Id="+source.getId()+",configType=0时,configData="+source.getConfigData()+"不为Num类型");
-				}
-			}
-			if(source.getConfigType()==1){
-				managePojo.setConfigData(source.getConfigData());
-			}
-			if(source.getConfigType()==2) {
-				try{
-					List<ManagePojo.Option> oList = JsonUtil.parseObject(source.getConfigData(), new TypeReference<List<ManagePojo.Option>>(){});
-					managePojo.setConfigData(oList);
-				}catch(Exception e){
-					throw new BusinessException("数据记录Id="+source.getId()+",configType=2时,configData="+source.getConfigData()+"不为枚举类型");
-				}
-			}
+//			if(source.getConfigType()==0){
+//				try{
+//					Long num=Long.parseLong(source.getConfigData());
+//					managePojo.setConfigData(num);
+//				}catch(Exception e){
+//					throw new BusinessException("数据记录Id="+source.getId()+",configType=0时,configData="+source.getConfigData()+"不为Num类型");
+//				}
+//			}
+//			if(source.getConfigType()==1){
+//				managePojo.setConfigData(source.getConfigData());
+//			}
+//			if(source.getConfigType()==2) {
+//				try{
+//					List<ManagePojo.Option> oList = JsonUtil.parseObject(source.getConfigData(), new TypeReference<List<ManagePojo.Option>>(){});
+//					managePojo.setConfigData(oList);
+//				}catch(Exception e){
+//					throw new BusinessException("数据记录Id="+source.getId()+",configType=2时,configData="+source.getConfigData()+"不为枚举类型");
+//				}
+//			}
+			managePojo.setConfigData(source.getConfigData());
 			managePojo.setConfigType(source.getConfigType());
 			managePojo.setTypeName(source.getTypeName());
 
@@ -84,20 +85,19 @@ public class ManageServiceImpl implements ManageService {
 		managePojo.setId(manage.getId());
 		managePojo.setManageName(manage.getManageName());
 		managePojo.setTypeName(manage.getTypeName());
-		managePojo.setConfigType(manage.getConfigType());
-		if(manage.getConfigType()==0){
-			Long num=Long.parseLong(manage.getConfigData());
-			managePojo.setConfigData(num);
-		}
-		if(manage.getConfigType()==1)
-		{
-			managePojo.setConfigData(manage.getConfigData());
-		}
-		if(manage.getConfigType()==2) {
-			List<ManagePojo.Option> oList = JsonUtil.parseObject(manage.getConfigData(), new TypeReference<List<ManagePojo.Option>>() {
-			});
-			managePojo.setConfigData(oList);
-		}
+		managePojo.setConfigType(manage.getConfigType());		
+//		if(manage.getConfigType()==0){
+//			Long num=Long.parseLong(manage.getConfigData());
+//			managePojo.setConfigData(num);
+//		}else if(manage.getConfigType()==1)
+//		{
+//			managePojo.setConfigData(manage.getConfigData());
+//		}else if(manage.getConfigType()==2) {
+//			List<ManagePojo.Option> oList = JsonUtil.parseObject(manage.getConfigData(), new TypeReference<List<ManagePojo.Option>>() {
+//			});
+//			managePojo.setConfigData(oList);
+//		}
+		managePojo.setConfigData(manage.getConfigData());
 		return managePojo;
 	}
 	@Override
@@ -109,31 +109,32 @@ public class ManageServiceImpl implements ManageService {
 		ConfigManage manage = new ConfigManage();
 		manage.setManageName(managePojo.getManageName());
 		manage.setTypeName(managePojo.getTypeName());
-		if(managePojo.getConfigData() !=null){
-			if(managePojo.getConfigType()==0){
-				if(managePojo.getConfigData() instanceof Number){
-					manage.setConfigData(String.valueOf(managePojo.getConfigData()));
-				}else{
-					throw new BusinessException("configType=0时,configData必须为Num类型");
-				}
-			}
-			if(managePojo.getConfigType()==1)
-			{
-				if(managePojo.getConfigData() instanceof String){
-					manage.setConfigData(String.valueOf(managePojo.getConfigData()));
-				}else{
-					throw new BusinessException("configType=1时,configData必须为String类型");
-				}
-			}
-			if(managePojo.getConfigType()==2) {
-				if(managePojo.getConfigData() instanceof List){
-					String configData = JsonUtil.toJsonString(managePojo.getConfigData());
-					manage.setConfigData(configData);
-				}else{
-					throw new BusinessException("configType=2时,configData必须为枚举类型");
-				}
-			}
-		}
+//		if(managePojo.getConfigData() !=null){
+//			if(managePojo.getConfigType()==0){
+//				if(managePojo.getConfigData() instanceof Number){
+//					manage.setConfigData(String.valueOf(managePojo.getConfigData()));
+//				}else{
+//					throw new BusinessException("configType=0时,configData必须为Num类型");
+//				}
+//			}
+//			if(managePojo.getConfigType()==1)
+//			{
+//				if(managePojo.getConfigData() instanceof String){
+//					manage.setConfigData(String.valueOf(managePojo.getConfigData()));
+//				}else{
+//					throw new BusinessException("configType=1时,configData必须为String类型");
+//				}
+//			}
+//			if(managePojo.getConfigType()==2) {
+//				if(managePojo.getConfigData() instanceof List){
+//					String configData = JsonUtil.toJsonString(managePojo.getConfigData());
+//					manage.setConfigData(configData);
+//				}else{
+//					throw new BusinessException("configType=2时,configData必须为枚举类型");
+//				}
+//			}
+//		}
+		manage.setConfigData(managePojo.getConfigData());
 		manage.setConfigType(managePojo.getConfigType());
 		configManageRepository.save(manage);
 		managePojo.setId(manage.getId());
@@ -145,31 +146,32 @@ public class ManageServiceImpl implements ManageService {
 		Preconditions.checkArgument(null != manage, "该任务不存在");
 		manage.setManageName(managePojo.getManageName());
 		manage.setConfigType(managePojo.getConfigType());
-		if(managePojo.getConfigData() !=null){
-			if(managePojo.getConfigType()==0){
-				if(managePojo.getConfigData() instanceof Number){
-					manage.setConfigData(String.valueOf(managePojo.getConfigData()));
-				}else{
-					throw new BusinessException("configType=0时,configData必须为Num类型");
-				}
-			}
-			if(managePojo.getConfigType()==1)
-			{
-				if(managePojo.getConfigData() instanceof String){
-					manage.setConfigData(String.valueOf(managePojo.getConfigData()));
-				}else{
-					throw new BusinessException("configType=1时,configData必须为String类型");
-				}
-			}
-			if(managePojo.getConfigType()==2) {
-				if(managePojo.getConfigData() instanceof List){
-					String configData = JsonUtil.toJsonString(managePojo.getConfigData());
-					manage.setConfigData(configData);
-				}else{
-					throw new BusinessException("configType=2时,configData必须为枚举类型");
-				}
-			}
-		}
+//		if(managePojo.getConfigData() !=null){			
+//			if(managePojo.getConfigType()==0){
+//				if(managePojo.getConfigData() instanceof Number){
+//					manage.setConfigData(String.valueOf(managePojo.getConfigData()));
+//				}else{
+//					throw new BusinessException("configType=0时,configData必须为Num类型");
+//				}
+//			}
+//			if(managePojo.getConfigType()==1)
+//			{
+//				if(managePojo.getConfigData() instanceof String){
+//					manage.setConfigData(String.valueOf(managePojo.getConfigData()));
+//				}else{
+//					throw new BusinessException("configType=1时,configData必须为String类型");
+//				}
+//			}
+//			if(managePojo.getConfigType()==2) {
+//				if(managePojo.getConfigData() instanceof List){
+//					String configData = JsonUtil.toJsonString(managePojo.getConfigData());
+//					manage.setConfigData(configData);
+//				}else{
+//					throw new BusinessException("configType=2时,configData必须为枚举类型");
+//				}
+//			}
+//		}
+		manage.setConfigData(managePojo.getConfigData());
 		manage.setTypeName(managePojo.getTypeName());
 		configManageRepository.save(manage);
 		return managePojo;

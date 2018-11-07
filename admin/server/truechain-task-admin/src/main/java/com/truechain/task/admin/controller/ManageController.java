@@ -2,6 +2,7 @@ package com.truechain.task.admin.controller;
 
 import io.swagger.annotations.ApiOperation;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,17 +40,25 @@ public class ManageController extends BasicController{
         return WrapMapper.ok(page);
     }
     
-    @ApiOperation(value="添加配置",notes="configType=0时,configdata必须为数字类型;configType=1时,configdata必须为字符串类型;configType=2时,configdata必须为枚举类型;")
+    @ApiOperation(value="添加配置",notes="configType数据类型,0-数字，1-字符串，2-枚举")
     @PostMapping("/addManage")
     public Wrapper addManage (@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestBody ManagePojo managePojo){
+    	Preconditions.checkArgument(StringUtils.isNotBlank(managePojo.getTypeName()), "管理类型不能为空");
+    	Preconditions.checkArgument(StringUtils.isNotBlank(managePojo.getManageName()), "管理名称不能为空");
+    	Preconditions.checkArgument(null != managePojo.getConfigType(), "数据类型不能为空");
+    	Preconditions.checkArgument(StringUtils.isNotBlank(managePojo.getConfigData()), "数据值不能为空");
     	manageService.addManage(managePojo);
     	return WrapMapper.ok();
     }
     
-    @ApiOperation(value="修改配置",notes="configType=0时,configdata必须为数字类型;configType=1时,configdata必须为字符串类型;configType=2时,configdata必须为枚举类型;")
+    @ApiOperation(value="修改配置",notes="configType数据类型,0-数字，1-字符串，2-枚举")
     @PostMapping("/updateManage")
     public Wrapper updateManage (@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, 
     		@RequestBody ManagePojo managePojo){ 
+    	Preconditions.checkArgument(StringUtils.isNotBlank(managePojo.getTypeName()), "管理类型不能为空");
+    	Preconditions.checkArgument(StringUtils.isNotBlank(managePojo.getManageName()), "管理名称不能为空");
+    	Preconditions.checkArgument(null != managePojo.getConfigType(), "数据类型不能为空");
+    	Preconditions.checkArgument(StringUtils.isNotBlank(managePojo.getConfigData()), "数据值不能为空");
     	manageService.updateManage(managePojo);
     	return WrapMapper.ok();
     }
