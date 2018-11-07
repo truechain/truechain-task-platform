@@ -238,6 +238,7 @@ public class UserServiceImpl implements UserService {
         userAccountDetail.setRewardType(3);
 //        userAccountDetail.setRecommendTask(recommendTask);
         userAccountDetail.setRewardNum(new BigDecimal(rewardNum));
+        userAccountDetail.setLssuingState(0);
         userAccountDetailRepository.save(userAccountDetail);
     }
 
