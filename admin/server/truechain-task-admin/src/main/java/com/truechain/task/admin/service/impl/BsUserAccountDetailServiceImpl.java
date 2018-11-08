@@ -121,6 +121,9 @@ public class BsUserAccountDetailServiceImpl implements BsUserAccountDetailServic
     	if(buad == null){
     		throw new BusinessException("账户明细id="+UserAccountDetailId+"记录不存在");
     	}
+    	if(Integer.valueOf(1).equals(buad.getLssuingState())){
+    		throw new BusinessException("账户明细id="+UserAccountDetailId+"奖励已发放，不允许重复发放");
+    	}
     	buad.setRewardResource(3);  //1推荐2完成任务3评级
     	buad.setLssuingState(1);//已发放     	
     	buad.setUpdatetime();
