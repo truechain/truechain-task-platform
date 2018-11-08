@@ -36,12 +36,15 @@ spring:
   profiles: dev
   datasource:
     url: jdbc:mysql://47.95.252.37:3308/task_platform_test?useUnicode=true&characterEncoding=utf-8&useSSL=false
-    username: root
-    password: true0614
+    username: admin
+    password: newpwd@true0614
   redis:
     host: 127.0.0.1
     port: 6379
     password:
+wx:
+  appid: wx0b64defee8dc46a9
+  appsecret: ba2d0ad7a75b184c9a85920cebcb7ff0
 app:
   upload:
     file-path: D://
@@ -60,12 +63,15 @@ spring:
   profiles: test
   datasource:
     url: jdbc:mysql://47.95.252.37:3308/task_platform_test?useUnicode=true&characterEncoding=utf-8&useSSL=false
-    username: root
-    password: true0614
+    username: admin
+    password: newpwd@true0614
   redis:
     host: 127.0.0.1
     port: 3690
     password: 8289-udss
+wx:
+  appid: wx0b64defee8dc46a9
+  appsecret: ba2d0ad7a75b184c9a85920cebcb7ff0
 app:
   upload:
     file-path: /home/work/data/test/upload/resume/
@@ -94,6 +100,9 @@ spring:
     host: 127.0.0.1
     port: 6379
     password: true0614
+wx:
+  appid: wx595ba6d1669c4532
+  appsecret: 75288033b96bca42496acf728d8d84a1
 app:
   upload:
     file-path: /home/work/data/upload/resume/
