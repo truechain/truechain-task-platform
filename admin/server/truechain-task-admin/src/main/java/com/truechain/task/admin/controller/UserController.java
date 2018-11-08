@@ -136,10 +136,10 @@ public class UserController extends BasicController {
 
         if (StringUtils.isEmpty(recommendShareCode) == false) {
         	String referrerPhone = String.valueOf(ShareCodeUtil.codeToNum(recommendShareCode));
-            Preconditions.checkArgument(ValidateUtil.isMobile(referrerPhone), "手机号不合法");
+            Preconditions.checkArgument(ValidateUtil.isMobile(referrerPhone), "无效推荐码");
             SysUser referrerUser = userService.getUserByMobile(referrerPhone);
             if (referrerUser == null) {
-                throw new BusinessException("没有找到该推荐人");
+                throw new BusinessException("无效推荐码,找不到推荐用户");
             }
             user.setRecommendShareCode(recommendShareCode);
             user.setRecommendUserId(referrerUser.getId());
@@ -182,10 +182,10 @@ public class UserController extends BasicController {
         
         if (StringUtils.isEmpty(recommendShareCode) == false) {
         	String referrerPhone = String.valueOf(ShareCodeUtil.codeToNum(recommendShareCode));
-            Preconditions.checkArgument(ValidateUtil.isMobile(referrerPhone), "手机号不合法");
+            Preconditions.checkArgument(ValidateUtil.isMobile(referrerPhone), "无效推荐码");
             SysUser referrerUser = userService.getUserByMobile(referrerPhone);
             if (referrerUser == null) {
-                throw new BusinessException("没有找到该推荐人");
+                throw new BusinessException("无效推荐码,找不到推荐用户");
             }
             user.setRecommendShareCode(recommendShareCode);
             user.setRecommendUserId(referrerUser.getId());
@@ -207,7 +207,7 @@ public class UserController extends BasicController {
     		@RequestParam String recommendShareCode){
     	 if (StringUtils.isEmpty(recommendShareCode) == false) {
          	String referrerPhone = String.valueOf(ShareCodeUtil.codeToNum(recommendShareCode));
-             Preconditions.checkArgument(ValidateUtil.isMobile(referrerPhone), "手机号不合法");
+             Preconditions.checkArgument(ValidateUtil.isMobile(referrerPhone), "无效推荐码");
              SysUser referrerUser = userService.getUserByMobile(referrerPhone);
              if (referrerUser == null) {
                  throw new BusinessException("无效推荐码,找不到推荐用户");
