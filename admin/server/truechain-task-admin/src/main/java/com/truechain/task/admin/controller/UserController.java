@@ -157,11 +157,11 @@ public class UserController extends BasicController {
     @PostMapping("/updateUser")
     public Wrapper updateUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, 
     		@RequestParam Long id,@RequestParam String name, @RequestParam String wxNickName, @RequestParam String wxNum, 
-    		 @RequestParam(value = "file", required = false) MultipartFile file,
+    		 @RequestParam(value = "file",required = false) MultipartFile file,
     		 @RequestParam(required = false) String recommendResource, @RequestParam(required = false) String recommendShareCode) {
     	SysUser user = new SysUser();    	
     	user.setId(id);
-    	if(!file.isEmpty()){
+    	if(file != null && !file.isEmpty()){
     		String fileName = file.getOriginalFilename();
             Preconditions.checkArgument(fileName.indexOf(".exe") < 0 && fileName.indexOf(".sh") < 0, "上传文件不合法");
 
