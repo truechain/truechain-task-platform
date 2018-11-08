@@ -309,6 +309,7 @@ public class TaskServiceImpl implements TaskService {
         userAccountDetail.setRewardType(task.getRewardType());
         userAccountDetail.setRewardNum(userRewardNum);
         userAccountDetail.setRewardResource(2);                      //1推荐2完成任务3评级
+        userAccountDetail.setLssuingState(1);
         userAccountDetailRepository.save(userAccountDetail);
 
         //任务推荐人奖励
@@ -327,6 +328,7 @@ public class TaskServiceImpl implements TaskService {
                     reUserAccountDetail.setRewardType(task.getRewardType());
                     reUserAccountDetail.setRewardNum(recommendUserRewardNum);
                     reUserAccountDetail.setRewardResource(1);    //1推荐2完成任务3评级
+                    reUserAccountDetail.setLssuingState(1);
                     userAccountDetailRepository.save(reUserAccountDetail);
                 }
             }

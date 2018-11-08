@@ -251,9 +251,9 @@ public class TaskController extends BasicController {
     }
 
     /**
-     * 发放奖励
+     * 确定奖励数目并发放
      */
-    @ApiOperation(value = "发放奖励")
+    @ApiOperation(value = "确定奖励数目并发放", notes = "任务管理页面使用")
     @PostMapping("/rewardEntryFromUser")
     public Wrapper rewardEntryFromUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,
                                        @RequestParam Long taskUserId, @RequestParam(required = false) Double userReward, @RequestParam(required = false) Double recommendUserReward) {

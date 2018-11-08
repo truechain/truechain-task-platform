@@ -23,10 +23,10 @@ CREATE TABLE `config_manage` (
 	`type_name` VARCHAR(255) NULL DEFAULT NULL COMMENT '管理类型' COLLATE 'utf8_bin',
 	`config_data` VARCHAR(255) NULL DEFAULT NULL COMMENT '数据值' COLLATE 'utf8_bin',
 	`config_type` INT(11) NULL DEFAULT NULL COMMENT '数据类型,0-数字，1-字符串，2-枚举',
-	`create_time` DATETIME NULL DEFAULT NULL COMMENT '创建时间',
+	`create_time` VARCHAR(255) NULL DEFAULT NULL COMMENT '创建时间',
 	`create_user` VARCHAR(255) NULL DEFAULT NULL COMMENT '创建人' COLLATE 'utf8_bin',
 	`update_id` VARCHAR(255) NULL DEFAULT NULL COMMENT '更新人ID' COLLATE 'utf8_bin',
-	`update_time` DATETIME NULL DEFAULT NULL COMMENT '更新时间',
+	`update_time` VARCHAR(255) NULL DEFAULT NULL COMMENT '更新时间',
 	`update_user` VARCHAR(255) NULL DEFAULT NULL COMMENT '更新人员' COLLATE 'utf8_bin',
 	PRIMARY KEY (`id`)
 )
@@ -36,3 +36,5 @@ ENGINE=InnoDB
 AUTO_INCREMENT=4
 ;
 
+--zhouduanyang
+ALTER TABLE bs_user_account_detail ADD lssuing_state int(11) DEFAULT '0' COMMENT '奖励发放状态（0-未发放，1-发放）',

@@ -1,27 +1,22 @@
 package com.truechain.task.admin.service.impl;
 
-import java.util.List;
-
 import org.apache.commons.lang3.StringUtils;
-
-import com.querydsl.core.BooleanBuilder;
-import com.truechain.task.model.entity.QConfigManage;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.base.Preconditions;
+import com.querydsl.core.BooleanBuilder;
 import com.truechain.task.admin.model.dto.ManageDTO;
 import com.truechain.task.admin.model.viewPojo.ManagePojo;
 import com.truechain.task.admin.repository.ConfigManageRepository;
 import com.truechain.task.admin.service.ManageService;
 import com.truechain.task.core.BusinessException;
 import com.truechain.task.model.entity.ConfigManage;
-import com.truechain.task.util.JsonUtil;
+import com.truechain.task.model.entity.QConfigManage;
+import com.truechain.task.util.DateUtil;
 
 @Service
 public class ManageServiceImpl implements ManageService {
@@ -55,7 +50,7 @@ public class ManageServiceImpl implements ManageService {
 			managePojo.setConfigData(source.getConfigData());
 			managePojo.setConfigType(source.getConfigType());
 			managePojo.setTypeName(source.getTypeName());
-
+			managePojo.setDatetime(source.getUpdateTime());
 			return managePojo;
 		}
 	}
@@ -71,7 +66,10 @@ public class ManageServiceImpl implements ManageService {
 			builder.and(qConfigManage.configType.eq(manageDTO.getConfigType()));
 		}
 		if(StringUtils.isNotBlank(manageDTO.getTypeName())){
-			builder.and(qConfigManage.typeName.eq(manageDTO.getTypeName()));
+			builder.and(qConfigManage.typeName.like("%"+manageDTO.getTypeName()+"%"));
+		}
+		if(StringUtils.isNotBlank(manageDTO.getManageName())){
+			builder.and(qConfigManage.manageName.like("%"+manageDTO.getManageName()+"%"));
 		}
 		Page<ConfigManage> managePage=configManageRepository.findAll(builder,pageable);
 		Page<ManagePojo> managePojoPage = managePage.map(new ManagePojoConverter());		
@@ -136,6 +134,9 @@ public class ManageServiceImpl implements ManageService {
 //		}
 		manage.setConfigData(managePojo.getConfigData());
 		manage.setConfigType(managePojo.getConfigType());
+		String date = DateUtil.getDate();
+		manage.setCreateTime(date);
+		manage.setUpdateTime(date);
 		configManageRepository.save(manage);
 		managePojo.setId(manage.getId());
 		return managePojo;
@@ -173,7 +174,15 @@ public class ManageServiceImpl implements ManageService {
 //		}
 		manage.setConfigData(managePojo.getConfigData());
 		manage.setTypeName(managePojo.getTypeName());
+		String date = DateUtil.getDate();
+		manage.setUpdateTime(date);
 		configManageRepository.save(manage);
 		return managePojo;
 	}
+	
+	
+	@Override
+    public void delete(Long id) {
+		configManageRepository.delete(id);
+    }
 }

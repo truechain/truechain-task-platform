@@ -136,10 +136,10 @@ public class UserController extends BasicController {
 
         if (StringUtils.isEmpty(recommendShareCode) == false) {
         	String referrerPhone = String.valueOf(ShareCodeUtil.codeToNum(recommendShareCode));
-            Preconditions.checkArgument(ValidateUtil.isMobile(referrerPhone), "手机号不合法");
+            Preconditions.checkArgument(ValidateUtil.isMobile(referrerPhone), "无效推荐码");
             SysUser referrerUser = userService.getUserByMobile(referrerPhone);
             if (referrerUser == null) {
-                throw new BusinessException("没有找到该推荐人");
+                throw new BusinessException("无效推荐码,找不到推荐用户");
             }
             user.setRecommendShareCode(recommendShareCode);
             user.setRecommendUserId(referrerUser.getId());
@@ -157,11 +157,11 @@ public class UserController extends BasicController {
     @PostMapping("/updateUser")
     public Wrapper updateUser(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, 
     		@RequestParam Long id,@RequestParam String name, @RequestParam String wxNickName, @RequestParam String wxNum, 
-    		 @RequestParam(value = "file", required = false) MultipartFile file,
+    		 @RequestParam(value = "file",required = false) MultipartFile file,
     		 @RequestParam(required = false) String recommendResource, @RequestParam(required = false) String recommendShareCode) {
     	SysUser user = new SysUser();    	
     	user.setId(id);
-    	if(!file.isEmpty()){
+    	if(file != null && !file.isEmpty()){
     		String fileName = file.getOriginalFilename();
             Preconditions.checkArgument(fileName.indexOf(".exe") < 0 && fileName.indexOf(".sh") < 0, "上传文件不合法");
 
@@ -182,10 +182,10 @@ public class UserController extends BasicController {
         
         if (StringUtils.isEmpty(recommendShareCode) == false) {
         	String referrerPhone = String.valueOf(ShareCodeUtil.codeToNum(recommendShareCode));
-            Preconditions.checkArgument(ValidateUtil.isMobile(referrerPhone), "手机号不合法");
+            Preconditions.checkArgument(ValidateUtil.isMobile(referrerPhone), "无效推荐码");
             SysUser referrerUser = userService.getUserByMobile(referrerPhone);
             if (referrerUser == null) {
-                throw new BusinessException("没有找到该推荐人");
+                throw new BusinessException("无效推荐码,找不到推荐用户");
             }
             user.setRecommendShareCode(recommendShareCode);
             user.setRecommendUserId(referrerUser.getId());
@@ -197,6 +197,25 @@ public class UserController extends BasicController {
         userService.updateUser(user);
     	return WrapMapper.ok();
     }
+    
+    /**
+     * 检测推荐人推荐码
+     */
+    @ApiOperation(value = "检测推荐人推荐码")
+    @PostMapping("/checkRecommendShareCode")
+    public Wrapper checkRecommendShareCode(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, 
+    		@RequestParam String recommendShareCode){
+    	 if (StringUtils.isEmpty(recommendShareCode) == false) {
+         	String referrerPhone = String.valueOf(ShareCodeUtil.codeToNum(recommendShareCode));
+             Preconditions.checkArgument(ValidateUtil.isMobile(referrerPhone), "无效推荐码");
+             SysUser referrerUser = userService.getUserByMobile(referrerPhone);
+             if (referrerUser == null) {
+                 throw new BusinessException("无效推荐码,找不到推荐用户");
+             }
+    	 }
+    	 return WrapMapper.ok();
+    }
+    
 
     /**
      * 修改用户的等级
