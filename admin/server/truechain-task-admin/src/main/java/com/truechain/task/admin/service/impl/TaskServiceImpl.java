@@ -149,10 +149,10 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public BsTask addTask(TaskInfoDTO taskInfoDTO) {
         BsTask task = taskInfoDTO.getTask();
-        double totalRewardNum = taskInfoDTO.getTaskDetailList().stream().mapToDouble(x -> x.getPeopleNum() * x.getRewardNum().doubleValue()).sum();
+        /*double totalRewardNum = taskInfoDTO.getTaskDetailList().stream().mapToDouble(x -> x.getPeopleNum() * x.getRewardNum().doubleValue()).sum();
         if (task.getRewardNum().doubleValue() != totalRewardNum) {
             throw new BusinessException("任务奖励总和和明细项不匹配");
-        }
+        }*/
         long peopleNum = taskInfoDTO.getTaskDetailList().stream().mapToInt(x -> x.getPeopleNum()).sum();
         task.setPeopleNum((int) peopleNum);
         task.setAuditStatus(0);
@@ -163,6 +163,12 @@ public class TaskServiceImpl implements TaskService {
             e.printStackTrace();
         }
         task.setDescription(description);
+        
+        task.setEnteredPeopleNum(0);
+        task.setIsEnteredFull((short)0);
+        task.setCompletedPeopleNum(0);
+        task.setIsCompletedFull((short)0);
+        
         task = taskRepository.save(task);
         for (BsTaskDetail taskDetail : taskInfoDTO.getTaskDetailList()) {
             taskDetail.setTask(task);
@@ -175,10 +181,10 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     public BsTask updateTask(TaskInfoDTO taskInfoDTO) {
         BsTask task = taskInfoDTO.getTask();
-        double totalRewardNum = taskInfoDTO.getTaskDetailList().stream().mapToDouble(x -> x.getPeopleNum() * x.getRewardNum().doubleValue()).sum();
+        /*double totalRewardNum = taskInfoDTO.getTaskDetailList().stream().mapToDouble(x -> x.getPeopleNum() * x.getRewardNum().doubleValue()).sum();
         if (task.getRewardNum().doubleValue() != totalRewardNum) {
             throw new BusinessException("任务奖励总和和明细项不匹配");
-        }
+        }*/
         BsTask bsTask = taskRepository.findOne(task.getId());
         Preconditions.checkArgument(null != bsTask, "该任务不存在");
         QBsTaskDetail qBsTaskDetail = QBsTaskDetail.bsTaskDetail;
