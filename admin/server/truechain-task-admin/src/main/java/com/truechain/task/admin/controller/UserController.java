@@ -197,6 +197,25 @@ public class UserController extends BasicController {
         userService.updateUser(user);
     	return WrapMapper.ok();
     }
+    
+    /**
+     * 检测推荐人推荐码
+     */
+    @ApiOperation(value = "检测推荐人推荐码")
+    @PostMapping("/checkRecommendShareCode")
+    public Wrapper checkRecommendShareCode(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, 
+    		@RequestParam String recommendShareCode){
+    	 if (StringUtils.isEmpty(recommendShareCode) == false) {
+         	String referrerPhone = String.valueOf(ShareCodeUtil.codeToNum(recommendShareCode));
+             Preconditions.checkArgument(ValidateUtil.isMobile(referrerPhone), "手机号不合法");
+             SysUser referrerUser = userService.getUserByMobile(referrerPhone);
+             if (referrerUser == null) {
+                 throw new BusinessException("无效推荐码,找不到推荐用户");
+             }
+    	 }
+    	 return WrapMapper.ok();
+    }
+    
 
     /**
      * 修改用户的等级
