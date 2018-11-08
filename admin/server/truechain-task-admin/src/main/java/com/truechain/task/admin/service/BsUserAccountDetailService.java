@@ -20,4 +20,11 @@ public interface BsUserAccountDetailService {
     Page<BsUserAccountDetail> getBsUserAccountDetail(TimeRangeDTO timeRangeDTO, Pageable pageable);
 
     List<BsUserAccountDetail> getBsUserAccountDetail(Long taskId, Long userId);
+    
+    /**
+     * 发放奖励
+     * @param UserAccountDetailId
+     * @return
+     */
+    public BsUserAccountDetail rewardUserAccountDetail(Long UserAccountDetailId);
 }

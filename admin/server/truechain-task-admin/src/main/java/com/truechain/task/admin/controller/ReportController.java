@@ -228,50 +228,46 @@ public class ReportController extends BasicController {
     @ApiOperation(value = "奖励列表", notes = "返回结构中{taskName:任务名称;taskState:任务状态(0-任务中,1-已经完成)}")
     @PostMapping("/getRewardStats")
     public Wrapper getRewardStats(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestBody RewardViewDTO rewardViewDTO) {
-        List<UserRewardHistoryPojo> rewardHistoryPojoList = Lists.newArrayList();
-        Pageable pageable = new PageRequest(0, Integer.MAX_VALUE);
+    	List<UserRewardHistoryPojo> rewardHistoryPojoList = Lists.newArrayList();
+    	Pageable pageable = new PageRequest(0, Integer.MAX_VALUE);
 
-        Page<BsUserAccountDetail> page = bsUserAccountDetailServiceImpl.getBsUserAccountDetail(rewardViewDTO,pageable);
-        page.forEach(bsUserAccountDetail -> {
-            UserRewardHistoryPojo rewardHistoryPojo = new UserRewardHistoryPojo();
-            rewardHistoryPojo.setId(bsUserAccountDetail.getId());
+    	Page<BsUserAccountDetail> page = bsUserAccountDetailServiceImpl.getBsUserAccountDetail(rewardViewDTO,pageable);
+    	page.forEach(bsUserAccountDetail -> {
+    		UserRewardHistoryPojo rewardHistoryPojo = new UserRewardHistoryPojo();
+    		rewardHistoryPojo.setId(bsUserAccountDetail.getId());
 
-            Integer rewardResource = bsUserAccountDetail.getRewardResource();
-            if(bsUserAccountDetail.getRewardResource() != null){
-                if(rewardResource.intValue() == 1){
-                    rewardHistoryPojo.setEventName("推荐");
-                }
-                if(rewardResource.intValue() == 2){
-                    rewardHistoryPojo.setEventName("完成任务");
-                }
-                if(rewardResource.intValue() == 3){
-                    rewardHistoryPojo.setEventName("评级");
-                }
-            }
-            rewardHistoryPojo.setGotTime(bsUserAccountDetail.getUpdateTime());
-            //奖励类型(1-true,2-ttr,3-rmp)
-            final int rewardType = bsUserAccountDetail.getRewardType();
-            if (rewardType == 1) {
-                rewardHistoryPojo.setRewardType("true");
-            }
-            if (rewardType == 2) {
-                rewardHistoryPojo.setRewardType("ttr");
-            }
-            if (rewardType == 3) {
-                rewardHistoryPojo.setRewardType("rmb");
-            }
-            if( bsUserAccountDetail.getRewardNum() != null){
-                rewardHistoryPojo.setRewardNum(bsUserAccountDetail.getRewardNum().doubleValue());
-            }
+    		Integer rewardResource = bsUserAccountDetail.getRewardResource();
+    		if(bsUserAccountDetail.getRewardResource() != null){
+    			if(rewardResource.intValue() == 1){
+    				rewardHistoryPojo.setEventName("推荐");
+    			}
+    			if(rewardResource.intValue() == 2){
+    				rewardHistoryPojo.setEventName("完成任务");
+    			}
+    			if(rewardResource.intValue() == 3){
+    				rewardHistoryPojo.setEventName("评级");
+    			}
+    		}
+    		rewardHistoryPojo.setGotTime(bsUserAccountDetail.getUpdateTime());
+    		//奖励类型(1-true,2-ttr,3-rmp)
+    		final int rewardType = bsUserAccountDetail.getRewardType();
+    		if (rewardType == 1) {
+    			rewardHistoryPojo.setRewardType("true");
+    		}
+    		if (rewardType == 2) {
+    			rewardHistoryPojo.setRewardType("ttr");
+    		}
+    		if (rewardType == 3) {
+    			rewardHistoryPojo.setRewardType("rmb");
+    		}
+    		if( bsUserAccountDetail.getRewardNum() != null){
+    			rewardHistoryPojo.setRewardNum(bsUserAccountDetail.getRewardNum().doubleValue());
+    		}
 
-            rewardHistoryPojoList.add(rewardHistoryPojo);
-        }
-    );
-        return WrapMapper.ok(rewardHistoryPojoList);
+    		rewardHistoryPojoList.add(rewardHistoryPojo);
+    	});
+    	return WrapMapper.ok(rewardHistoryPojoList);
     }
-
-
-
 
     /**
      * 获取奖励清单
@@ -329,9 +325,19 @@ public class ReportController extends BasicController {
             reward.add(rewardListPojo);
         });
         return WrapMapper.ok(reward);
-
-
     }
+    
+    
+    /**
+     * 奖励发放
+     */
+    @ApiOperation(value = "奖励发放", notes = "奖励清单页面使用")
+    @PostMapping("/rewardUserAccountDetail")
+    public Wrapper rewardUserAccountDetail(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestParam Long UserAccountDetailId){
+    	BsUserAccountDetail bsUserAccountDetail = bsUserAccountDetailServiceImpl.rewardUserAccountDetail(UserAccountDetailId);
+    	return WrapMapper.ok(bsUserAccountDetail);
+    }
+    
 
     /**
      * 获取推荐统计数据

@@ -8,6 +8,7 @@ import com.truechain.task.admin.model.dto.UserDTO;
 import com.truechain.task.admin.repository.BsRecommendTaskRepository;
 import com.truechain.task.admin.repository.BsUserAccountDetailRepository;
 import com.truechain.task.admin.service.BsUserAccountDetailService;
+import com.truechain.task.core.BusinessException;
 import com.truechain.task.model.entity.BsTask;
 import com.truechain.task.model.entity.BsUserAccountDetail;
 import com.truechain.task.model.entity.QBsTask;
@@ -112,5 +113,17 @@ public class BsUserAccountDetailServiceImpl implements BsUserAccountDetailServic
         builder.and(qBsUserAccountDetail.task.id.eq(taskId)).and(qBsUserAccountDetail.userAccount.user.id.eq(userId));
         List<BsUserAccountDetail> list = (List<BsUserAccountDetail>) bsUserAccountDetailRepository.findAll(builder);
         return list;
+    }
+    
+    @Override
+    public BsUserAccountDetail rewardUserAccountDetail(Long UserAccountDetailId){
+    	BsUserAccountDetail buad = bsUserAccountDetailRepository.findOne(UserAccountDetailId);
+    	if(buad == null){
+    		throw new BusinessException("账户明细id="+UserAccountDetailId+"记录不存在");
+    	}
+    	buad.setRewardResource(3);  //1推荐2完成任务3评级
+    	buad.setLssuingState(1);//已发放     	
+    	buad.setUpdatetime();
+    	return bsUserAccountDetailRepository.save(buad);
     }
 }
