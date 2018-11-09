@@ -159,6 +159,13 @@ public class ReportController extends BasicController {
     }
 
     private Page<UserProfilePagePojo> convert(Page<SysUser> userPage) {
+    	if(userPage == null){
+    		return null;
+    	}else if(userPage.getTotalElements() == 0){
+    		return userPage.map(source -> {
+    			return new UserProfilePagePojo();
+    		});
+    	}
         Set<Long> userIdSet = Sets.newHashSet();
         userPage.forEach(sysUser -> userIdSet.add(sysUser.getId()));
 
