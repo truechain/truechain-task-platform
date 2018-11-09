@@ -1,10 +1,13 @@
 package com.truechain.task.admin.controller;
 
 import com.truechain.task.admin.service.AuthUserService;
+import com.truechain.task.admin.service.UserService;
 import com.truechain.task.core.BusinessException;
 import com.truechain.task.core.WrapMapper;
 import com.truechain.task.core.Wrapper;
 import com.truechain.task.model.entity.AuthUser;
+import com.truechain.task.model.entity.SysUser;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,9 @@ public class AdminUserController extends BasicController {
 
     @Autowired
     private AuthUserService authUserService;
+    
+    @Autowired
+    private UserService userService;
 
     /**
      * 添加用户
@@ -88,8 +94,8 @@ public class AdminUserController extends BasicController {
      */
     @PostMapping("/getUserInfo")
     public Wrapper getUserInfo(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam Long userId) {
-        AuthUser authUser = authUserService.getUserById(userId);
-        return WrapMapper.ok(authUser);
+        SysUser user = userService.getUser(userId);
+        return WrapMapper.ok(user);
     }
 
     /**
