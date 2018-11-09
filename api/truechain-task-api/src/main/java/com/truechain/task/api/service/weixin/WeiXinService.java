@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
@@ -38,15 +39,16 @@ public class WeiXinService {
 
     private static final String wxTokenRedisKey = "wx_access_token";
     //appId
-    private static final String appId = "wx0b64defee8dc46a9";
+    @Value("${wx.appid}")
+    private  String appId;
     //tokenUrl
     private static final String tokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential";
     //公众号私钥
-    private static final String appsecret = "ba2d0ad7a75b184c9a85920cebcb7ff0";
+    @Value("${wx.appsecret}")
+    private String appsecret;
     //ticketUrl
     private static final String ticketUrl = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi";
 
-    public static final String oauth2OokenUrl = "https://api.weixin.qq.com/sns/oauth2/access_token?appid="+appId+"&secret="+appsecret+"&code=CODE&grant_type=authorization_code";
 
     public static final String userinfoUrl = "https://api.weixin.qq.com/sns/userinfo?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN";
 
@@ -55,6 +57,11 @@ public class WeiXinService {
 
     @Autowired
     private RestTemplate restTemplate;
+    
+    
+    public String getOauth2OokenUrl(String code){
+       return "https://api.weixin.qq.com/sns/oauth2/access_token?appid="+appId+"&secret="+appsecret+"&code=CODE&grant_type=authorization_code".replace("CODE", code);
+    }
 
     /**
      * 获取微信签名

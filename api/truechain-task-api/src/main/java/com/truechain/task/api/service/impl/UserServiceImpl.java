@@ -246,7 +246,7 @@ public class UserServiceImpl implements UserService {
 		SysUser sysUser = userRepository.getOne(userId);
 		Preconditions.checkArgument(sysUser != null, "用户不存在");
 		Preconditions.checkArgument(StringUtils.isEmpty(sysUser.getOpenId()), "用户已经绑定过");
-		String url = WeiXinService.oauth2OokenUrl.replace("CODE", code);
+		String url = weiXinService.getOauth2OokenUrl(code);
 		AccessTokenDTO accessTokenDTO = weiXinService.getAccessTokenVo(url);
 		Preconditions.checkArgument(StringUtils.isBlank(accessTokenDTO.getErrcode()), "用户绑定异常");
 		url = WeiXinService.userinfoUrl.replace("ACCESS_TOKEN", accessTokenDTO.getAccess_token()).replace("OPENID",
