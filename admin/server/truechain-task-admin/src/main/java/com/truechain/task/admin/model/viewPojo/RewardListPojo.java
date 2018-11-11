@@ -14,7 +14,7 @@ public class RewardListPojo {
     private double rewardNum;
     private String lssuingstate;
 
-    public RewardListPojo() {
+	public RewardListPojo() {
     }
 
     public Long getId() {

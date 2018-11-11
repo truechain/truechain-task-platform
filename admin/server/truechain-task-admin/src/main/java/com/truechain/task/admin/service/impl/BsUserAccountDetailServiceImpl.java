@@ -59,7 +59,7 @@ public class BsUserAccountDetailServiceImpl implements BsUserAccountDetailServic
         if (StringUtils.isNotBlank(rewardViewDTO.getEndDate())) {
             builder.and(qBsUserAccountDetail.updateTime.lt(rewardViewDTO.getEndDate()));
         }
-
+        
         Page<BsUserAccountDetail> taskPage = bsUserAccountDetailRepository.findAll(builder, pageable);
         return taskPage;
     }

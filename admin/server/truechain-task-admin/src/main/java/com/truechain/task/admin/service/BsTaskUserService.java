@@ -19,8 +19,8 @@ public interface BsTaskUserService {
     long getBsTaskUserCount(TaskDTO task);
     
     void cancelBsTaskUser(Long id);
-    
 
 	void auditBsTaskUser(AuditBsTaskUserDTO auditBsTaskUserDTO);
-	AuditBsTaskUserDTO getDefaultReward(Long id) ;
+	
+	AuditBsTaskUserDTO getDefaultReward(Long id);
 }

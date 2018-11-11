@@ -28,6 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletOutputStream;
@@ -283,7 +285,10 @@ public class ReportController extends BasicController {
     @PostMapping("/getRewardList")
     public Wrapper getRewardList(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent,@RequestBody RewardViewDTO rewardViewDTO){
         List<RewardListPojo> reward=Lists.newArrayList();
-        Pageable pageable = new PageRequest(0, Integer.MAX_VALUE);
+        
+        Order order1 = new Order(Sort.Direction.DESC,"createTime");
+        Pageable pageable = new PageRequest(0, Integer.MAX_VALUE,new Sort(order1));
+        
         Page<BsUserAccountDetail> page = bsUserAccountDetailServiceImpl.getBsUserAccountDetail(rewardViewDTO,pageable);
         page.forEach(bsUserAccountDetail ->{
             RewardListPojo rewardListPojo=new RewardListPojo();
@@ -329,6 +334,7 @@ public class ReportController extends BasicController {
             if(lstate==1){
                 rewardListPojo.setLssuingstate("已发放");
             }
+            
             reward.add(rewardListPojo);
         });
         return WrapMapper.ok(reward);

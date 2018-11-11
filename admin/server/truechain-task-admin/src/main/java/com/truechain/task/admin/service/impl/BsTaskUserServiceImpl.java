@@ -124,4 +124,5 @@ public class BsTaskUserServiceImpl implements BsTaskUserService {
     	auditBsTaskUserDTO.setRewardNum(bsTaskUser.getTaskDetail().getRewardNum().floatValue());
 		return auditBsTaskUserDTO;
 	}
+
 }
