@@ -37,6 +37,9 @@ public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private BsTaskRepository taskRepository;
+    
+    @Autowired
+    private V3Repository v3Repository;
 
     @Autowired
     private BsTaskDetailRepository taskDetailRepository;
@@ -58,7 +61,7 @@ public class TaskServiceImpl implements TaskService {
         BooleanBuilder builder = new BooleanBuilder();
         QBsTask qTask = QBsTask.bsTask;
         if (StringUtils.isNotBlank(task.getName())) {
-            builder.and(qTask.name.eq(task.getName()));
+            builder.and(qTask.name.like("%" + task.getName() + "%"));
         }
         if (null != task.getTaskStatus()) {
             builder.and(qTask.taskStatus.eq(task.getTaskStatus()));
@@ -381,5 +384,24 @@ public class TaskServiceImpl implements TaskService {
 
         Page<BsRecommendTask> result = bsRecommendTaskRepository.findAll(builder, pageable);
         return result;
+    }
+    
+    public void initTaskData(){
+    	List<V3> bsTaskList = v3Repository.findAll();
+    	for (V3 v3 : bsTaskList) {		
+    		Long id = v3.getId();
+    		Integer enteredPeopleNum = v3.getEnteredPeopleNum();
+    		Integer completedPeopleNum = v3.getCompletedPeopleNum();
+    	    short isEnteredFull = v3.getIsEnteredFull();
+    	    short isCompletedFull = v3.getIsCompletedFull();
+    		BsTask bs = taskRepository.getOne(id);
+    		if(bs !=null){
+    			bs.setEnteredPeopleNum(enteredPeopleNum);
+    			bs.setIsEnteredFull(isEnteredFull);
+    			bs.setCompletedPeopleNum(completedPeopleNum);
+    			bs.setIsCompletedFull(isCompletedFull);
+    			taskRepository.save(bs);
+    		}
+    	}
     }
 }

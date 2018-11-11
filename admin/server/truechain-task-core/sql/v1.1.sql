@@ -37,4 +37,21 @@ AUTO_INCREMENT=4
 ;
 
 --zhouduanyang
-ALTER TABLE bs_user_account_detail ADD lssuing_state int(11) DEFAULT '0' COMMENT '奖励发放状态（0-未发放，1-发放）',
+ALTER TABLE bs_user_account_detail ADD lssuing_state int(11) DEFAULT '0' COMMENT '奖励发放状态（0-未发放，1-发放）';
+
+-- 导出  视图 task_platform_test.v1 结构
+-- 移除临时表并创建最终视图结构
+DROP TABLE IF EXISTS `v1`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`admin`@`%` SQL SECURITY DEFINER VIEW `v1` AS select `t`.`id` AS `id`,`t`.`people_num` AS `people_num`,count(`t3`.`id`) AS `entered_people_num`,(`t`.`people_num` = count(`t3`.`id`)) AS `is_entered_full` from ((`bs_task` `t` left join `bs_task_detail` `t2` on(((`t`.`id` = `t2`.`task_id`) and (`t`.`people_num` is not null)))) left join `bs_task_user` `t3` on((`t2`.`id` = `t3`.`task_detail_id`))) where (`t`.`people_num` is not null) group by `t`.`id`;
+
+
+-- 导出  视图 task_platform_test.v2 结构
+-- 移除临时表并创建最终视图结构
+DROP TABLE IF EXISTS `v2`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`admin`@`%` SQL SECURITY DEFINER VIEW `v2` AS select `t`.`id` AS `id`,count(`t3`.`id`) AS `completed_people_num`,(`t`.`people_num` = count(`t3`.`id`)) AS `is_completed_full` from ((`bs_task` `t` left join `bs_task_detail` `t2` on(((`t`.`id` = `t2`.`task_id`) and (`t`.`people_num` is not null)))) left join `bs_task_user` `t3` on(((`t2`.`id` = `t3`.`task_detail_id`) and (`t3`.`task_status` = 1)))) where (`t`.`people_num` is not null) group by `t`.`id`;
+
+
+-- 导出  视图 task_platform_test.v3 结构
+-- 移除临时表并创建最终视图结构
+DROP TABLE IF EXISTS `v3`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`admin`@`%` SQL SECURITY DEFINER VIEW `v3` AS select `v1`.`id` AS `id`,`v1`.`people_num` AS `people_num`,`v1`.`entered_people_num` AS `entered_people_num`,`v1`.`is_entered_full` AS `is_entered_full`,`v2`.`completed_people_num` AS `completed_people_num`,`v2`.`is_completed_full` AS `is_completed_full` from (`v1` join `v2`) where (`v1`.`id` = `v2`.`id`);

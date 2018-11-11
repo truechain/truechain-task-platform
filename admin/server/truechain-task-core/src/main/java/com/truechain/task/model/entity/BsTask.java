@@ -90,11 +90,11 @@ public class BsTask extends BaseEntity {
     /**
      * 是否报名已满(0-未满，1-已满)
      */
-    private short isEnteredFull;
+    private Short isEnteredFull;
     /**
      * 是否完成任务已满(0-未满，1-已满)
      */
-    private short isCompletedFull;
+    private Short isCompletedFull;
     
     /**
      * 任务详情
@@ -253,19 +253,19 @@ public class BsTask extends BaseEntity {
 		this.completedPeopleNum = completedPeopleNum;
 	}
 
-	public short getIsEnteredFull() {
+	public Short getIsEnteredFull() {
 		return isEnteredFull;
 	}
 
-	public void setIsEnteredFull(short isEnteredFull) {
+	public void setIsEnteredFull(Short isEnteredFull) {
 		this.isEnteredFull = isEnteredFull;
 	}
 
-	public short getIsCompletedFull() {
+	public Short getIsCompletedFull() {
 		return isCompletedFull;
 	}
 
-	public void setIsCompletedFull(short isCompletedFull) {
+	public void setIsCompletedFull(Short isCompletedFull) {
 		this.isCompletedFull = isCompletedFull;
 	}
 }

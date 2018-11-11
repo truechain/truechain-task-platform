@@ -290,7 +290,19 @@ public class TaskController extends BasicController {
         return WrapMapper.ok(bsTaskUserService.getDefaultReward(taskUserId));
     }
     
-    
+    /**
+     * 初始化任务数据
+     */
+    @ApiOperation(value = "初始化任务数据")
+    @GetMapping("/initTaskData")
+    public Wrapper initTaskData(@RequestHeader("Token") String token, @RequestHeader("Agent") String agent, @RequestParam String id){
+    	if("1111".equals(id)){
+    		taskService.initTaskData();
+    		return WrapMapper.ok();
+    	}else{
+    		return WrapMapper.error("非法请求");
+    	}
+    }
     
     
 }

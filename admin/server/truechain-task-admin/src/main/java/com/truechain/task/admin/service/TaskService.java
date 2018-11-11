@@ -112,5 +112,11 @@ public interface TaskService {
      * @return
      */
     Page<BsRecommendTask> getBsRecommendTaskList(UserDTO user, Pageable pageable);
+    
+    
+    /**
+     * 初始化数据
+     */
+    public void initTaskData();
 }
 
