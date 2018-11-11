@@ -75,6 +75,8 @@ public class AccountController extends BasicController {
 		String verifyRedisKey = "verify_login_" + mobile;
 		String realVerifyCode = stringRedisTemplate.opsForValue().get(verifyRedisKey);
 		logger.info("realVerifyCode = " + realVerifyCode);
+		
+		//测试环境 不需要验证码
 		if (StringUtils.isBlank(realVerifyCode)) {
 			throw new BusinessException("验证码已过期");
 		}
@@ -117,6 +119,8 @@ public class AccountController extends BasicController {
 		Preconditions.checkArgument(ValidateUtil.isMobile(mobile), "手机号不合法");
 		String verifyRedisKey = "verify_login_" + mobile;
 		String realVerifyCode = stringRedisTemplate.opsForValue().get(verifyRedisKey);
+		
+		//测试环境 不需要验证码
 		if (StringUtils.isBlank(realVerifyCode)) {
 			throw new BusinessException("验证码已过期");
 		}

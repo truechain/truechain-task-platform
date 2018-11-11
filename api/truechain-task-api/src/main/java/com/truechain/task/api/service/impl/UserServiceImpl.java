@@ -97,12 +97,24 @@ public class UserServiceImpl implements UserService {
 		sysUser.setRecommendUserMobile(user.getRecommendUserMobile());
 		sysUser.setRecommendShareCode(user.getRecommendShareCode());
 		sysUser = userRepository.save(sysUser);
+	
 		BsUserAccount userAccount = sysUser.getUserAccount();
-		userAccount.setUser(sysUser);
-		userAccount.setGitReward(BigDecimal.ZERO);
-		userAccount.setTrueReward(BigDecimal.ZERO);
-		userAccount.setTtrReward(BigDecimal.ZERO);
-		userAccountRepository.save(userAccount);
+		
+		if(null != userAccount){
+			userAccount.setUser(sysUser);
+			userAccount.setGitReward(BigDecimal.ZERO);
+			userAccount.setTrueReward(BigDecimal.ZERO);
+			userAccount.setTtrReward(BigDecimal.ZERO);
+			userAccountRepository.save(userAccount);
+		}else{
+			BsUserAccount userAccountNew = new BsUserAccount();
+			userAccountNew.setUser(user);
+			userAccountNew.setGitReward(BigDecimal.ZERO);
+			userAccountNew.setTrueReward(BigDecimal.ZERO);
+			userAccountNew.setTtrReward(BigDecimal.ZERO);
+			userAccountRepository.save(userAccountNew);
+		}
+		
 		return sysUser;
 	}
 
