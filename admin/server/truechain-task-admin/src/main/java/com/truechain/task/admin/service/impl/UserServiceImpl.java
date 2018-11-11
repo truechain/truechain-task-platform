@@ -103,10 +103,10 @@ public class UserServiceImpl implements UserService {
             builder.and(qSysUser.auditPassTime.lt(user.getEndDate()));
         }
         if (StringUtils.isNotBlank(user.getName())) {
-            builder.and(qSysUser.personName.like(user.getName() + "%"));
+            builder.and(qSysUser.personName.like("%"+user.getName() + "%"));
         }
         if (StringUtils.isNotBlank(user.getWxNickName())) {
-            builder.and(qSysUser.wxNickName.like(user.getWxNickName() + "%"));
+            builder.and(qSysUser.wxNickName.like("%"+user.getWxNickName() + "%"));
         }
         Page<SysUser> userPage = userRepository.findAll(builder, pageable);
         return userPage;

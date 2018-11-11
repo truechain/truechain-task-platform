@@ -450,7 +450,7 @@ public class ReportController extends BasicController {
      */
     @ApiOperation(value = "统计详情-导出")
     @GetMapping("/export")
-    public void export(@RequestParam("startDate") String startDate,@RequestParam("endDate") String endDate,@RequestParam("name") String name,@RequestParam("wxNickName") String wxNickName,@RequestParam("auditStatus") Integer auditStatus,@RequestParam("level") String level,@RequestParam("pageSize") int pageSize,@RequestParam("pageIndex") int pageIndex) {
+    public void export(@RequestParam(value="startDate",required=false) String startDate,@RequestParam(value="endDate",required=false) String endDate,@RequestParam(value="name",required=false) String name,@RequestParam(value="wxNickName",required=false) String wxNickName,@RequestParam("auditStatus") Integer auditStatus,@RequestParam("level") String level,@RequestParam("pageSize") int pageSize,@RequestParam("pageIndex") int pageIndex) {
         UserDTO user= ExportExcel.getUserDTO(startDate,endDate,name,wxNickName,auditStatus,level,pageSize,pageIndex);
         Preconditions.checkArgument(user.getPageIndex()> 0, "分页信息错误");
         Preconditions.checkArgument(user.getPageSize()> 1, "分页信息错误");
