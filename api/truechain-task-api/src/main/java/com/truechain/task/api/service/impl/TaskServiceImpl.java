@@ -244,9 +244,22 @@ public class TaskServiceImpl extends BasicService implements TaskService {
         if (count >= taskDetail.getPeopleNum()) {
             throw new BusinessException("任务已满");
         }
+        
+        //已报名人数+1
+        int newEnteredPeopleNum = bsTask.getEnteredPeopleNum() + 1;
+        bsTask.setEnteredPeopleNum(newEnteredPeopleNum);
+        
+        //是否报名已满
+        if(newEnteredPeopleNum == bsTask.getPeopleNum()){
+        	bsTask.setIsEnteredFull((short)1);
+        }
+        taskRepository.save(bsTask);
+        
         BsTaskUser taskUser = new BsTaskUser();
+        
         taskUser.setTaskDetail(taskDetail);
         taskUser.setUser(user);
+        
         taskUserRepository.save(taskUser);
     }
 
