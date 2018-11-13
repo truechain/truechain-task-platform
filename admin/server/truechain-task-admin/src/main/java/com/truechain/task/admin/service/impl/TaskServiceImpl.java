@@ -278,8 +278,7 @@ public class TaskServiceImpl implements TaskService {
         if (taskUser.getTaskStatus() == 4) {
             throw new BusinessException("奖励已经发放，不可重复发放");
         }
-        taskUser.setTaskStatus(4);
-        taskUser = taskUserRepository.save(taskUser);
+       
         //发放奖励
         SysUser user = taskUser.getUser();
         BsUserAccount userAccount = userAccountRepository.getByUser(user);
@@ -321,6 +320,16 @@ public class TaskServiceImpl implements TaskService {
         userAccountDetail.setLssuingState(1);
         userAccountDetailRepository.save(userAccountDetail);
 
+        //发放奖励，才计算用户的任务真正完成
+        taskUser.setTaskStatus(4);
+        taskUser = taskUserRepository.save(taskUser);
+        int newCompletedPeopleNum = task.getCompletedPeopleNum() + 1;
+        task.setCompletedPeopleNum(newCompletedPeopleNum);
+        if(newCompletedPeopleNum == task.getPeopleNum()){
+        	task.setIsCompletedFull((short)1);
+        }
+        taskRepository.save(task);
+        
         //任务推荐人奖励
         if (task.getRewardType() == 1) {
             long recommendUserId = user.getRecommendUserId();
