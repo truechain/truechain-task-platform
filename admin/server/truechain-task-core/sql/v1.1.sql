@@ -4,6 +4,7 @@ ALTER TABLE `sys_user`
 	ADD COLUMN `recommend_resource` VARCHAR(255) NULL COMMENT '推荐源，渠道' AFTER `recommend_share_code`;
 	
 ALTER TABLE `bs_task`
+	ADD COLUMN `review_time` VARCHAR(255) NOT NULL COMMENT '审核时间' AFTER `id`,
 	ADD COLUMN `entered_people_num` INT(11) NOT NULL DEFAULT '0' COMMENT '已报名人数',
 	ADD COLUMN `completed_people_num` INT(11) NOT NULL DEFAULT '0' COMMENT '已完成人数',
 	ADD COLUMN `is_entered_full` SMALLINT(6) NOT NULL DEFAULT '0' COMMENT '是否报名已满(0-未满，1-已满)',
@@ -48,10 +49,14 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`admin`@`%` SQL SECURITY DEFINER VIEW `v1` AS
 -- 导出  视图 task_platform_test.v2 结构
 -- 移除临时表并创建最终视图结构
 DROP TABLE IF EXISTS `v2`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`admin`@`%` SQL SECURITY DEFINER VIEW `v2` AS select `t`.`id` AS `id`,count(`t3`.`id`) AS `completed_people_num`,(`t`.`people_num` = count(`t3`.`id`)) AS `is_completed_full` from ((`bs_task` `t` left join `bs_task_detail` `t2` on(((`t`.`id` = `t2`.`task_id`) and (`t`.`people_num` is not null)))) left join `bs_task_user` `t3` on(((`t2`.`id` = `t3`.`task_detail_id`) and (`t3`.`task_status` = 1)))) where (`t`.`people_num` is not null) group by `t`.`id`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`admin`@`%` SQL SECURITY DEFINER VIEW `v2` AS select `t`.`id` AS `id`,count(`t3`.`id`) AS `completed_people_num`,(`t`.`people_num` = count(`t3`.`id`)) AS `is_completed_full` from ((`bs_task` `t` left join `bs_task_detail` `t2` on(((`t`.`id` = `t2`.`task_id`) and (`t`.`people_num` is not null)))) left join `bs_task_user` `t3` on(((`t2`.`id` = `t3`.`task_detail_id`) and (`t3`.`task_status` = 4)))) where (`t`.`people_num` is not null) group by `t`.`id`;
 
 
 -- 导出  视图 task_platform_test.v3 结构
 -- 移除临时表并创建最终视图结构
 DROP TABLE IF EXISTS `v3`;
 CREATE ALGORITHM=UNDEFINED DEFINER=`admin`@`%` SQL SECURITY DEFINER VIEW `v3` AS select `v1`.`id` AS `id`,`v1`.`people_num` AS `people_num`,`v1`.`entered_people_num` AS `entered_people_num`,`v1`.`is_entered_full` AS `is_entered_full`,`v2`.`completed_people_num` AS `completed_people_num`,`v2`.`is_completed_full` AS `is_completed_full` from (`v1` join `v2`) where (`v1`.`id` = `v2`.`id`);
+
+ALTER TABLE `bs_task_user`
+	CHANGE COLUMN `task_status` `task_status` INT(11) NOT NULL COMMENT '状态(0=未提交,1=待审核,-1=取消,2=审核通过,3=未通过审核,4=已发放)' ;
+update bs_task_user set task_Status = 4 where task_Status = 1 and create_time < '2018-11-11'    ;
